@@ -123,11 +123,11 @@ WebImporter.Import = {
   findSiteUrl: (instance, siteUrls) => (
     siteUrls.find(({ id }) => id === instance.urlHash)
   ),
-  transform: (hookName, element, payload) => {
+  transform: async (hookName, element, payload) => {
     // perform any additional transformations to the page
-    transformers.forEach((transformerFn) => (
-      transformerFn.call(this, hookName, element, payload)
-    ));
+    for (const transformerFn of transformers) {
+      await transformerFn.call(this, hookName, element, payload);
+    }
   },
   getParserName: ({ name, key }) => key || name,
   getElementByXPath: (document, xpath) => {
@@ -158,7 +158,7 @@ WebImporter.Import = {
 /**
 * Page transformation function
 */
-function transformPage(main, { inventory, ...source }) {
+async function transformPage(main, { inventory, ...source }) {
   const { urls = [], blocks: inventoryBlocks = [] } = inventory;
   const { document, params: { originalURL } } = source;
 
@@ -194,56 +194,58 @@ function transformPage(main, { inventory, ...source }) {
   });
 
   // before page transform hook
-  WebImporter.Import.transform(TransformHook.beforePageTransform, main, { ...source });
+  await WebImporter.Import.transform(TransformHook.beforePageTransform, main, { ...source });
 
   // transform all elements using parsers
-  [...defaultContentElements, ...blockElements, ...pageElements]
+  const elementsToTransform = [...defaultContentElements, ...blockElements, ...pageElements]
     // sort elements by order in the page
     .sort((a, b) => (a.uuid ? parseInt(a.uuid.split('-')[1], 10) - parseInt(b.uuid.split('-')[1], 10) : 999))
     // filter out fragment elements
-    .filter((item) => !fragmentElements.includes(item.element))
-    .forEach((item, idx, arr) => {
-      const { element = main, ...pageBlock } = item;
-      const parserName = WebImporter.Import.getParserName(pageBlock);
-      const parserFn = parsers[parserName];
-      try {
-        let parserElement = element;
-        if (typeof parserElement === 'string') {
-          parserElement = main.querySelector(parserElement);
-        }
-        // before parse hook
-        WebImporter.Import.transform(
-          TransformHook.beforeParse,
-          parserElement,
-          {
-            ...source,
-            ...pageBlock,
-            nextEl: arr[idx + 1],
-          },
-        );
-        // parse the element
-        if (parserFn) {
-          parserFn.call(this, parserElement, { ...source });
-        }
-        // after parse hook
-        WebImporter.Import.transform(
-          TransformHook.afterParse,
-          parserElement,
-          {
-            ...source,
-            ...pageBlock,
-          },
-        );
-      } catch (e) {
-        console.warn(`Failed to parse block: ${parserName}`, e);
+    .filter((item) => !fragmentElements.includes(item.element));
+
+  for (let idx = 0; idx < elementsToTransform.length; idx++) {
+    const item = elementsToTransform[idx];
+    const { element = main, ...pageBlock } = item;
+    const parserName = WebImporter.Import.getParserName(pageBlock);
+    const parserFn = parsers[parserName];
+    try {
+      let parserElement = element;
+      if (typeof parserElement === 'string') {
+        parserElement = main.querySelector(parserElement);
       }
-    });
+      // before parse hook
+      await WebImporter.Import.transform(
+        TransformHook.beforeParse,
+        parserElement,
+        {
+          ...source,
+          ...pageBlock,
+          nextEl: elementsToTransform[idx + 1],
+        },
+      );
+      // parse the element
+      if (parserFn) {
+        parserFn.call(this, parserElement, { ...source });
+      }
+      // after parse hook
+      await WebImporter.Import.transform(
+        TransformHook.afterParse,
+        parserElement,
+        {
+          ...source,
+          ...pageBlock,
+        },
+      );
+    } catch (e) {
+      console.warn(`Failed to parse block: ${parserName}`, e);
+    }
+  }
 }
 
 /**
 * Fragment transformation function
 */
-function transformFragment(main, { fragment, inventory, ...source }) {
+async function transformFragment(main, { fragment, inventory, ...source }) {
   const { document, params: { originalURL } } = source;
 
   if (fragment.name === 'nav') {
@@ -346,7 +348,7 @@ export default {
     let main = document.body;
 
     // before transform hook
-    WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...source, inventory });
+    await WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...source, inventory });
 
     // perform the transformation
     let path = null;
@@ -359,16 +361,16 @@ export default {
         return [];
       }
       main = document.createElement('div');
-      transformFragment(main, { ...source, fragment, inventory });
+      await transformFragment(main, { ...source, fragment, inventory });
       path = fragment.path;
     } else {
       // page transformation
-      transformPage(main, { ...source, inventory });
+      await transformPage(main, { ...source, inventory });
       path = generateDocumentPath(source, inventory);
     }
 
     // after transform hook
-    WebImporter.Import.transform(TransformHook.afterTransform, main, { ...source, inventory });
+    await WebImporter.Import.transform(TransformHook.afterTransform, main, { ...source, inventory });
 
     return [{
       element: main,

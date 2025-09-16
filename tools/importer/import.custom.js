@@ -34,7 +34,11 @@ export const customParsers = {};
  */
 export const customElements = [];
 
+import brokenLinksTransformer from './transformers/broken-links.js';
+
 /**
  * Custom transformers
  */
-export const customTransformers = {};
+export const customTransformers = {
+  brokenLinks: brokenLinksTransformer,
+};
