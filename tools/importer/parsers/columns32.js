@@ -1,37 +1,34 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container (columns)
+  // Find the grid-layout container (main columns wrapper)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the two columns
+  // Get all direct children of the grid (should be image and content div)
   const columns = Array.from(grid.children);
   if (columns.length < 2) return;
 
-  // Table header row
+  // First column: the image
+  const imgCol = columns.find((col) => col.tagName === 'IMG');
+  // Second column: the content div
+  const contentCol = columns.find((col) => col.tagName !== 'IMG');
+
+  // Defensive: ensure both columns exist
+  if (!imgCol || !contentCol) return;
+
+  // Do not clone, reference existing elements
+  // Ensure all text and semantic meaning is preserved
+
+  // Table header must match target block name exactly
   const headerRow = ['Columns (columns32)'];
+  const contentRow = [imgCol, contentCol];
 
-  // Only include columns that have meaningful content
-  const cells = [headerRow];
-  const row = [];
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
-  // First column: image (only if present)
-  const imgEl = columns[0].querySelector('img');
-  if (imgEl) row.push(imgEl);
-
-  // Second column: text content (only if not empty)
-  if (columns[1] && columns[1].textContent.trim().length > 0) {
-    row.push(columns[1]);
-  }
-
-  // Only add the row if it has at least one non-empty cell
-  if (row.length > 0) {
-    cells.push(row);
-  }
-
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace the original element
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

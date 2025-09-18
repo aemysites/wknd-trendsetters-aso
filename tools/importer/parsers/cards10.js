@@ -1,42 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
-
-  // Header row as specified
+  // Table header row as required
   const headerRow = ['Cards (cards10)'];
   const rows = [headerRow];
 
-  // Get all direct children that are cards (anchor tags)
-  const cards = element.querySelectorAll(':scope > a.card-link');
+  // Get all direct card links (each card is an <a>)
+  const cards = element.querySelectorAll(':scope > a');
 
   cards.forEach((card) => {
-    // Find the image container (first div inside card)
-    const imageContainer = card.querySelector(':scope > div');
-    let imageCell = null;
-    if (imageContainer) {
-      // Defensive: ensure there's an img inside
-      const img = imageContainer.querySelector('img');
-      if (img) {
-        imageCell = imageContainer; // Use the whole container for aspect ratio
-      }
+    // Image cell: find the image inside the card
+    const imgWrapper = card.querySelector(':scope > div');
+    const img = imgWrapper ? imgWrapper.querySelector('img') : null;
+    // Defensive: if no image, skip this card
+    if (!img) return;
+
+    // Text cell: get the content area
+    const contentDiv = card.querySelector('.utility-padding-all-1rem');
+    if (!contentDiv) return;
+
+    // Tag (optional)
+    const tagGroup = contentDiv.querySelector('.tag-group');
+    let tag = null;
+    if (tagGroup) {
+      tag = tagGroup.querySelector('.tag');
     }
 
-    // Find the text container (second div inside card)
-    const textContainer = card.querySelector(':scope > div.utility-padding-all-1rem');
-    let textCell = null;
-    if (textContainer) {
-      // We'll use the whole text container, which includes tag, heading, and paragraph
-      textCell = textContainer;
+    // Title (h3)
+    const heading = contentDiv.querySelector('h3');
+    // Description (p)
+    const desc = contentDiv.querySelector('p');
+
+    // Compose text cell contents
+    const textCell = [];
+    if (tag) {
+      textCell.push(tag);
+    }
+    if (heading) {
+      textCell.push(heading);
+    }
+    if (desc) {
+      textCell.push(desc);
     }
 
-    // Only add row if both image and text exist
-    if (imageCell && textCell) {
-      rows.push([imageCell, textCell]);
-    }
+    // Add row: [image, text cell]
+    rows.push([img, textCell]);
   });
 
-  // Build the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element with the new table
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element with the block
+  element.replaceWith(block);
 }

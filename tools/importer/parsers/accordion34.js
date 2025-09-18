@@ -1,39 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Accordion block header
+  // Table header row as specified
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  // Get all immediate accordion items (w-dropdown)
-  const accordions = element.querySelectorAll(':scope > .accordion.w-dropdown');
+  // Defensive: Get all immediate accordion blocks
+  const accordionBlocks = element.querySelectorAll(':scope > .accordion');
 
-  accordions.forEach((accordion) => {
-    // Title cell: find the .paragraph-lg inside the toggle
+  accordionBlocks.forEach((accordion) => {
+    // Title: Find the .paragraph-lg inside the toggle
     const toggle = accordion.querySelector('.w-dropdown-toggle');
-    let titleCell = '';
+    let titleEl = null;
     if (toggle) {
-      const title = toggle.querySelector('.paragraph-lg');
-      if (title) titleCell = title;
+      titleEl = toggle.querySelector('.paragraph-lg');
+    }
+    // Defensive fallback: If not found, try to get first div inside toggle
+    if (!titleEl && toggle) {
+      titleEl = toggle.querySelector('div');
     }
 
-    // Content cell: find the .accordion-content (nav), then .w-richtext inside
-    let contentCell = '';
+    // Content: Find the .accordion-content (nav), then the rich text inside
     const contentNav = accordion.querySelector('.accordion-content');
+    let contentEl = null;
     if (contentNav) {
-      // Defensive: get all children except dropdown icon
-      // Grab the .w-richtext (which contains the actual content)
-      const richText = contentNav.querySelector('.w-richtext');
-      if (richText) contentCell = richText;
-      else {
-        // fallback: use the inner content
-        contentCell = contentNav;
+      // Usually: utility-padding-all-1rem > .rich-text
+      const padDiv = contentNav.querySelector('.utility-padding-all-1rem');
+      if (padDiv) {
+        contentEl = padDiv.querySelector('.rich-text');
+      }
+      // Defensive fallback: If not found, use padDiv itself
+      if (!contentEl && padDiv) {
+        contentEl = padDiv;
+      }
+      // Defensive fallback: If not found, use contentNav itself
+      if (!contentEl) {
+        contentEl = contentNav;
       }
     }
 
-    rows.push([titleCell, contentCell]);
+    // Push row: [title, content]
+    rows.push([
+      titleEl || '',
+      contentEl || ''
+    ]);
   });
 
-  // Create the block table
+  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

@@ -1,40 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Header row
+  // Helper: get immediate children divs
+  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
+
+  // --- Row 1: Block name header ---
   const headerRow = ['Hero (hero12)'];
 
-  // 2. Background image row: first grid cell's image
+  // --- Row 2: Background Image ---
   let bgImg = '';
-  const grid = element.querySelector('.w-layout-grid');
-  if (grid && grid.children[0]) {
-    const firstImg = grid.children[0].querySelector('img');
-    if (firstImg) bgImg = firstImg;
+  if (topDivs.length > 0) {
+    const bgImgDiv = topDivs[0];
+    const img = bgImgDiv.querySelector('img');
+    if (img) bgImg = img;
   }
   const bgImgRow = [bgImg];
 
-  // 3. Content row: headline, subheading, CTA only (no image)
+  // --- Row 3: Content (headline, subheading, CTA, etc.) ---
   let contentCell = '';
-  if (grid && grid.children[1]) {
-    const cardBody = grid.children[1].querySelector('.card-body');
+  if (topDivs.length > 1) {
+    const contentDiv = topDivs[1];
+    const cardBody = contentDiv.querySelector('.card-body');
     if (cardBody) {
-      // Find the headline
-      const headline = cardBody.querySelector('h2');
-      // Find all subheading paragraphs (exclude button and dividers)
-      const subheadings = Array.from(cardBody.querySelectorAll('p'));
-      // Find the CTA button
-      const cta = cardBody.querySelector('.button-group');
-      // Compose content cell
+      // Collect all content: headline, subpoints, cta
       const frag = document.createDocumentFragment();
-      if (headline) frag.appendChild(headline.cloneNode(true));
-      subheadings.forEach(p => frag.appendChild(p.cloneNode(true)));
-      if (cta) frag.appendChild(cta.cloneNode(true));
-      contentCell = frag;
+      // Headline
+      const h2 = cardBody.querySelector('h2');
+      if (h2) frag.appendChild(h2.cloneNode(true));
+      // Subpoints: all .flex-horizontal with a <p>
+      const subpoints = cardBody.querySelectorAll('.flex-horizontal p');
+      subpoints.forEach(p => {
+        frag.appendChild(p.cloneNode(true));
+      });
+      // CTA button
+      const button = cardBody.querySelector('.button-group a, .button-group button');
+      if (button) frag.appendChild(button.cloneNode(true));
+      // Set contentCell to fragment if content, else empty string
+      contentCell = frag.childNodes.length > 0 ? frag : '';
     }
   }
-  const contentRow = [contentCell];
 
-  // Compose the table
-  const cells = [headerRow, bgImgRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Always produce 3 rows (header, bg, content), third row empty if no content
+  const cells = [headerRow, bgImgRow, [contentCell]];
+  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element
+  element.replaceWith(blockTable);
 }

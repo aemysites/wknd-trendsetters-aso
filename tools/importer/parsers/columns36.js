@@ -1,37 +1,36 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the main grid container for columns
-  const grid = element.querySelector('.grid-layout');
+  // Find the main grid containing the two columns
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Find the two main children: left content and right images
-  const children = Array.from(grid.children);
-  if (children.length < 2) return;
+  // Left column: text and buttons
+  const leftCol = columns[0];
 
-  // Left column: headline, paragraph, buttons
-  const leftCol = children[0];
-
-  // Right column: grid of images
-  const rightCol = children[1];
-  // Defensive: find the inner grid with images
-  const imagesGrid = rightCol.querySelector('.grid-layout');
+  // Right column: images grid
+  const rightCol = columns[1];
   let images = [];
-  if (imagesGrid) {
-    images = Array.from(imagesGrid.querySelectorAll('img'));
+  // Defensive: images may be inside another grid
+  const imageGrid = rightCol.querySelector('.w-layout-grid');
+  if (imageGrid) {
+    images = Array.from(imageGrid.querySelectorAll('img'));
+  } else {
+    images = Array.from(rightCol.querySelectorAll('img'));
   }
 
-  // Compose the columns row
-  // Column 1: left content block
-  // Column 2+: each image as its own column
-  const columnsRow = [leftCol, ...images];
-
-  // Table header
+  // Compose the table
   const headerRow = ['Columns (columns36)'];
+  // For the images column, pass the array of image elements directly
+  const contentRow = [leftCol, images];
 
-  // Build table
-  const cells = [headerRow, columnsRow];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow,
+  ], document);
 
-  // Replace original element
+  // Replace the original element with the table
   element.replaceWith(table);
 }
