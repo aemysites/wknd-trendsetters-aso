@@ -538,7 +538,6 @@
 
 
 .cards.cardsnoimages19 {
-  /* Slightly reduce horizontal padding for a tighter block, more like original */
   padding-left: 36px;
   padding-right: 36px;
 }
@@ -553,8 +552,6 @@
   background: none;
   border: none;
   align-items: start;
-
-  /* Allow rows to grow if needed, but keep minimum for icon space simulation */
   grid-auto-rows: minmax(56px, auto);
 }
 
@@ -584,10 +581,10 @@
 .cards.cardsnoimages19 .cards-card-body {
   display: flex;
   flex-direction: row;
-  align-items: flex-start; /* Use flex-start so text aligns at top, as with icon */
+  align-items: flex-start;
   gap: 14px;
   margin: 0;
-  padding: 10px 0 0; /* Simulates icon vertical space above text */
+  padding: 10px 0 0;
   width: 100%;
   height: auto;
 }
@@ -603,4 +600,135 @@
   text-align: left;
   width: 100%;
   overflow-wrap: break-word;
+}
+
+
+.cards.cards24 > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+  gap: 40px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.cards.cards24 > ul > li {
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 4px 20px 0 rgb(24 28 32 / 10%);
+  border: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+}
+
+.cards.cards24 .cards-card-image {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 28px 28px 0 0;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  background: #d9d9d9;
+}
+
+.cards.cards24 .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px 28px 0 0;
+  display: block;
+}
+
+.cards.cards24 .cards-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1.2rem 1.2rem 1.55rem;
+  margin: 0;
+}
+
+/* Pill-like label/date bar */
+.cards.cards24 .cards-card-body p {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 1.1rem;
+  font-size: 0.91rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #222;
+}
+
+.cards.cards24 .cards-card-body p > span,
+.cards.cards24 .cards-card-body p > b,
+.cards.cards24 .cards-card-body p > strong {
+  /* If in future there's a span/strong/b for the label, make it pill-shaped */
+  background: #ededed;
+  color: #222;
+  border-radius: 16px;
+  padding: 0.27em 1.2em 0.28em 1.25em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.63em;
+  font-size: 0.91rem;
+}
+
+.cards.cards24 .cards-card-body p > em {
+  /* If in future there's an em for the date, make it regular and space it */
+  color: #666;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 0.91rem;
+}
+
+.cards.cards24 .cards-card-body p:not(:has(span), :has(strong), :has(b)) {
+  /* Fallback: if HTML cannot be split, treat the whole line as a pill */
+  background: #ededed;
+  border-radius: 16px;
+  padding: 0.27em 1.2em 0.28em 1.25em;
+  width: fit-content;
+  color: #222;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.91rem;
+}
+
+.cards.cards24 .cards-card-body h4 {
+  font-size: 1.36rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #222;
+  letter-spacing: 0.028em;
+  margin: 0;
+  margin-top: 0.6rem;
+  line-height: 1.18;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (width <= 800px) {
+  .cards.cards24 > ul {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cards.cards24 > ul > li {
+    border-radius: 20px;
+  }
+
+  .cards.cards24 .cards-card-image,
+  .cards.cards24 .cards-card-image img {
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+@media (width <= 600px) {
+  .cards.cards24 .cards-card-body {
+    padding: 1.1rem 0.7rem 1.2rem;
+  }
 }
