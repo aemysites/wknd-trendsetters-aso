@@ -210,13 +210,11 @@
   background: transparent;
 }
 
-/* Ensure hero spans full width */
 .hero-container > .hero-wrapper {
   max-width: unset;
   padding: 0;
 }
 
-/* Background image and overlay */
 .hero.hero3 > div:first-child {
   position: absolute;
   inset: 0;
@@ -234,7 +232,6 @@
   display: block;
 }
 
-/* Overlay for readability */
 .hero.hero3::after {
   display: block;
   position: absolute;
@@ -244,7 +241,6 @@
   pointer-events: none;
 }
 
-/* Panel: vertically centered, left-aligned and sized to content */
 .hero.hero3 > div:nth-child(2) {
   position: relative;
   z-index: 3;
@@ -262,8 +258,6 @@
   border-radius: 24px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 7%);
   margin-left: 32px;
-
-  /* Center panel vertically within .hero.hero3 */
   align-self: center;
   padding: 32px 24px 22px 28px;
   max-width: 370px;
@@ -287,7 +281,6 @@
   max-width: 100%;
 }
 
-/* Supporting text */
 .hero.hero3 p:not(.button-container) {
   font-size: 15px;
   color: #E0E0E0;
@@ -296,7 +289,6 @@
   max-width: 320px;
 }
 
-/* Button container: left aligned, side by side */
 .hero.hero3 .button-container {
   display: flex;
   flex-direction: row;
@@ -306,7 +298,6 @@
   justify-content: flex-start;
 }
 
-/* Button styles */
 .hero-container > .hero-wrapper > .block.hero.hero3 .button {
   padding: 10px 28px;
   border-radius: 999px;
@@ -328,7 +319,6 @@
   border: 2px solid #fff;
 }
 
-/* Responsive adjustments */
 @media (width <= 900px) {
   .hero.hero3 {
     min-height: 340px;
@@ -359,4 +349,172 @@
     flex-direction: column;
     gap: 6px;
   }
+}
+
+
+.hero.hero12 {
+  position: relative;
+  width: 100vw;
+  min-height: 540px;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: url('YOUR_BACKGROUND_IMAGE_URL') center center/cover no-repeat;
+}
+
+/* Unified overlay panel for image and content */
+.hero.hero12 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgb(25 25 25 / 72%);
+  border: 2px solid #565656;
+  border-radius: 24px;
+  box-shadow: 0 10px 36px rgb(0 0 0 / 15%);
+  padding: 2.7rem 2.5rem;
+  gap: 2.8rem;
+  max-width: 1080px;
+  width: 96vw;
+  margin: 0 auto;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+/* Remove backgrounds, borders, shadows from child panels */
+.hero.hero12 > div > div {
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Left column: image container, vertically centered */
+.hero.hero12 > div > div:first-child {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  max-width: 260px;
+  height: 240px;
+  margin-right: 0;
+}
+
+/* Ensure image is a square, rounded, not stretched */
+.hero.hero12 > div > div:first-child picture,
+.hero.hero12 > div > div:first-child img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 11%);
+  background: #dedede;
+  display: block;
+}
+
+/* Right column: text/content, vertically centered */
+.hero.hero12 > div > div:last-child {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 1.7rem;
+}
+
+/* Headings */
+.hero.hero12 > div > div:last-child h1,
+.hero.hero12 > div > div:last-child h2 {
+  color: #ededed;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.1rem;
+  margin-top: 0;
+}
+
+/* Supporting text */
+.hero.hero12 > div > div:last-child p,
+.hero.hero12 > div > div:last-child li,
+.hero.hero12 > div > div:last-child ul {
+  color: #ccc;
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+/* Button styling */
+.hero.hero12 > div > div:last-child button,
+.hero.hero12 > div > div:last-child a.button,
+.hero.hero12 > div > div:last-child input[type="submit"] {
+  background: rgb(25 25 25 / 64%);
+  border: 2px solid #ededed;
+  border-radius: 28px;
+  color: #ededed;
+  padding: 1rem 2.2rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin-top: 1.2rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.2s, color 0.2s;
+  display: inline-block;
+}
+
+.hero.hero12 > div > div:last-child button:hover,
+.hero.hero12 > div > div:last-child a.button:hover,
+.hero.hero12 > div > div:last-child input[type="submit"]:hover {
+  background: #ededed;
+  color: #191919;
+}
+
+/* Responsive: stack vertically and resize */
+@media (width <= 900px) {
+  .hero.hero12 {
+    min-height: 420px;
+    border-radius: 14px;
+    padding: 0;
+  }
+
+  .hero.hero12 > div {
+    flex-direction: column;
+    gap: 1.4rem;
+    padding: 1.1rem 0.5rem;
+    max-width: 99vw;
+    border-radius: 14px;
+  }
+
+  .hero.hero12 > div > div:first-child {
+    width: 100vw;
+    max-width: 180px;
+    height: auto;
+    min-height: 100px;
+    margin: 0 auto;
+    justify-content: center;
+  }
+
+  .hero.hero12 > div > div:first-child picture,
+  .hero.hero12 > div > div:first-child img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+  }
+
+  .hero.hero12 > div > div:last-child h1,
+  .hero.hero12 > div > div:last-child h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+  }
+}
+
+.hero.hero12 img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 18px;
 }
