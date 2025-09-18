@@ -34,89 +34,125 @@
 
 
 .columns.columns1 {
-  background: #fafaf6;
-  padding: 48px 0 48px 0;
+  background: #F8F8F5;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* Main horizontal layout for columns, align items to the top */
 .columns.columns1 > div {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 56px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 64px 24px;
 }
 
-/* Image column: visually dominant and aligned with heading top */
+@media (width <= 900px) {
+  .columns.columns1 > div {
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 12px;
+    align-items: stretch;
+  }
+}
+
 .columns.columns1 .columns-img-col {
-  flex: 0 0 540px;
+  flex: 0 0 420px;
+  max-width: 420px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 
 .columns.columns1 .columns-img-col picture,
 .columns.columns1 .columns-img-col img {
   width: 100%;
-  max-width: 540px;
-  max-height: 560px;
+  max-width: 420px;
+  max-height: 420px;
+  aspect-ratio: 1 / 1;
   border-radius: 24px;
   object-fit: cover;
   display: block;
 }
 
-/* Text column (right side), flush with top, wider for heading wrap */
 .columns.columns1 > div > div:not(.columns-img-col) {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  min-width: 320px;
-  max-width: 480px;
-  margin-top: 0;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 650px;
+  min-width: 0;
+  gap: 10px;
+  height: auto;
+  align-self: center;
 }
 
-/* Headline styling, less margin below for tighter top alignment */
+@media (width <= 900px) {
+  .columns.columns1 > div > div:not(.columns-img-col) {
+    max-width: 100%;
+    height: auto;
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+}
+
 .columns.columns1 h1 {
-  color: #181818;
-  font-size: 3rem;
+  font-size: 70px;
   font-weight: 400;
-  letter-spacing: 1px;
-  line-height: 1.15;
-  margin: 0 0 12px 0;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: 0 0 4px;
+  color: #181818;
   text-align: left;
+  padding: 0;
 }
 
-/* Paragraph styling: minimal space below for tight button grouping */
-.columns.columns1 p {
-  color: #181818;
-  font-size: 1rem;
-  font-weight: 400;
-  margin: 0 0 4px 0;
-  line-height: 1.5;
+@media (width <= 900px) {
+  .columns.columns1 h1 {
+    font-size: 40px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
 }
 
-/* Button container and button styles */
+.columns.columns1 p:not(.button-container) {
+  font-size: 16px;
+  color: #474747;
+  margin: 0;
+  line-height: 1.6;
+  padding: 0;
+}
+
 .columns.columns1 .button-container {
   display: flex;
-  gap: 16px;
-  margin-top: 0;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
 }
 
 .columns.columns1 .button-container .button {
-  border: 1.5px solid #181818;
-  border-radius: 999px;
+  display: inline-block;
   background: #fff;
   color: #181818;
-  font-size: 1rem;
+  border: 2px solid #181818;
+  border-radius: 26px;
+  font-size: 16px;
   font-weight: 500;
-  padding: 0.75rem 2rem;
-  margin: 0;
-  box-shadow: none;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
   transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: none;
+  cursor: pointer;
+  margin: 0;
 }
 
 .columns.columns1 .button-container .button:hover,
@@ -124,28 +160,4 @@
   background: #181818;
   color: #fff;
   border-color: #181818;
-}
-
-/* Responsive stacking for smaller screens */
-@media (max-width: 900px) {
-  .columns.columns1 {
-    padding: 28px 0 32px 0;
-  }
-  .columns.columns1 > div {
-    flex-direction: column;
-    gap: 28px;
-    padding: 0 16px;
-    align-items: stretch;
-  }
-  .columns.columns1 .columns-img-col,
-  .columns.columns1 .columns-img-col picture,
-  .columns.columns1 .columns-img-col img {
-    max-width: 100%;
-    max-height: 320px;
-  }
-  .columns.columns1 > div > div:not(.columns-img-col) {
-    min-width: 0;
-    max-width: 100%;
-    margin-top: 0;
-  }
 }
