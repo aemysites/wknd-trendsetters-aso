@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .cards > ul {
   list-style: none;
   margin: 0;
@@ -24,4 +25,248 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+
+
+.cards.cards2 > ul {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 44px 36px;
+  align-items: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+/* Left column: Hero card */
+.cards.cards2 > ul > li:first-child {
+  grid-column: 1 / 2;
+  grid-row: 1 / span 8;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 0;
+  align-self: flex-start;
+}
+
+/* Hero image rounded */
+.cards.cards2 > ul > li:first-child .cards-card-image img {
+  border-radius: 24px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 0;
+}
+
+/* Hero "pill"/tag */
+.cards.cards2 > ul > li:first-child .cards-card-body > p:first-child {
+  display: inline-block;
+  background: #eaeaea;
+  color: #333;
+  font-size: 13px;
+  padding: 4px 18px 4px 16px;
+  border-radius: 17px;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  margin-bottom: 19px;
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.cards.cards2 > ul > li:first-child .cards-card-body h3 {
+  font-size: 2.7rem;
+  letter-spacing: 2px;
+  font-weight: 500;
+  margin: 0 0 13px;
+  color: #111;
+  line-height: 1.05;
+}
+
+.cards.cards2 > ul > li:first-child .cards-card-body p:not(:first-child) {
+  color: #222;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 0.5em;
+}
+
+/* --- RIGHT COLUMN --- */
+
+/* Place all right column items in the second column */
+.cards.cards2 > ul > li:nth-child(n+2) {
+  grid-column: 2 / 3;
+  background: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Feature cards: grouped tightly with minimal vertical gap */
+.cards.cards2 > ul > li:nth-child(2),
+.cards.cards2 > ul > li:nth-child(3) {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 8px 0 rgb(0 0 0 / 4%);
+  margin-bottom: 8px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+}
+
+/* Feature card image rounded at top */
+.cards.cards2 > ul > li:nth-child(2) .cards-card-image img {
+  width: 100%;
+  border-radius: 14px 14px 0 0;
+  height: 90px;
+  min-height: 80px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 0;
+}
+
+.cards.cards2 > ul > li:nth-child(2) .cards-card-body {
+  padding: 11px 16px;
+  margin: 0;
+}
+
+.cards.cards2 > ul > li:nth-child(2) .cards-card-body > p:first-child {
+  display: inline-block;
+  background: #eaeaea;
+  color: #333;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.cards.cards2 > ul > li:nth-child(2) .cards-card-body h3 {
+  font-size: 1.03rem;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #111;
+  margin: 0 0 4px;
+  line-height: 1.12;
+}
+
+.cards.cards2 > ul > li:nth-child(2) .cards-card-body p:not(:first-child) {
+  color: #444;
+  font-size: 0.89rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+.cards.cards2 > ul > li:nth-child(3) .cards-card-body {
+  padding: 16px 16px 13px;
+  margin: 0;
+}
+
+.cards.cards2 > ul > li:nth-child(3) h3 {
+  font-size: 1.03rem;
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-transform: none;
+  margin: 0 0 5px;
+  color: #222;
+}
+
+.cards.cards2 > ul > li:nth-child(3) p {
+  color: #444;
+  font-size: 0.89rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* List items: stack vertically, transparent background, only divider, compact spacing */
+.cards.cards2 > ul > li:nth-child(n+4) {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-self: stretch;
+}
+
+/* Remove unwanted gap between list items */
+.cards.cards2 > ul > li:nth-child(n+4) + li {
+  margin-top: -2px;
+}
+
+.cards.cards2 > ul > li:last-child {
+  border-bottom: none;
+}
+
+/* List items: compact spacing and smaller font */
+.cards.cards2 > ul > li:nth-child(n+4) .cards-card-body {
+  padding: 7px 0;
+  margin: 0;
+}
+
+.cards.cards2 > ul > li:nth-child(n+4) h3 {
+  font-size: 0.89rem;
+  font-weight: 400;
+  letter-spacing: 2.1px;
+  text-transform: uppercase;
+  color: #232323;
+  margin-bottom: 1px;
+  line-height: 1.08;
+}
+
+.cards.cards2 > ul > li:nth-child(n+4) p {
+  color: #666;
+  font-size: 0.86rem;
+  margin: 0 0 2px;
+  font-weight: 400;
+}
+
+/* Move right column lower for visual balance with hero image */
+.cards.cards2 > ul > li:nth-child(2) {
+  margin-top: 38px;
+}
+
+/* Responsive: Stack columns vertically on small screens */
+@media (width <= 900px) {
+  .cards.cards2 > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .cards.cards2 > ul > li {
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+  }
+
+  .cards.cards2 > ul > li .cards-card-image img {
+    border-radius: 12px;
+    height: auto;
+  }
+}
+
+/* Remove unwanted gap above feature/list stack */
+.cards.cards2 > ul > li:nth-child(3) {
+  margin-top: 0;
+}
+
+/* Remove any accidental backgrounds */
+.cards.cards2,
+.cards.cards2 > ul,
+.cards.cards2 > ul > li {
+  background: none;
 }
