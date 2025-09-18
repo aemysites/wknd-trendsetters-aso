@@ -43,9 +43,13 @@ async function brokenLinksTransformer(hookName, element, { document }) {
     console.log('[BrokenLinks] Starting transformation...');
     
     try {
-      // Load the broken links mapping
-      const response = await fetch('/tools/importer/broken_internal_links.json');
-      const mapping = await response.json();
+      const mapping = [
+        {
+          "referrer": "https://www.wknd-trendsetters.site/",
+          "old_path": "/fashion-insightsss",
+          "new_path": "/fashion-insights"
+        }
+      ];
       
       console.log('[BrokenLinks] Loaded mapping:', mapping);
       
