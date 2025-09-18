@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .tabs .tabs-list {
   display: flex;
   gap: 0.5ch;
@@ -55,4 +56,177 @@
 
 .tabs .tabs-panel[aria-hidden='true'] {
   display: none;
+}
+
+
+.tabs.tabs22 {
+  background: #000;
+  padding-top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Tabs row: flexbox for horizontal alignment */
+.tabs.tabs22 .tabs-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 64px;
+  margin-bottom: 32px;
+  padding: 0;
+  width: 100%;
+  background: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+/* Tab buttons: pure text, remove background/border, tight vertical alignment */
+.tabs.tabs22 .tabs-tab {
+  background: none;
+  border: none;
+  color: #b2b2b2;
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 400;
+  padding: 0 0 8px;
+  margin: 0;
+  min-width: 0;
+  box-shadow: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+/* Tab label: force uppercase and inherit color, avoid default paragraph spacing */
+.tabs.tabs22 .tabs-tab p {
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  font-size: inherit;
+  color: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+/* Active tab: white color, precise underline (border-bottom), no extra width */
+.tabs.tabs22 .tabs-tab[aria-selected="true"] {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+  background: none;
+  font-weight: 400;
+  padding-bottom: 2px;
+}
+
+/* Inactive tabs: muted color, no underline */
+.tabs.tabs22 .tabs-tab[aria-selected="false"] {
+  color: #7c7c7c;
+  border-bottom: none;
+  background: none;
+}
+
+/* Remove after pseudo for tabs, prevent white box */
+.tabs.tabs22 .tabs-tab::after { display: none; }
+
+/* Tab focus for accessibility */
+.tabs.tabs22 .tabs-tab:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Tab hover: lighter muted effect */
+.tabs.tabs22 .tabs-tab:hover {
+  background: none;
+  color: #d6d6d6;
+}
+
+/* Headline: centered, large, spaced from tabs and image */
+.tabs.tabs22 .tabs-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-top: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tabs.tabs22 .tabs-panel[aria-hidden="true"] {
+  display: none;
+}
+
+/* Headline style */
+.tabs.tabs22 .tabs-panel h3 {
+  color: #fff;
+  text-align: center;
+  font-size: 3.4rem;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  margin: 0 0 28px;
+  line-height: 1.13;
+  padding: 0;
+}
+
+/* Image area: horizontally centered, rounded corners */
+.tabs.tabs22 .tabs-panel picture,
+.tabs.tabs22 .tabs-panel p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Image: large, rounded corners, max width */
+.tabs.tabs22 .tabs-panel img {
+  display: block;
+  width: 100%;
+  max-width: 930px;
+  height: auto;
+  border-radius: 48px;
+  margin: 0 auto;
+  box-shadow: none;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (width <= 900px) {
+  .tabs.tabs22 {
+  padding-top: 10px;
+  }
+
+.tabs.tabs22 .tabs-list {
+.tabs.tabs22 .tabs-tab {
+.tabs.tabs22 .tabs-panel h3 {
+  margin-bottom: 12px;
+}
+}
+}
+}
+
+@media (width <= 600px) {
+.tabs.tabs22 {
+    padding-top: 10px;
+}
+
+.tabs.tabs22 .tabs-list {
+    margin-bottom: 8px;
+}
+  .tabs.tabs22 .tabs-tab { font-size: 1.15rem; letter-spacing: 0.05em; }
+
+.tabs.tabs22 .tabs-panel h3 {
+.tabs.tabs22 .tabs-panel img {
+  border-radius: 10px;
+}
+}
+  .tabs.tabs22 .tabs-panel img { border-radius: 10px; }
 }
