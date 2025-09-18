@@ -31,3 +31,121 @@
     order: unset;
   }
 }
+
+
+.columns.columns1 {
+  background: #fafaf6;
+  padding: 48px 0 48px 0;
+}
+
+/* Main horizontal layout for columns, align items to the top */
+.columns.columns1 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Image column: visually dominant and aligned with heading top */
+.columns.columns1 .columns-img-col {
+  flex: 0 0 540px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.columns.columns1 .columns-img-col picture,
+.columns.columns1 .columns-img-col img {
+  width: 100%;
+  max-width: 540px;
+  max-height: 560px;
+  border-radius: 24px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Text column (right side), flush with top, wider for heading wrap */
+.columns.columns1 > div > div:not(.columns-img-col) {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 320px;
+  max-width: 480px;
+  margin-top: 0;
+}
+
+/* Headline styling, less margin below for tighter top alignment */
+.columns.columns1 h1 {
+  color: #181818;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  text-align: left;
+}
+
+/* Paragraph styling: minimal space below for tight button grouping */
+.columns.columns1 p {
+  color: #181818;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 4px 0;
+  line-height: 1.5;
+}
+
+/* Button container and button styles */
+.columns.columns1 .button-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 0;
+}
+
+.columns.columns1 .button-container .button {
+  border: 1.5px solid #181818;
+  border-radius: 999px;
+  background: #fff;
+  color: #181818;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 2rem;
+  margin: 0;
+  box-shadow: none;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.columns.columns1 .button-container .button:hover,
+.columns.columns1 .button-container .button:focus {
+  background: #181818;
+  color: #fff;
+  border-color: #181818;
+}
+
+/* Responsive stacking for smaller screens */
+@media (max-width: 900px) {
+  .columns.columns1 {
+    padding: 28px 0 32px 0;
+  }
+  .columns.columns1 > div {
+    flex-direction: column;
+    gap: 28px;
+    padding: 0 16px;
+    align-items: stretch;
+  }
+  .columns.columns1 .columns-img-col,
+  .columns.columns1 .columns-img-col picture,
+  .columns.columns1 .columns-img-col img {
+    max-width: 100%;
+    max-height: 320px;
+  }
+  .columns.columns1 > div > div:not(.columns-img-col) {
+    min-width: 0;
+    max-width: 100%;
+    margin-top: 0;
+  }
+}
