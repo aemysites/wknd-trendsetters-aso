@@ -34,7 +34,70 @@ export const customParsers = {};
  */
 export const customElements = [];
 
-import brokenLinksTransformer from './transformers/broken-links.js';
+import { TransformHook } from './transformers/transform.js';
+
+async function brokenLinksTransformer(hookName, element, { document }) {
+  console.log(`[BrokenLinks] Hook: ${hookName}`);
+  
+  if (hookName === TransformHook.beforeTransform) {
+    console.log('[BrokenLinks] Starting transformation...');
+    
+    try {
+      // Load the broken links mapping
+      const response = await fetch('/tools/importer/broken_internal_links.json');
+      const mapping = await response.json();
+      
+      console.log('[BrokenLinks] Loaded mapping:', mapping);
+      
+      const links = document.querySelectorAll('a[href]');
+      console.log(`[BrokenLinks] Found ${links.length} links`);
+      
+      let transformedCount = 0;
+      
+      links.forEach((link, index) => {
+        const href = link.getAttribute('href');
+        console.log(`[BrokenLinks] Link ${index}: ${href}`);
+        
+        if (href) {
+          // Check each mapping entry
+          const brokenLink = mapping.find(({ old_path }) => {
+            try {
+              const url = new URL(href);
+              const pathname = url.pathname;
+              console.log(`[BrokenLinks] Pathname: ${pathname}`);
+              return pathname === old_path;
+            } catch (e) {
+              // If it's not a valid URL, check if it's a relative path
+              return href === old_path;
+            }
+          });
+          
+          if (brokenLink) {
+            console.log(`[BrokenLinks] MATCH! Rewriting: ${href} -> ${brokenLink.new_path}`);
+            
+            try {
+              const url = new URL(href);
+              url.pathname = brokenLink.new_path;
+              link.href = url.href;
+              console.log(`[BrokenLinks] New href: ${link.href}`);
+            } catch (e) {
+              // If it's not a valid URL, treat as relative path
+              link.href = brokenLink.new_path;
+              console.log(`[BrokenLinks] New href: ${link.href}`);
+            }
+            
+            transformedCount++;
+          }
+        }
+      });
+      
+      console.log(`[BrokenLinks] Done! Transformed ${transformedCount} links`);
+    } catch (error) {
+      console.error('[BrokenLinks] Error loading mapping:', error);
+    }
+  }
+}
+
 
 /**
  * Custom transformers
