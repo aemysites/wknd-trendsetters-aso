@@ -36,7 +36,6 @@
   display: block;
 }
 
-/* Grid: two columns, top-aligned, very tight gap */
 .cards.cards2 > ul {
   display: grid;
   grid-template-columns: 1fr 0.92fr;
@@ -48,7 +47,6 @@
   min-height: 0;
 }
 
-/* LEFT COLUMN */
 .cards.cards2 > ul > li:first-child {
   grid-column: 1 / 2;
   grid-row: 1 / span 8;
@@ -107,7 +105,6 @@
   line-height: 1.52;
 }
 
-/* RIGHT COLUMN */
 .cards.cards2 > ul > li:not(:first-child) {
   grid-column: 2 / 3;
   margin: 0;
@@ -118,7 +115,6 @@
   align-self: start;
 }
 
-/* Card 1 (with image): minimal radius/shadow/margin */
 .cards.cards2 > ul > li:nth-child(2) {
   background: #fff;
   border-radius: 7px;
@@ -173,7 +169,6 @@
   line-height: 1.3;
 }
 
-/* Card 2: similar, minimal radius/shadow/margin, no image */
 .cards.cards2 > ul > li:nth-child(3) {
   background: #fff;
   border-radius: 7px;
@@ -208,7 +203,6 @@
   line-height: 1.3;
 }
 
-/* TEXT-ONLY RIGHT COLUMN ITEMS: inset, thin divider, lighter line, compact padding */
 .cards.cards2 > ul > li:nth-child(n+4) {
   background: none;
   border-radius: 0;
@@ -248,12 +242,10 @@
   line-height: 1.27;
 }
 
-/* Remove extra gap between text-only items */
 .cards.cards2 > ul > li:nth-child(n+4) + li:nth-child(n+4) {
   margin-top: 0;
 }
 
-/* Responsive: stack columns and cards on small screens */
 @media (width <= 900px) {
   .cards.cards2 > ul {
     display: flex;
@@ -277,5 +269,78 @@
     border-radius: 0;
     margin-bottom: 0;
     padding: 0 5px;
+  }
+}
+
+
+.cards.cards8 {
+  background: #fff;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cards.cards8 > ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  place-items: stretch stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.cards.cards8 > ul > li {
+  background: #fff;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.cards.cards8 .cards-card-image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  flex: 1 1 0%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.cards.cards8 .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.cards.cards8 .cards-card-body {
+  display: none;
+}
+
+@media (width <= 900px) {
+  .cards.cards8 > ul {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+@media (width <= 600px) {
+  .cards.cards8 > ul {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 }
