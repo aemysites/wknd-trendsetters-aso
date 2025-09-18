@@ -885,8 +885,6 @@
   padding: 32px;
   box-sizing: border-box;
 }
-
-/* Ensure block and children are visible */
 .cards.cards28,
 .cards.cards28 > ul,
 .cards.cards28 > ul > li {
@@ -894,8 +892,6 @@
   visibility: visible;
   opacity: 1;
 }
-
-/* Restore the grid layout for the block */
 .cards.cards28 > ul {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -905,8 +901,6 @@
   padding: 0;
   list-style: none;
 }
-
-/* Top left feature card */
 .cards.cards28 > ul > li:nth-child(1) {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
@@ -918,8 +912,6 @@
   overflow: hidden;
   min-height: 340px;
 }
-
-/* Top right promo/text card */
 .cards.cards28 > ul > li:nth-child(2) {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
@@ -933,13 +925,9 @@
   overflow: hidden;
   min-height: 340px;
 }
-
-/* Remove image in top right card */
 .cards.cards28 > ul > li:nth-child(2) .cards-card-image {
   display: none;
 }
-
-/* Bottom row cards, equal width */
 .cards.cards28 > ul > li:nth-child(3),
 .cards.cards28 > ul > li:nth-child(4) {
   min-height: 120px;
@@ -950,8 +938,6 @@
   background: #FCFCFC;
   overflow: hidden;
 }
-
-/* Correct grid placement for bottom cards */
 .cards.cards28 > ul > li:nth-child(3) {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
@@ -960,8 +946,6 @@
   grid-column: 2 / 3;
   grid-row: 2 / 3;
 }
-
-/* Image styling for top and bottom cards */
 .cards.cards28 > ul > li:nth-child(1) .cards-card-image img {
   width: 100%;
   height: 210px;
@@ -978,8 +962,6 @@
   border-radius: 20px 20px 0 0;
   display: block;
 }
-
-/* Card body spacing and alignment */
 .cards.cards28 .cards-card-body {
   padding: 20px 18px;
   display: flex;
@@ -987,14 +969,10 @@
   justify-content: center;
   flex-grow: 1;
 }
-
-/* Center text in top-right card */
 .cards.cards28 > ul > li:nth-child(2) .cards-card-body {
   align-items: center;
   text-align: center;
 }
-
-/* Headings for feature and promo cards */
 .cards.cards28 > ul > li:nth-child(1) .cards-card-body h3,
 .cards.cards28 > ul > li:nth-child(2) .cards-card-body h3 {
   font-size: 22px;
@@ -1004,8 +982,6 @@
   text-transform: uppercase;
   margin-bottom: 10px;
 }
-
-/* Headings for compact cards */
 .cards.cards28 > ul > li:nth-child(3) .cards-card-body h3,
 .cards.cards28 > ul > li:nth-child(4) .cards-card-body h3 {
   font-size: 18px;
@@ -1015,15 +991,11 @@
   text-transform: uppercase;
   margin-bottom: 8px;
 }
-
-/* Card text */
 .cards.cards28 .cards-card-body p {
   font-size: 13px;
   color: #252525;
   margin: 0 0 4px 0;
 }
-
-/* Responsive: stack cards vertically on small screens */
 @media (max-width: 900px) {
   .cards.cards28 {
     padding: 16px;
@@ -1046,5 +1018,173 @@
   }
   .cards.cards28 .cards-card-body {
     padding: 16px 10px;
+  }
+}
+
+
+.cards.cards33 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.cards.cards33-wrapper,
+.cards.cards33-container,
+.cards.cards33-section {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.cards.cards33 > ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: minmax(240px, auto);
+  gap: 44px 40px;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+}
+
+.cards.cards33 > ul > li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px 0 rgba(30,34,57,0.08), 0 1.5px 2.5px 0 rgba(30,34,57,.09);
+  padding: 38px 34px;
+  border: none;
+  min-height: 260px;
+  transition: box-shadow 0.2s;
+}
+
+.cards.cards33 > ul > li:hover {
+  box-shadow: 0 8px 28px 0 rgba(30,34,57,0.13), 0 4px 10px 0 rgba(30,34,57,0.17);
+}
+
+.cards.cards33 .cards-card-image {
+  flex: 0 0 40%;
+  max-width: 260px;
+  margin-right: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 124px;
+}
+
+.cards.cards33 .cards-card-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+}
+
+.cards.cards33 .cards-card-body {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.cards.cards33 .cards-card-body p:first-child {
+  display: inline-block;
+  background: #EBECF0;
+  color: #7B8C98;
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-right: 7px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+
+.cards.cards33 .cards-card-body p:nth-child(2) {
+  display: inline-block;
+  color: #7B8C98;
+  font-size: 0.76rem;
+  font-weight: 400;
+  margin-bottom: 14px;
+  margin-right: 0;
+  vertical-align: middle;
+}
+
+.cards.cards33 .cards-card-body h3 {
+  font-size: 1.33rem;
+  font-weight: 700;
+  color: #25272A;
+  letter-spacing: 0.03em;
+  margin: 0 0 12px 0;
+  text-align: left;
+  line-height: 1.22;
+}
+
+.cards.cards33 .cards-card-body h3 + p {
+  font-size: 1.03rem;
+  color: #464B53;
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-top: 0;
+  line-height: 1.48;
+}
+
+.cards.cards33 .cards-card-body .button-container {
+  margin-top: auto;
+}
+
+.cards.cards33 .cards-card-body .button-container .button {
+  font-size: 0.98rem;
+  color: #7B8C98;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 500;
+  text-decoration: underline;
+  box-shadow: none;
+  min-width: unset;
+  margin: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: inline;
+  line-height: 1.2;
+}
+
+.cards.cards33 .cards-card-body .button-container .button:hover,
+.cards.cards33 .cards-card-body .button-container .button:focus {
+  color: #25272A;
+  background: none;
+  text-decoration: underline;
+}
+
+/* Responsive: stack cards and image/text on small screens */
+@media (max-width: 900px) {
+  .cards.cards33 > ul {
+    grid-template-columns: 1fr;
+    gap: 22px 0;
+  }
+  .cards.cards33 > ul > li {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px 10px;
+    min-height: unset;
+  }
+  .cards.cards33 .cards-card-image {
+    margin: 0 0 18px 0;
+    max-width: 100%;
+    min-height: 64px;
+    width: 100%;
+  }
+  .cards.cards33 .cards-card-body {
+    width: 100%;
+    min-width: 0;
   }
 }
