@@ -11,42 +11,41 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console */
-import columns4Parser from './parsers/columns4.js';
-import columns3Parser from './parsers/columns3.js';
-import columns1Parser from './parsers/columns1.js';
-import hero6Parser from './parsers/hero6.js';
 import columns5Parser from './parsers/columns5.js';
+import columns4Parser from './parsers/columns4.js';
+import columns1Parser from './parsers/columns1.js';
+import columns6Parser from './parsers/columns6.js';
+import hero3Parser from './parsers/hero3.js';
+import cards2Parser from './parsers/cards2.js';
+import columns7Parser from './parsers/columns7.js';
 import columns9Parser from './parsers/columns9.js';
 import cards10Parser from './parsers/cards10.js';
-import cards7Parser from './parsers/cards7.js';
 import columns11Parser from './parsers/columns11.js';
-import tableNoHeader13Parser from './parsers/tableNoHeader13.js';
-import columns14Parser from './parsers/columns14.js';
-import hero12Parser from './parsers/hero12.js';
-import columns16Parser from './parsers/columns16.js';
-import columns18Parser from './parsers/columns18.js';
+import hero14Parser from './parsers/hero14.js';
 import columns15Parser from './parsers/columns15.js';
-import cards19Parser from './parsers/cards19.js';
-import cards17Parser from './parsers/cards17.js';
-import carousel21Parser from './parsers/carousel21.js';
+import columns16Parser from './parsers/columns16.js';
+import cardsNoImages19Parser from './parsers/cardsNoImages19.js';
 import hero20Parser from './parsers/hero20.js';
+import carousel21Parser from './parsers/carousel21.js';
+import cards8Parser from './parsers/cards8.js';
+import columns18Parser from './parsers/columns18.js';
+import columns23Parser from './parsers/columns23.js';
 import tabs22Parser from './parsers/tabs22.js';
-import cards24Parser from './parsers/cards24.js';
-import cards23Parser from './parsers/cards23.js';
-import columns26Parser from './parsers/columns26.js';
 import cards25Parser from './parsers/cards25.js';
 import columns27Parser from './parsers/columns27.js';
-import hero28Parser from './parsers/hero28.js';
+import hero12Parser from './parsers/hero12.js';
+import columns29Parser from './parsers/columns29.js';
+import cards24Parser from './parsers/cards24.js';
+import cards17Parser from './parsers/cards17.js';
 import columns30Parser from './parsers/columns30.js';
 import columns31Parser from './parsers/columns31.js';
-import cards2Parser from './parsers/cards2.js';
-import columns32Parser from './parsers/columns32.js';
 import cards33Parser from './parsers/cards33.js';
-import columns35Parser from './parsers/columns35.js';
+import columns32Parser from './parsers/columns32.js';
 import accordion34Parser from './parsers/accordion34.js';
-import columns36Parser from './parsers/columns36.js';
+import hero35Parser from './parsers/hero35.js';
+import cards28Parser from './parsers/cards28.js';
 import columns38Parser from './parsers/columns38.js';
-import cards29Parser from './parsers/cards29.js';
+import columns36Parser from './parsers/columns36.js';
 import hero39Parser from './parsers/hero39.js';
 import cards37Parser from './parsers/cards37.js';
 import headerParser from './parsers/header.js';
@@ -65,42 +64,41 @@ import {
 
 const parsers = {
   metadata: metadataParser,
-  columns4: columns4Parser,
-  columns3: columns3Parser,
-  columns1: columns1Parser,
-  hero6: hero6Parser,
   columns5: columns5Parser,
+  columns4: columns4Parser,
+  columns1: columns1Parser,
+  columns6: columns6Parser,
+  hero3: hero3Parser,
+  cards2: cards2Parser,
+  columns7: columns7Parser,
   columns9: columns9Parser,
   cards10: cards10Parser,
-  cards7: cards7Parser,
   columns11: columns11Parser,
-  tableNoHeader13: tableNoHeader13Parser,
-  columns14: columns14Parser,
-  hero12: hero12Parser,
-  columns16: columns16Parser,
-  columns18: columns18Parser,
+  hero14: hero14Parser,
   columns15: columns15Parser,
-  cards19: cards19Parser,
-  cards17: cards17Parser,
-  carousel21: carousel21Parser,
+  columns16: columns16Parser,
+  cardsNoImages19: cardsNoImages19Parser,
   hero20: hero20Parser,
+  carousel21: carousel21Parser,
+  cards8: cards8Parser,
+  columns18: columns18Parser,
+  columns23: columns23Parser,
   tabs22: tabs22Parser,
-  cards24: cards24Parser,
-  cards23: cards23Parser,
-  columns26: columns26Parser,
   cards25: cards25Parser,
   columns27: columns27Parser,
-  hero28: hero28Parser,
+  hero12: hero12Parser,
+  columns29: columns29Parser,
+  cards24: cards24Parser,
+  cards17: cards17Parser,
   columns30: columns30Parser,
   columns31: columns31Parser,
-  cards2: cards2Parser,
-  columns32: columns32Parser,
   cards33: cards33Parser,
-  columns35: columns35Parser,
+  columns32: columns32Parser,
   accordion34: accordion34Parser,
-  columns36: columns36Parser,
+  hero35: hero35Parser,
+  cards28: cards28Parser,
   columns38: columns38Parser,
-  cards29: cards29Parser,
+  columns36: columns36Parser,
   hero39: hero39Parser,
   cards37: cards37Parser,
   ...customParsers,
@@ -184,7 +182,8 @@ function transformPage(main, { inventory, ...source }) {
     .map((instance) => ({
       ...instance,
       element: WebImporter.Import.getElementByXPath(document, instance.xpath),
-    }));
+    }))
+    .filter((block) => block.element);
 
   // remove fragment elements from the current page
   fragmentElements.forEach((element) => {
@@ -316,8 +315,8 @@ export default {
     await handleOnLoad(payload);
   },
 
-  transform: async (source) => {
-    const { document, params: { originalURL } } = source;
+  transform: async (payload) => {
+    const { document, params: { originalURL } } = payload;
 
     /* eslint-disable-next-line prefer-const */
     let publishUrl = window.location.origin;
@@ -346,7 +345,7 @@ export default {
     let main = document.body;
 
     // before transform hook
-    WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...source, inventory });
+    WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...payload, inventory });
 
     // perform the transformation
     let path = null;
@@ -359,16 +358,16 @@ export default {
         return [];
       }
       main = document.createElement('div');
-      transformFragment(main, { ...source, fragment, inventory });
+      transformFragment(main, { ...payload, fragment, inventory });
       path = fragment.path;
     } else {
       // page transformation
-      transformPage(main, { ...source, inventory });
-      path = generateDocumentPath(source, inventory);
+      transformPage(main, { ...payload, inventory });
+      path = generateDocumentPath(payload, inventory);
     }
 
     // after transform hook
-    WebImporter.Import.transform(TransformHook.afterTransform, main, { ...source, inventory });
+    WebImporter.Import.transform(TransformHook.afterTransform, main, { ...payload, inventory });
 
     return [{
       element: main,

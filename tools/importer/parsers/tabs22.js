@@ -1,49 +1,57 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: check for tab menu and tab content containers
-  const tabMenu = Array.from(element.children).find(child => child.classList.contains('w-tab-menu'));
-  const tabContent = Array.from(element.children).find(child => child.classList.contains('w-tab-content'));
-  if (!tabMenu || !tabContent) return;
-
-  // Get tab labels from tabMenu
-  const tabLinks = Array.from(tabMenu.querySelectorAll('a'));
-  // Get tab panes from tabContent
-  const tabPanes = Array.from(tabContent.querySelectorAll('.w-tab-pane'));
-
-  // Defensive: ensure labels and panes match
-  if (tabLinks.length !== tabPanes.length) return;
-
-  // Header row as per guidelines
-  const headerRow = ['Tabs (tabs22)'];
-  const rows = [headerRow];
-
-  // For each tab, extract label and content
-  for (let i = 0; i < tabLinks.length; i++) {
-    const labelDiv = tabLinks[i].querySelector('div');
-    // Defensive: fallback to textContent if div not found
-    let label;
-    if (labelDiv) {
-      label = labelDiv;
-    } else {
-      label = document.createElement('span');
-      label.textContent = tabLinks[i].textContent.trim();
-    }
-
-    // Tab content: use the entire tab pane's main grid
-    const paneGrid = tabPanes[i].querySelector('.w-layout-grid');
-    let content;
-    if (paneGrid) {
-      content = paneGrid;
-    } else {
-      // fallback: use the whole pane
-      content = tabPanes[i];
-    }
-
-    rows.push([label, content]);
+  // Helper to get direct children by tag name and class
+  function getDirectChildByClass(parent, className) {
+    return Array.from(parent.children).find((el) => el.classList.contains(className));
   }
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element
-  element.replaceWith(block);
+  // 1. Header row
+  const headerRow = ['Tabs (tabs22)'];
+
+  // 2. Get tab menu and tab content containers
+  const tabMenu = Array.from(element.children).find((el) => el.classList.contains('w-tab-menu'));
+  const tabContent = Array.from(element.children).find((el) => el.classList.contains('w-tab-content'));
+
+  if (!tabMenu || !tabContent) {
+    // Defensive: If structure is unexpected, do nothing
+    return;
+  }
+
+  // 3. Get tab labels (in order)
+  const tabLinks = Array.from(tabMenu.children).filter((el) => el.hasAttribute('data-w-tab'));
+  // 4. Get tab panes (in order)
+  const tabPanes = Array.from(tabContent.children).filter((el) => el.hasAttribute('data-w-tab'));
+
+  // Defensive: Only process as many pairs as available
+  const tabCount = Math.min(tabLinks.length, tabPanes.length);
+
+  const rows = [headerRow];
+
+  for (let i = 0; i < tabCount; i++) {
+    const tabLabelLink = tabLinks[i];
+    // The label is the text inside the div within the link
+    let tabLabel = '';
+    const labelDiv = tabLabelLink.querySelector('div');
+    if (labelDiv) {
+      tabLabel = labelDiv.textContent.trim();
+    } else {
+      tabLabel = tabLabelLink.textContent.trim();
+    }
+
+    // Tab content: use the main content inside the tab pane
+    const tabPane = tabPanes[i];
+    // The actual content is the first child (usually a grid div)
+    let tabContentEl = tabPane.firstElementChild;
+    // Defensive: If not found, fallback to the pane itself
+    if (!tabContentEl) tabContentEl = tabPane;
+
+    rows.push([
+      tabLabel,
+      tabContentEl
+    ]);
+  }
+
+  // 5. Create and replace
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

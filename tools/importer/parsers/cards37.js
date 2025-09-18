@@ -1,68 +1,62 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from a card element (anchor or div)
-  function extractCard(cardEl) {
-    // Get image (first img inside the card)
+  // Helper to extract card info from a card anchor or div element
+  function extractCardInfo(cardEl) {
+    // Find image (mandatory)
     const img = cardEl.querySelector('img');
-    // Get heading (first h3 inside the card)
-    const heading = cardEl.querySelector('h2, h3, h4, h5, h6');
-    // Get description (first p inside the card)
-    const desc = cardEl.querySelector('p');
-    // Get CTA (button or link with class 'button' or similar)
-    let cta = cardEl.querySelector('.button, button, a.button');
-    // If CTA is a div, convert to a button element for semantics
-    if (cta && cta.tagName === 'DIV') {
-      const btn = document.createElement('span');
-      btn.textContent = cta.textContent;
-      cta = btn;
-    }
-    // Compose text cell
+
+    // Find all heading elements (h2, h3, h4) and paragraphs
+    // Also include any button or .button divs as CTA
     const textParts = [];
-    if (heading) textParts.push(heading);
-    if (desc) textParts.push(desc);
-    if (cta) textParts.push(cta);
-    // Return [image, text cell]
-    return [img, textParts];
+    // Collect all heading tags in order
+    cardEl.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+      textParts.push(h.cloneNode(true));
+    });
+    // Collect all paragraphs
+    cardEl.querySelectorAll('p').forEach(p => {
+      textParts.push(p.cloneNode(true));
+    });
+    // Collect all CTA buttons or links
+    cardEl.querySelectorAll('.button, button, a.button').forEach(btn => {
+      textParts.push(btn.cloneNode(true));
+    });
+
+    // Defensive: ensure both image and text content are present
+    if (!img || textParts.length === 0) return null;
+
+    return [img.cloneNode(true), textParts];
   }
 
-  // Find the main grid containing all cards
-  const container = element.querySelector('.w-layout-grid.grid-layout');
-  if (!container) return;
-
-  // Gather all card nodes (anchors or divs with card content)
-  // The first card is a bit different (has a nested grid for the right cards)
-  const cards = [];
-  const directCards = Array.from(container.children).filter(
-    (el) => el.classList.contains('utility-link-content-block')
-  );
-  if (directCards.length > 0) {
-    // First card is the large one on the left
-    cards.push(directCards[0]);
-    // The second child is a nested grid containing the right column cards
-    const nestedGrid = container.querySelector('.w-layout-grid.grid-layout.tablet-1-column.grid-gap-sm.y-top');
-    if (nestedGrid) {
-      const nestedCards = Array.from(nestedGrid.children).filter(
-        (el) => el.classList.contains('utility-link-content-block')
-      );
-      cards.push(...nestedCards);
-    }
+  // Find all card anchor elements (cards can be <a> or <div>)
+  let cardEls = [];
+  // Find all grid layouts inside the section
+  const grids = element.querySelectorAll(':scope .grid-layout');
+  if (grids.length) {
+    grids.forEach(grid => {
+      cardEls.push(...grid.querySelectorAll(':scope > a.utility-link-content-block, :scope > div.utility-link-content-block'));
+    });
+  } else {
+    // Fallback: find all card anchors or divs directly
+    cardEls = Array.from(element.querySelectorAll(':scope > a.utility-link-content-block, :scope > div.utility-link-content-block'));
   }
 
-  // Defensive: If no cards found, fallback to all anchors with card class
-  if (cards.length === 0) {
-    cards.push(...element.querySelectorAll('a.utility-link-content-block'));
+  // Defensive: if no cards found, try all anchors/divs with card class
+  if (cardEls.length === 0) {
+    cardEls = Array.from(element.querySelectorAll('a.utility-link-content-block, div.utility-link-content-block'));
   }
 
   // Build table rows
-  const rows = [];
-  // Header row
-  rows.push(['Cards (cards37)']);
-  // Card rows
-  cards.forEach((card) => {
-    rows.push(extractCard(card));
+  const headerRow = ['Cards (cards37)'];
+  const rows = [headerRow];
+
+  cardEls.forEach(cardEl => {
+    const cardInfo = extractCardInfo(cardEl);
+    if (cardInfo) rows.push(cardInfo);
   });
 
-  // Create and replace
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace original element
+  element.replaceWith(block);
 }

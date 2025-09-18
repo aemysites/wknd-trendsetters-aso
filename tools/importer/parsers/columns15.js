@@ -1,45 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only parse if the element contains the expected grid layout
+  // Find the main grid layout (the two columns)
   const grid = element.querySelector('.grid-layout');
-  if (!grid) return;
+  let leftCol = null;
+  let rightCol = null;
 
-  // Get the two main columns in the grid
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  if (grid) {
+    // The grid has two children: left column (content), right column (image)
+    const gridChildren = Array.from(grid.children);
+    // Find the div (content) and the img (image)
+    leftCol = gridChildren.find((el) => el.tagName === 'DIV');
+    rightCol = gridChildren.find((el) => el.tagName === 'IMG');
+  }
 
-  // First column: headline, subheading, buttons
-  const firstCol = columns[0];
-  // Second column: image (cover-image)
-  const secondCol = columns[1];
+  // Compose left column content: include ALL content blocks in the left column div
+  let leftColContent = [];
+  if (leftCol) {
+    // Instead of picking only h1, p, and button-group, include all child nodes
+    leftColContent = Array.from(leftCol.childNodes).filter(node => {
+      // Filter out empty text nodes
+      return !(node.nodeType === Node.TEXT_NODE && !node.textContent.trim());
+    });
+  }
 
-  // Compose left column content
-  const leftContent = document.createElement('div');
-  // Headline
-  const headline = firstCol.querySelector('.h1-heading');
-  if (headline) leftContent.appendChild(headline.cloneNode(true));
-  // Subheading
-  const subheading = firstCol.querySelector('.subheading');
-  if (subheading) leftContent.appendChild(subheading.cloneNode(true));
-  // Button group
-  const buttonGroup = firstCol.querySelector('.button-group');
-  if (buttonGroup) leftContent.appendChild(buttonGroup.cloneNode(true));
+  // Compose right column content (image)
+  let rightColContent = [];
+  if (rightCol) rightColContent.push(rightCol);
 
-  // Compose right column content
-  const rightContent = document.createElement('div');
-  // Image
-  const coverImage = secondCol.tagName === 'IMG' ? secondCol : secondCol.querySelector('img.cover-image');
-  if (coverImage) rightContent.appendChild(coverImage.cloneNode(true));
-
-  // Table header
+  // Build table rows
   const headerRow = ['Columns (columns15)'];
-  // Table content row: two columns side by side
-  const contentRow = [leftContent, rightContent];
+  const contentRow = [leftColContent, rightColContent];
 
-  // Create table block
-  const cells = [headerRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow,
+  ], document);
 
   // Replace original element
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

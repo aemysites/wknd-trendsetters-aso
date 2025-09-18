@@ -1,26 +1,28 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only proceed if element exists
-  if (!element) return;
-
-  // Header row as per block spec
-  const headerRow = ['Columns (columns38)'];
-
-  // Get all immediate children (each column)
+  // Defensive: Get all immediate child divs (each column)
   const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Each column cell should contain the entire column div (image inside)
-  const contentRow = columns;
+  // Header row as required
+  const headerRow = ['Columns (columns38)'];
 
-  // Build the table data
-  const tableData = [
+  // Second row: each column contains one image (per screenshot and HTML)
+  const imageRow = columns.map(col => {
+    // Find the image inside each column div
+    const img = col.querySelector('img');
+    // Defensive: Only add if image exists
+    return img ? img : '';
+  });
+
+  // Build table
+  const cells = [
     headerRow,
-    contentRow
+    imageRow
   ];
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element with the new block
+  // Replace the original element
   element.replaceWith(block);
 }

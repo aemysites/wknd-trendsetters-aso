@@ -1,58 +1,54 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children by selector
-  const getDirectChild = (parent, selector) => {
-    return Array.from(parent.children).find((el) => el.matches(selector));
-  };
+  // Defensive: Only parse if element is a header with expected structure
+  if (!element || !element.querySelector) return;
 
-  // Header row as per block guidelines
+  // --- 1. Header row ---
   const headerRow = ['Hero (hero39)'];
 
-  // --- Row 2: Background Image (optional) ---
-  // The image is inside the first grid cell
-  let bgImgCell = '';
-  const gridDivs = element.querySelectorAll(':scope > .w-layout-grid > div');
-  if (gridDivs.length > 0) {
-    const img = gridDivs[0].querySelector('img');
-    if (img) {
-      bgImgCell = img;
-    }
+  // --- 2. Background image row ---
+  // Find the main image (background asset)
+  let imgEl = element.querySelector('img.cover-image');
+  // Defensive: If not found, try any img
+  if (!imgEl) imgEl = element.querySelector('img');
+  // Only include the image element itself
+  const imageRow = [imgEl ? imgEl : ''];
+
+  // --- 3. Content row ---
+  // Find the headline, paragraph, and CTA
+  // The headline is the h1
+  const h1 = element.querySelector('h1');
+  // Paragraph and button are inside .flex-vertical
+  const flexVertical = element.querySelector('.flex-vertical');
+  let paragraph = '';
+  let button = '';
+  if (flexVertical) {
+    paragraph = flexVertical.querySelector('p');
+    button = flexVertical.querySelector('a');
   }
 
-  // --- Row 3: Content (heading, subheading, CTA) ---
-  // The second grid cell contains the text content
-  let contentCell = '';
-  if (gridDivs.length > 1) {
-    // The container with text content
-    const contentContainer = gridDivs[1];
-    // Find the inner grid (holds heading and subcontent)
-    const innerGrid = contentContainer.querySelector('.w-layout-grid');
-    if (innerGrid) {
-      // Heading
-      const heading = innerGrid.querySelector('h1');
-      // Subheading (paragraph)
-      const paragraph = innerGrid.querySelector('p');
-      // CTA (button link)
-      const cta = innerGrid.querySelector('a');
-      // Compose content cell
-      const contentParts = [];
-      if (heading) contentParts.push(heading);
-      if (paragraph) contentParts.push(paragraph);
-      if (cta) contentParts.push(cta);
-      contentCell = contentParts;
-    }
+  // Compose the content cell
+  // Only include elements that exist
+  const contentCell = [];
+  if (h1) contentCell.push(h1);
+  if (paragraph) contentCell.push(paragraph);
+  if (button) contentCell.push(button);
+
+  // If nothing found, fallback to all text content
+  if (contentCell.length === 0) {
+    contentCell.push(document.createTextNode(element.textContent.trim()));
   }
 
-  // Compose table rows
-  const rows = [
+  // Table rows: header, image, content
+  const cells = [
     headerRow,
-    [bgImgCell],
-    [contentCell],
+    imageRow,
+    [contentCell]
   ];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Create the table block
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element with the new table
-  element.replaceWith(table);
+  // Replace the original element
+  element.replaceWith(block);
 }

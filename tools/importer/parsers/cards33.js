@@ -1,43 +1,64 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row for the block table
-  const headerRow = ['Cards (cards33)'];
+  // Helper to extract card content from each anchor
+  function extractCardContent(cardEl) {
+    // Find the image (first child of the inner grid)
+    const innerGrid = cardEl.querySelector(':scope > div');
+    const img = innerGrid.querySelector('img');
 
-  // Get all direct child <a> elements (each card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+    // Find the text content block (second child of inner grid)
+    // It contains: tag, read time, heading, paragraph, CTA
+    const textBlock = innerGrid.querySelector(':scope > div');
+    if (!img || !textBlock) return null;
 
-  // Prepare rows for each card
-  const rows = cardLinks.map((card) => {
-    // Find the image (first img in card)
-    const img = card.querySelector('img');
-
-    // Find the card content container (the inner div after the image)
-    const contentGrid = card.querySelector('.w-layout-grid.grid-layout.mobile-portrait-1-column.y-center.grid-gap-sm');
-    // Defensive: fallback to the first div after img if needed
-    let contentDiv;
-    if (contentGrid) {
-      // The content is the second child of the grid (after img)
-      const divs = Array.from(contentGrid.children).filter((el) => el.tagName === 'DIV');
-      contentDiv = divs.length ? divs[0] : null;
-    } else {
-      // Fallback: look for the first div after img
-      const divs = Array.from(card.querySelectorAll('div'));
-      contentDiv = divs.length > 1 ? divs[1] : null;
+    // Extract tag and read time (optional)
+    const tagRow = textBlock.querySelector('.flex-horizontal');
+    let tagFragment = null;
+    if (tagRow) {
+      tagFragment = document.createElement('div');
+      tagFragment.append(...tagRow.childNodes);
     }
 
-    // Defensive: if no contentDiv, fallback to the card itself
-    const textContent = contentDiv || card;
+    // Heading
+    const heading = textBlock.querySelector('h3, .h4-heading');
+    // Description paragraph
+    const desc = textBlock.querySelector('p');
+    // CTA ("Read")
+    // Find the last child div inside textBlock
+    let cta = null;
+    const divs = textBlock.querySelectorAll(':scope > div');
+    if (divs.length > 1) {
+      cta = divs[divs.length - 1];
+    }
 
-    // Table row: [image, text content]
-    return [img, textContent];
+    // Compose the text cell
+    const textCell = document.createElement('div');
+    if (tagFragment) textCell.appendChild(tagFragment);
+    if (heading) textCell.appendChild(heading);
+    if (desc) textCell.appendChild(desc);
+    if (cta) textCell.appendChild(cta);
+
+    return [img, textCell];
+  }
+
+  // Get all cards (direct children that are anchors)
+  const cards = Array.from(element.querySelectorAll(':scope > a'));
+
+  // Table header
+  const headerRow = ['Cards (cards33)'];
+  const rows = [headerRow];
+
+  // Build rows for each card
+  cards.forEach(cardEl => {
+    const cardContent = extractCardContent(cardEl);
+    if (cardContent) {
+      rows.push(cardContent);
+    }
   });
 
-  // Compose the table data
-  const tableData = [headerRow, ...rows];
-
   // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
+  const block = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace the original element with the block table
-  element.replaceWith(blockTable);
+  // Replace the original element
+  element.replaceWith(block);
 }

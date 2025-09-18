@@ -1,45 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card content from a card container
-  function extractCard(cardEl) {
-    // Find the image (first img in card)
-    const img = cardEl.querySelector('img');
-    // Find the heading and paragraph (if present)
+  // Table header row
+  const headerRow = ['Cards (cards25)'];
+  const rows = [headerRow];
+
+  // Get all immediate children of the grid container
+  const cardDivs = element.querySelectorAll(':scope > div');
+
+  cardDivs.forEach((cardDiv) => {
+    // Find the image (mandatory)
+    const img = cardDiv.querySelector('img');
+    // Defensive: skip if no image
+    if (!img) return;
+
+    // Find text content (h3 and p) if present
     let textContent = null;
-    const heading = cardEl.querySelector('h3, h2, h4, h1');
-    const paragraph = cardEl.querySelector('p');
-    // Compose text cell
-    if (heading || paragraph) {
-      const frag = document.createDocumentFragment();
-      if (heading) frag.appendChild(heading);
-      if (paragraph) frag.appendChild(paragraph);
-      textContent = frag;
+    const h3 = cardDiv.querySelector('h3');
+    const p = cardDiv.querySelector('p');
+    if (h3 || p) {
+      // Create a wrapper div for text
+      textContent = document.createElement('div');
+      if (h3) textContent.appendChild(h3);
+      if (p) textContent.appendChild(p);
     }
-    return [img, textContent];
-  }
 
-  // Get all direct children of the grid element
-  const cards = Array.from(element.querySelectorAll(':scope > div'));
+    // If no h3/p, leave text cell empty
+    const textCell = textContent || '';
 
-  // Build rows for cards with both image and text
-  const rows = [];
-  cards.forEach((cardEl) => {
-    // Defensive: Only include cards with an image
-    const img = cardEl.querySelector('img');
-    if (!img) return; // skip if no image
-    // Check if there is text content
-    const heading = cardEl.querySelector('h3, h2, h4, h1');
-    const paragraph = cardEl.querySelector('p');
-    if (heading || paragraph) {
-      rows.push(extractCard(cardEl));
-    }
+    // Add row: [image, text]
+    rows.push([img, textCell]);
   });
 
-  // Table header
-  const headerRow = ['Cards (cards25)'];
-  const cells = [headerRow, ...rows];
-
-  // Create table and replace element
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Create table and replace original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }
