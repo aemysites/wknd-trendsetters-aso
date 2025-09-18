@@ -450,3 +450,96 @@
   line-height: 1.6;
   font-weight: 400;
 }
+
+
+.cards.cards17 {
+  background: #fff;
+  width: 100vw;
+  max-width: 1700px;
+  margin: 0 auto;
+  padding: 100px 0;
+  box-sizing: border-box;
+  min-height: 374px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex layout for horizontal row, wide gaps for airy separation */
+.cards.cards17 > ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 135px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Each card inline-flex for vertical centering */
+.cards.cards17 > ul > li {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hide the card body (text part) */
+.cards.cards17 .cards-card-body {
+  display: none;
+}
+
+/* Set image box size to match the reference proportions, with spacing for playful rotation */
+.cards.cards17 .cards-card-image {
+  width: 325px;
+  height: 204px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: none;
+  border-radius: 0;
+  transition: transform 0.3s cubic-bezier(.55,0,.1,1);
+}
+
+/* Images fill the box, cropped if necessary */
+.cards.cards17 .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Subtle, playful rotations for each image */
+.cards.cards17 > ul > li:nth-child(1) .cards-card-image { transform: rotate(-8deg);}
+.cards.cards17 > ul > li:nth-child(2) .cards-card-image { transform: rotate(6deg);}
+.cards.cards17 > ul > li:nth-child(3) .cards-card-image { transform: rotate(-5deg);}
+.cards.cards17 > ul > li:nth-child(4) .cards-card-image { transform: rotate(8deg);}
+.cards.cards17 > ul > li:nth-child(5) .cards-card-image { transform: rotate(-7deg);}
+.cards.cards17 > ul > li:nth-child(6) .cards-card-image { transform: rotate(5deg);}
+
+/* Responsive stacking for mobile */
+@media (width <= 900px) {
+  .cards.cards17 {
+    padding: 40px 0;
+    min-height: unset;
+  }
+
+  .cards.cards17 > ul {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .cards.cards17 .cards-card-image {
+    width: 96vw;
+    max-width: 320px;
+    height: 140px;
+  }
+}
