@@ -28,245 +28,254 @@
 }
 
 
+.cards.cards2 {
+  background: #fafafb;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1280px;
+  display: block;
+}
+
+/* Grid: two columns, top-aligned, very tight gap */
 .cards.cards2 > ul {
   display: grid;
-  grid-template-columns: 1.08fr 1fr;
-  gap: 44px 36px;
-  align-items: flex-start;
-  list-style: none;
+  grid-template-columns: 1fr 0.92fr;
+  gap: 0 12px;
+  align-items: start;
   padding: 0;
   margin: 0;
   background: none;
+  min-height: 0;
 }
 
-/* Left column: Hero card */
+/* LEFT COLUMN */
 .cards.cards2 > ul > li:first-child {
   grid-column: 1 / 2;
   grid-row: 1 / span 8;
   background: #fff;
-  border-radius: 24px;
+  border-radius: 17px;
   box-shadow: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  margin: 0;
-  align-self: flex-start;
+  gap: 18px;
+  align-self: start;
 }
 
-/* Hero image rounded */
 .cards.cards2 > ul > li:first-child .cards-card-image img {
-  border-radius: 24px;
+  border-radius: 17px;
   width: 100%;
+  height: auto;
   object-fit: cover;
   display: block;
   margin-bottom: 0;
 }
 
-/* Hero "pill"/tag */
+.cards.cards2 > ul > li:first-child .cards-card-body {
+  padding: 0;
+  margin: 0;
+}
+
 .cards.cards2 > ul > li:first-child .cards-card-body > p:first-child {
-  display: inline-block;
-  background: #eaeaea;
-  color: #333;
+  background: none;
+  color: #b3b3b3;
   font-size: 13px;
-  padding: 4px 18px 4px 16px;
-  border-radius: 17px;
-  letter-spacing: 1.1px;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 2.1px;
   text-transform: uppercase;
-  margin-bottom: 19px;
-  margin-top: 0;
+  margin: 0 0 9px;
   font-weight: 500;
+  display: block;
 }
 
 .cards.cards2 > ul > li:first-child .cards-card-body h3 {
   font-size: 2.7rem;
-  letter-spacing: 2px;
-  font-weight: 500;
-  margin: 0 0 13px;
-  color: #111;
-  line-height: 1.05;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #222;
+  line-height: 1.07;
 }
 
 .cards.cards2 > ul > li:first-child .cards-card-body p:not(:first-child) {
-  color: #222;
-  font-size: 1rem;
+  color: #232323;
+  font-size: 1.01rem;
   font-weight: 400;
   margin: 0;
-  margin-bottom: 0.5em;
+  line-height: 1.52;
 }
 
-/* --- RIGHT COLUMN --- */
-
-/* Place all right column items in the second column */
-.cards.cards2 > ul > li:nth-child(n+2) {
+/* RIGHT COLUMN */
+.cards.cards2 > ul > li:not(:first-child) {
   grid-column: 2 / 3;
-  background: none;
-  box-shadow: none;
   margin: 0;
   padding: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  align-self: start;
 }
 
-/* Feature cards: grouped tightly with minimal vertical gap */
-.cards.cards2 > ul > li:nth-child(2),
-.cards.cards2 > ul > li:nth-child(3) {
+/* Card 1 (with image): minimal radius/shadow/margin */
+.cards.cards2 > ul > li:nth-child(2) {
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 1px 8px 0 rgb(0 0 0 / 4%);
-  margin-bottom: 8px;
-  padding: 0;
-  overflow: hidden;
+  border-radius: 7px;
+  box-shadow: 0 1px 2.5px rgb(30 40 60 / 1.5%);
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
+  margin-bottom: 4px;
+  padding: 0;
+  overflow: hidden;
+  align-self: start;
 }
 
-/* Feature card image rounded at top */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-image img {
+  border-radius: 7px 7px 0 0;
   width: 100%;
-  border-radius: 14px 14px 0 0;
-  height: 90px;
-  min-height: 80px;
+  height: 68px;
   object-fit: cover;
   display: block;
-  margin-bottom: 0;
 }
 
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body {
-  padding: 11px 16px;
+  padding: 11px 12px 7px;
   margin: 0;
 }
 
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body > p:first-child {
-  display: inline-block;
-  background: #eaeaea;
-  color: #333;
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 13px;
-  letter-spacing: 1px;
+  background: none;
+  color: #b3b3b3;
+  font-size: 10px;
+  padding: 0;
+  border-radius: 0;
+  font-weight: 600;
+  letter-spacing: 1.25px;
   text-transform: uppercase;
-  margin-bottom: 6px;
-  font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body h3 {
-  font-size: 1.03rem;
-  letter-spacing: 1px;
-  font-weight: 500;
-  color: #111;
-  margin: 0 0 4px;
-  line-height: 1.12;
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: #232323;
+  letter-spacing: 0.065em;
+  margin: 0 0 2px;
+  line-height: 1.13;
 }
 
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body p:not(:first-child) {
-  color: #444;
+  color: #232323;
   font-size: 0.89rem;
   margin: 0;
   font-weight: 400;
+  line-height: 1.3;
+}
+
+/* Card 2: similar, minimal radius/shadow/margin, no image */
+.cards.cards2 > ul > li:nth-child(3) {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 2.5px rgb(30 40 60 / 1.5%);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+  padding: 6px 12px;
+  align-self: start;
 }
 
 .cards.cards2 > ul > li:nth-child(3) .cards-card-body {
-  padding: 16px 16px 13px;
+  padding: 0;
   margin: 0;
 }
 
 .cards.cards2 > ul > li:nth-child(3) h3 {
-  font-size: 1.03rem;
-  letter-spacing: 1px;
-  font-weight: 400;
+  font-size: 0.93rem;
+  font-weight: 600;
+  letter-spacing: 0.065em;
   text-transform: none;
-  margin: 0 0 5px;
-  color: #222;
+  color: #232323;
+  margin: 0 0 2px;
+  line-height: 1.13;
 }
 
 .cards.cards2 > ul > li:nth-child(3) p {
-  color: #444;
+  color: #232323;
   font-size: 0.89rem;
   margin: 0;
   font-weight: 400;
+  line-height: 1.3;
 }
 
-/* List items: stack vertically, transparent background, only divider, compact spacing */
+/* TEXT-ONLY RIGHT COLUMN ITEMS: inset, thin divider, lighter line, compact padding */
 .cards.cards2 > ul > li:nth-child(n+4) {
-  background: transparent;
+  background: none;
   border-radius: 0;
   box-shadow: none;
-  padding: 0;
+  border-bottom: 1px solid #ececec;
+  padding: 0 8px;
   margin: 0;
-  border-bottom: 1px solid #eaeaea;
   display: flex;
   flex-direction: column;
-  width: 100%;
   align-self: stretch;
-}
-
-/* Remove unwanted gap between list items */
-.cards.cards2 > ul > li:nth-child(n+4) + li {
-  margin-top: -2px;
 }
 
 .cards.cards2 > ul > li:last-child {
   border-bottom: none;
 }
 
-/* List items: compact spacing and smaller font */
 .cards.cards2 > ul > li:nth-child(n+4) .cards-card-body {
-  padding: 7px 0;
+  padding: 4px 0;
   margin: 0;
 }
 
-.cards.cards2 > ul > li:nth-child(n+4) h3 {
-  font-size: 0.89rem;
-  font-weight: 400;
-  letter-spacing: 2.1px;
-  text-transform: uppercase;
+.cards.cards2 > ul > li:nth-child(n+4) .cards-card-body h3 {
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: none;
   color: #232323;
-  margin-bottom: 1px;
+  margin: 0 0 1px;
   line-height: 1.08;
 }
 
-.cards.cards2 > ul > li:nth-child(n+4) p {
-  color: #666;
-  font-size: 0.86rem;
-  margin: 0 0 2px;
+.cards.cards2 > ul > li:nth-child(n+4) .cards-card-body p {
+  color: #232323;
+  font-size: 0.81rem;
+  margin: 0;
   font-weight: 400;
+  line-height: 1.27;
 }
 
-/* Move right column lower for visual balance with hero image */
-.cards.cards2 > ul > li:nth-child(2) {
-  margin-top: 38px;
+/* Remove extra gap between text-only items */
+.cards.cards2 > ul > li:nth-child(n+4) + li:nth-child(n+4) {
+  margin-top: 0;
 }
 
-/* Responsive: Stack columns vertically on small screens */
+/* Responsive: stack columns and cards on small screens */
 @media (width <= 900px) {
   .cards.cards2 > ul {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 0;
   }
 
-  .cards.cards2 > ul > li {
-    border-radius: 12px;
-    box-shadow: none;
+  .cards.cards2 > ul > li:first-child {
+    margin-bottom: 14px;
+    border-radius: 10px;
+  }
+
+  .cards.cards2 > ul > li:nth-child(2),
+  .cards.cards2 > ul > li:nth-child(3) {
+    border-radius: 7px;
+    margin-bottom: 4px;
     padding: 0;
-    width: 100%;
-    margin: 0;
   }
 
-  .cards.cards2 > ul > li .cards-card-image img {
-    border-radius: 12px;
-    height: auto;
+  .cards.cards2 > ul > li:nth-child(n+4) {
+    border-radius: 0;
+    margin-bottom: 0;
+    padding: 0 5px;
   }
-}
-
-/* Remove unwanted gap above feature/list stack */
-.cards.cards2 > ul > li:nth-child(3) {
-  margin-top: 0;
-}
-
-/* Remove any accidental backgrounds */
-.cards.cards2,
-.cards.cards2 > ul,
-.cards.cards2 > ul > li {
-  background: none;
 }
