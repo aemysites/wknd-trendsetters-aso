@@ -1,38 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
+  // Table header
   const headerRow = ['Cards (cards24)'];
+  const cells = [headerRow];
 
-  // Get all direct child <a> elements (each is a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+  // Get all card links (each card is an <a> element)
+  const cardLinks = element.querySelectorAll(':scope > a');
 
-  // Build table rows for each card
-  const rows = cardLinks.map((card) => {
-    // Image cell: find the first <img> inside the card
+  cardLinks.forEach((card) => {
+    // --- IMAGE CELL ---
+    // Find the image inside the card
     const imgWrapper = card.querySelector(':scope > div');
-    let image = imgWrapper ? imgWrapper.querySelector('img') : null;
-    // Defensive: if no image, fallback to wrapper
-    const imageCell = image || imgWrapper || '';
+    let imageEl = null;
+    if (imgWrapper) {
+      imageEl = imgWrapper.querySelector('img');
+    }
 
-    // Text cell: collect tag, date, and heading
-    const infoBar = card.querySelector('.flex-horizontal');
-    const tag = infoBar ? infoBar.querySelector('.tag') : null;
-    const date = infoBar ? infoBar.querySelector('.paragraph-sm') : null;
-    const heading = card.querySelector('h3');
+    // --- TEXT CELL ---
+    // Find the tag and date
+    const metaRow = card.querySelector('.flex-horizontal');
+    let tagEl = null, dateEl = null;
+    if (metaRow) {
+      // Defensive: find .tag and .paragraph-sm
+      tagEl = metaRow.querySelector('.tag');
+      dateEl = metaRow.querySelector('.paragraph-sm');
+    }
+    // Find the heading
+    const headingEl = card.querySelector('h3');
 
     // Compose text cell
     const textCellContent = [];
-    if (tag) textCellContent.push(tag);
-    if (date) textCellContent.push(date);
-    if (heading) textCellContent.push(heading);
+    // Meta row (tag and date)
+    if (tagEl || dateEl) {
+      const metaDiv = document.createElement('div');
+      if (tagEl) metaDiv.appendChild(tagEl);
+      if (dateEl) metaDiv.appendChild(dateEl);
+      textCellContent.push(metaDiv);
+    }
+    // Heading
+    if (headingEl) {
+      textCellContent.push(headingEl);
+    }
 
-    return [imageCell, textCellContent];
+    // Add the row: [image, text]
+    cells.push([
+      imageEl || '',
+      textCellContent.length === 1 ? textCellContent[0] : textCellContent
+    ]);
   });
 
-  // Compose table data
-  const tableData = [headerRow, ...rows];
-  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
-
-  // Replace the original element with the block table
-  element.replaceWith(blockTable);
+  // Create the table block
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Replace the original element
+  element.replaceWith(block);
 }

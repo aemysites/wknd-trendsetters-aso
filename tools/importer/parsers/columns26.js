@@ -1,49 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Find the main grid containing the two columns
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
-  if (!grid) return;
+  // Defensive: Find the main grid containing the columns
+  const mainGrid = element.querySelector('.grid-layout');
+  if (!mainGrid) return;
 
-  // Get all immediate children of the grid
-  const gridChildren = Array.from(grid.children);
+  // Find the heading and paragraph (first two children)
+  const heading = mainGrid.children[0]; // h2-heading
+  const paragraph = mainGrid.children[1]; // paragraph-lg
 
-  // Column 1: Heading and quote
-  // Find the heading and paragraph
-  const heading = gridChildren.find(el => el.matches('p.h2-heading'));
-  const quote = gridChildren.find(el => el.matches('p.paragraph-lg'));
-  // Compose column 1
-  const col1Content = [];
-  if (heading) col1Content.push(heading);
-  if (quote) col1Content.push(quote);
+  // Find the inner grid that contains divider, avatar+name, and logo
+  const innerGrid = mainGrid.children[2];
+  if (!innerGrid) return;
 
-  // Column 2: Divider, avatar, name/title, and logo
-  // The third child is another grid containing these
-  const subGrid = gridChildren.find(el => el.classList.contains('w-layout-grid') && el !== grid);
-  let col2Content = [];
-  if (subGrid) {
-    // Get all immediate children of the subGrid
-    const subGridChildren = Array.from(subGrid.children);
-    // Divider
-    const divider = subGridChildren.find(el => el.classList.contains('divider'));
-    if (divider) col2Content.push(divider);
-    // Flex row: avatar + name/title
-    const flexRow = subGridChildren.find(el => el.classList.contains('flex-horizontal'));
-    if (flexRow) col2Content.push(flexRow);
-    // Logo (SVG)
-    const logo = subGridChildren.find(el => el.querySelector('svg'));
-    if (logo) col2Content.push(logo);
-  }
+  // Get all direct children of the inner grid
+  const innerChildren = Array.from(innerGrid.children);
 
-  // Build table rows
+  // divider
+  const divider = innerChildren[0];
+  // flex-horizontal: avatar + name/title
+  const avatarRow = innerChildren[1];
+  // logo svg
+  const logo = innerChildren[2];
+
+  // --- Build columns ---
+  // Column 1: Heading, avatar+name/title
+  const col1 = document.createElement('div');
+  col1.appendChild(heading);
+  col1.appendChild(avatarRow);
+
+  // Column 2: Paragraph, divider, logo
+  const col2 = document.createElement('div');
+  col2.appendChild(paragraph);
+  col2.appendChild(divider);
+  col2.appendChild(logo);
+
+  // Table header
   const headerRow = ['Columns (columns26)'];
-  const contentRow = [col1Content, col2Content];
+  // Table columns row
+  const columnsRow = [col1, col2];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    contentRow
-  ], document);
+  // Build table
+  const cells = [headerRow, columnsRow];
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element
-  element.replaceWith(table);
+  // Replace original element
+  element.replaceWith(block);
 }

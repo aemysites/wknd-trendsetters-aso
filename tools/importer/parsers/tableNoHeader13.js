@@ -1,29 +1,35 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all direct children divs with class 'divider' (each FAQ row)
-  const rows = Array.from(element.querySelectorAll(':scope > .divider'));
+  // Table header row as required
+  const headerRow = ['Table (no header, tableNoHeader13)'];
 
-  // Prepare table rows
-  const tableRows = [];
+  // Get all immediate child dividers (each is a row)
+  const dividers = Array.from(element.querySelectorAll(':scope > .divider'));
 
-  // Always start with the required header row
-  tableRows.push(['Table (no header, tableNoHeader13)']);
+  // Defensive: If no .divider children, treat the element itself as a single block
+  if (dividers.length === 0) return;
 
-  // For each row, extract the question and answer
-  rows.forEach(divider => {
-    // Find the grid inside the divider
+  // Build table rows: each divider contains a grid with two children (question, answer)
+  const rows = dividers.map(divider => {
+    // Find the grid layout inside the divider
     const grid = divider.querySelector('.w-layout-grid');
-    if (!grid) return;
-    // Get the two columns: question and answer
-    const cols = Array.from(grid.children);
-    // Defensive: expect 2 columns (question, answer)
-    if (cols.length < 2) return;
-    // Reference existing elements for semantic meaning
-    tableRows.push([cols[0], cols[1]]);
+    if (!grid) return ['']; // Defensive: empty row
+    // Get all direct children of grid (should be two: heading, rich text)
+    const cells = Array.from(grid.children);
+    // Defensive: if not exactly 2 cells, fill with empty
+    if (cells.length < 2) {
+      return [cells[0] || '', ''];
+    }
+    // Return both elements as cells
+    return [cells[0], cells[1]];
   });
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
-  // Replace the original element with the table
-  element.replaceWith(table);
+  // Compose the table data
+  const tableData = [headerRow, ...rows];
+
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(tableData, document);
+
+  // Replace the original element with the new block table
+  element.replaceWith(block);
 }

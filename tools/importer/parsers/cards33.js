@@ -1,63 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from each anchor card
-  function extractCard(card) {
-    // First cell: image (mandatory)
+  // Header row for the block table
+  const headerRow = ['Cards (cards33)'];
+
+  // Get all direct child <a> elements (each card)
+  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+
+  // Prepare rows for each card
+  const rows = cardLinks.map((card) => {
+    // Find the image (first img in card)
     const img = card.querySelector('img');
 
-    // Second cell: text content (title, description, CTA)
-    const textContainer = card.querySelector('div.w-layout-grid > div:last-child');
-    // Defensive: fallback to any div after the image
-    let textDiv = textContainer;
-    if (!textDiv) {
-      const divs = card.querySelectorAll('div.w-layout-grid > div');
-      if (divs.length > 1) textDiv = divs[1];
+    // Find the card content container (the inner div after the image)
+    const contentGrid = card.querySelector('.w-layout-grid.grid-layout.mobile-portrait-1-column.y-center.grid-gap-sm');
+    // Defensive: fallback to the first div after img if needed
+    let contentDiv;
+    if (contentGrid) {
+      // The content is the second child of the grid (after img)
+      const divs = Array.from(contentGrid.children).filter((el) => el.tagName === 'DIV');
+      contentDiv = divs.length ? divs[0] : null;
+    } else {
+      // Fallback: look for the first div after img
+      const divs = Array.from(card.querySelectorAll('div'));
+      contentDiv = divs.length > 1 ? divs[1] : null;
     }
 
-    // We'll collect the heading, description, and CTA
-    let heading, desc, cta;
-    if (textDiv) {
-      heading = textDiv.querySelector('h3, .h4-heading');
-      desc = textDiv.querySelector('p');
-      // The CTA is the last div inside textDiv (with text 'Read')
-      const divs = textDiv.querySelectorAll('div');
-      if (divs.length) {
-        // Find a div with textContent 'Read' (case-insensitive, trimmed)
-        cta = Array.from(divs).find(d => d.textContent.trim().toLowerCase() === 'read');
-        // If found, wrap in a link using the card's href
-        if (cta) {
-          const link = document.createElement('a');
-          link.href = card.href;
-          link.textContent = cta.textContent;
-          cta = link;
-        }
-      }
-    }
+    // Defensive: if no contentDiv, fallback to the card itself
+    const textContent = contentDiv || card;
 
-    // Compose the text cell contents
-    const textCell = [];
-    // Tag and time (optional, horizontal flex)
-    const tagTime = textDiv ? textDiv.querySelector('.flex-horizontal') : null;
-    if (tagTime) textCell.push(tagTime);
-    if (heading) textCell.push(heading);
-    if (desc) textCell.push(desc);
-    if (cta) textCell.push(cta);
+    // Table row: [image, text content]
+    return [img, textContent];
+  });
 
-    return [img, textCell];
-  }
+  // Compose the table data
+  const tableData = [headerRow, ...rows];
 
-  // Get all direct child anchors (cards)
-  const cards = Array.from(element.querySelectorAll(':scope > a'));
+  // Create the block table
+  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
 
-  // Build table rows
-  const rows = [
-    ['Cards (cards33)'],
-    ...cards.map(extractCard),
-  ];
-
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace original element
-  element.replaceWith(table);
+  // Replace the original element with the block table
+  element.replaceWith(blockTable);
 }

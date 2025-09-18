@@ -1,23 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the background image (first <img> in the hero block)
-  const bgImg = element.querySelector('img');
+  // 1. Find the background image (img.cover-image)
+  const bgImg = element.querySelector('img.cover-image');
 
-  // Find the card containing heading, subheading, and CTAs
+  // 2. Find the card containing heading, subheading, and CTAs
   const card = element.querySelector('.card');
 
-  // Table header must match target block name exactly
+  // 3. Table header row: must match block name exactly
   const headerRow = ['Hero (hero6)'];
-  const imageRow = [bgImg ? bgImg : ''];
+
+  // 4. Second row: background image (reference the actual element, not a string)
+  const bgImgRow = [bgImg ? bgImg : ''];
+
+  // 5. Third row: card content (reference the actual element, not clone or string)
   const contentRow = [card ? card : ''];
 
-  // Create the table with 1 column and 3 rows
+  // 6. Create table with correct structure
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    imageRow,
+    bgImgRow,
     contentRow,
   ], document);
 
-  // Replace the original element with the table
+  // 7. Replace the original element with the new table
   element.replaceWith(table);
 }

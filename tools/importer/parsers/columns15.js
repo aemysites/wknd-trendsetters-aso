@@ -1,56 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid containing the two columns
+  // Defensive: Only parse if the element contains the expected grid layout
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Find the left and right columns
+  // Get the two main columns in the grid
   const columns = Array.from(grid.children);
   if (columns.length < 2) return;
 
-  // Left column: collect all content (headline, subheading, button group)
-  const leftCol = columns[0];
-  const leftCellContent = [];
-  Array.from(leftCol.childNodes).forEach((node) => {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      leftCellContent.push(node);
-    } else if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-      const p = document.createElement('p');
-      p.textContent = node.textContent.trim();
-      leftCellContent.push(p);
-    }
-  });
+  // First column: headline, subheading, buttons
+  const firstCol = columns[0];
+  // Second column: image (cover-image)
+  const secondCol = columns[1];
 
-  // Right column: collect all content (image and any text)
-  const rightCol = columns[1];
-  const rightCellContent = [];
-  Array.from(rightCol.childNodes).forEach((node) => {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      rightCellContent.push(node);
-    } else if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-      const p = document.createElement('p');
-      p.textContent = node.textContent.trim();
-      rightCellContent.push(p);
-    }
-  });
+  // Compose left column content
+  const leftContent = document.createElement('div');
+  // Headline
+  const headline = firstCol.querySelector('.h1-heading');
+  if (headline) leftContent.appendChild(headline.cloneNode(true));
+  // Subheading
+  const subheading = firstCol.querySelector('.subheading');
+  if (subheading) leftContent.appendChild(subheading.cloneNode(true));
+  // Button group
+  const buttonGroup = firstCol.querySelector('.button-group');
+  if (buttonGroup) leftContent.appendChild(buttonGroup.cloneNode(true));
 
-  // Only include columns with actual content
-  const cells = [];
-  if (leftCellContent.length > 0) cells.push(leftCellContent);
-  if (rightCellContent.length > 0) cells.push(rightCellContent);
+  // Compose right column content
+  const rightContent = document.createElement('div');
+  // Image
+  const coverImage = secondCol.tagName === 'IMG' ? secondCol : secondCol.querySelector('img.cover-image');
+  if (coverImage) rightContent.appendChild(coverImage.cloneNode(true));
 
-  if (cells.length === 0) return;
-
-  // Table rows
+  // Table header
   const headerRow = ['Columns (columns15)'];
-  const contentRow = cells;
+  // Table content row: two columns side by side
+  const contentRow = [leftContent, rightContent];
 
-  // Create table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    contentRow,
-  ], document);
+  // Create table block
+  const cells = [headerRow, contentRow];
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
   // Replace original element
-  element.replaceWith(table);
+  element.replaceWith(block);
 }

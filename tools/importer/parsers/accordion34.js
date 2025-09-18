@@ -1,32 +1,39 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get all immediate accordion blocks
-  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
-  
-  // Table header row
+  // Accordion block header
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  accordions.forEach((acc) => {
-    // Title: find the direct child with class 'w-dropdown-toggle', then the '.paragraph-lg' inside
-    let titleEl = acc.querySelector('.w-dropdown-toggle .paragraph-lg');
-    // Defensive: fallback to first .w-dropdown-toggle if .paragraph-lg not found
-    if (!titleEl) {
-      const toggle = acc.querySelector('.w-dropdown-toggle');
-      titleEl = toggle ? toggle : document.createTextNode('');
+  // Get all immediate accordion items (w-dropdown)
+  const accordions = element.querySelectorAll(':scope > .accordion.w-dropdown');
+
+  accordions.forEach((accordion) => {
+    // Title cell: find the .paragraph-lg inside the toggle
+    const toggle = accordion.querySelector('.w-dropdown-toggle');
+    let titleCell = '';
+    if (toggle) {
+      const title = toggle.querySelector('.paragraph-lg');
+      if (title) titleCell = title;
     }
 
-    // Content: find the nav.accordion-content, then the .rich-text inside
-    let contentEl = acc.querySelector('nav.accordion-content .rich-text');
-    // Defensive: fallback to nav.accordion-content if .rich-text not found
-    if (!contentEl) {
-      contentEl = acc.querySelector('nav.accordion-content') || document.createTextNode('');
+    // Content cell: find the .accordion-content (nav), then .w-richtext inside
+    let contentCell = '';
+    const contentNav = accordion.querySelector('.accordion-content');
+    if (contentNav) {
+      // Defensive: get all children except dropdown icon
+      // Grab the .w-richtext (which contains the actual content)
+      const richText = contentNav.querySelector('.w-richtext');
+      if (richText) contentCell = richText;
+      else {
+        // fallback: use the inner content
+        contentCell = contentNav;
+      }
     }
 
-    rows.push([titleEl, contentEl]);
+    rows.push([titleCell, contentCell]);
   });
 
-  // Create and replace
+  // Create the block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

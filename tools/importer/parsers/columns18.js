@@ -1,19 +1,18 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid layout
+  // Find the main grid container
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid
-  const gridChildren = Array.from(grid.children);
-
-  // Identify left column (intro text), contact list, and image
-  let leftCol = null;
+  // Identify columns: left content, contact list, image
+  let leftContent = null;
   let contactList = null;
   let image = null;
-  gridChildren.forEach((child) => {
-    if (child.tagName === 'DIV' && child.querySelector('h2')) {
-      leftCol = child;
+
+  // The grid has 3 children: leftContent (DIV), contactList (UL), image (IMG)
+  Array.from(grid.children).forEach((child) => {
+    if (child.tagName === 'DIV') {
+      leftContent = child;
     } else if (child.tagName === 'UL') {
       contactList = child;
     } else if (child.tagName === 'IMG') {
@@ -21,18 +20,18 @@ export default function parse(element, { document }) {
     }
   });
 
-  // Defensive: If any are missing, abort
-  if (!leftCol || !contactList || !image) return;
+  // Compose the columns row: leftContent, contactList, image
+  // Only include non-null columns
+  const columnsRow = [leftContent, contactList, image].filter(Boolean);
+  if (columnsRow.length === 0) return;
 
-  // Compose the header row exactly as required
+  // Table header must match block name exactly
   const headerRow = ['Columns (columns18)'];
+  const tableRows = [headerRow, columnsRow];
 
-  // Compose the columns row, referencing existing elements
-  const columnsRow = [leftCol, contactList, image];
+  // Create the table using DOMUtils, referencing existing elements
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
 
-  // Create the table
-  const table = WebImporter.DOMUtils.createTable([headerRow, columnsRow], document);
-
-  // Replace the original element with the block table
+  // Replace the whole section with the block table
   element.replaceWith(table);
 }
