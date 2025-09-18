@@ -1,55 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Ensure the element is present
-  if (!element) return;
-
-  // Header row for the block table
-  const headerRow = ['Columns (columns36)'];
-
-  // Get the main grid container (holds two columns)
-  const grid = element.querySelector('.grid-layout.tablet-1-column');
+  // Defensive: find the main grid container for columns
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the two main columns (content and images)
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  // Find the two main children: left content and right images
+  const children = Array.from(grid.children);
+  if (children.length < 2) return;
 
-  // --- First column: Text content ---
-  const textCol = columns[0];
-  // We'll include all content in this cell: heading, paragraph, buttons
-  // Defensive: Only include if present
-  const textContent = [];
-  const heading = textCol.querySelector('h1');
-  if (heading) textContent.push(heading);
-  const subheading = textCol.querySelector('p');
-  if (subheading) textContent.push(subheading);
-  const buttonGroup = textCol.querySelector('.button-group');
-  if (buttonGroup) textContent.push(buttonGroup);
+  // Left column: headline, paragraph, buttons
+  const leftCol = children[0];
 
-  // --- Second column: Images ---
-  const imagesCol = columns[1];
-  // Find all images inside the nested grid
-  const imageGrid = imagesCol.querySelector('.grid-layout.mobile-portrait-1-column');
+  // Right column: grid of images
+  const rightCol = children[1];
+  // Defensive: find the inner grid with images
+  const imagesGrid = rightCol.querySelector('.grid-layout');
   let images = [];
-  if (imageGrid) {
-    images = Array.from(imageGrid.querySelectorAll('img'));
+  if (imagesGrid) {
+    images = Array.from(imagesGrid.querySelectorAll('img'));
   }
 
-  // Only include images that are not the blurred face (by alt text)
-  // We'll filter out any img with alt containing 'blurred face' (if present)
-  images = images.filter(img => !/blurred face/i.test(img.alt));
+  // Compose the columns row
+  // Column 1: left content block
+  // Column 2+: each image as its own column
+  const columnsRow = [leftCol, ...images];
 
-  // --- Build the second row: columns ---
-  // First cell: text content; Second cell: all images
-  const secondRow = [
-    textContent,
-    images
-  ];
+  // Table header
+  const headerRow = ['Columns (columns36)'];
 
-  // Build the table
-  const cells = [headerRow, secondRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Build table
+  const cells = [headerRow, columnsRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element
-  element.replaceWith(block);
+  // Replace original element
+  element.replaceWith(table);
 }

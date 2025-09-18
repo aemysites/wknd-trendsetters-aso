@@ -1,45 +1,58 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
+  // Helper: get immediate children by selector
+  const getDirectChild = (parent, selector) => {
+    return Array.from(parent.children).find((el) => el.matches(selector));
+  };
 
-  // 1. Table header row
+  // Header row as per block guidelines
   const headerRow = ['Hero (hero39)'];
 
-  // 2. Background image row
-  let bgImg = null;
-  // Find the image inside the first grid cell
-  const gridDivs = element.querySelectorAll(':scope > div.w-layout-grid > div');
+  // --- Row 2: Background Image (optional) ---
+  // The image is inside the first grid cell
+  let bgImgCell = '';
+  const gridDivs = element.querySelectorAll(':scope > .w-layout-grid > div');
   if (gridDivs.length > 0) {
-    bgImg = gridDivs[0].querySelector('img');
-  }
-  const bgImgRow = [bgImg ? bgImg : ''];
-
-  // 3. Content row: Headline, Paragraph, CTA
-  let contentCell = [];
-  if (gridDivs.length > 1) {
-    const contentGrid = gridDivs[1];
-    // Headline
-    const h1 = contentGrid.querySelector('h1');
-    if (h1) contentCell.push(h1);
-    // Paragraph and CTA
-    const flexVertical = contentGrid.querySelector('.flex-vertical');
-    if (flexVertical) {
-      const p = flexVertical.querySelector('p');
-      if (p) contentCell.push(p);
-      const buttonGroup = flexVertical.querySelector('.button-group');
-      if (buttonGroup) {
-        const ctaLink = buttonGroup.querySelector('a');
-        if (ctaLink) contentCell.push(ctaLink);
-      }
+    const img = gridDivs[0].querySelector('img');
+    if (img) {
+      bgImgCell = img;
     }
   }
-  if (contentCell.length === 0) contentCell = [''];
-  const contentRow = [contentCell];
 
-  // 4. Build table
-  const cells = [headerRow, bgImgRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // --- Row 3: Content (heading, subheading, CTA) ---
+  // The second grid cell contains the text content
+  let contentCell = '';
+  if (gridDivs.length > 1) {
+    // The container with text content
+    const contentContainer = gridDivs[1];
+    // Find the inner grid (holds heading and subcontent)
+    const innerGrid = contentContainer.querySelector('.w-layout-grid');
+    if (innerGrid) {
+      // Heading
+      const heading = innerGrid.querySelector('h1');
+      // Subheading (paragraph)
+      const paragraph = innerGrid.querySelector('p');
+      // CTA (button link)
+      const cta = innerGrid.querySelector('a');
+      // Compose content cell
+      const contentParts = [];
+      if (heading) contentParts.push(heading);
+      if (paragraph) contentParts.push(paragraph);
+      if (cta) contentParts.push(cta);
+      contentCell = contentParts;
+    }
+  }
 
-  // 5. Replace original element
-  element.replaceWith(block);
+  // Compose table rows
+  const rows = [
+    headerRow,
+    [bgImgCell],
+    [contentCell],
+  ];
+
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }

@@ -1,30 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (the actual columns block)
+  // 1. Find the grid layout that contains the columns
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the direct children of the grid (these are the columns)
+  // 2. Get all immediate children of the grid (these are the columns)
   const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Prepare cells for the second row
-  const secondRowCells = columns.map((col) => {
-    // If it's an image, use the image element directly
-    if (col.tagName === 'IMG') {
-      return col;
-    }
-    // Otherwise, it's the content column: include the whole div
-    return col;
-  });
+  // 3. The first column is a div with all the text/buttons, the second is an image
+  const firstCol = columns[0];
+  const secondCol = columns[1];
 
-  // Table header must match the target block name exactly
-  const headerRow = ['Columns (columns27)'];
-  // Table rows: header, then columns as cells
-  const cells = [headerRow, secondRowCells];
+  // 4. Build the table rows
+  const headerRow = ['Columns (columns27)']; // Block name as required
+  const contentRow = [firstCol, secondCol]; // Reference DOM nodes directly
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // 5. Create the table block
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
-  // Replace the original element with the block table
-  element.replaceWith(block);
+  // 6. Replace the original element with the new table
+  element.replaceWith(table);
 }

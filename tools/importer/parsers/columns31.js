@@ -4,20 +4,21 @@ export default function parse(element, { document }) {
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (each is a column)
+  // Get all immediate children (columns)
   const columns = Array.from(grid.children);
-  if (!columns.length) return;
+  if (columns.length === 0) return;
 
   // Header row as required
   const headerRow = ['Columns (columns31)'];
 
-  // Second row: each column's content as a cell
-  const contentRow = columns.map((col) => col);
+  // Second row: each cell is the content of a column
+  // For resilience, reference the entire column div for each cell
+  const contentRow = columns.map(col => col);
 
   // Build the table
-  const cells = [headerRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  const tableCells = [headerRow, contentRow];
+  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
 
-  // Replace the original element
-  element.replaceWith(block);
+  // Replace the original element with the block table
+  element.replaceWith(blockTable);
 }

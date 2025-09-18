@@ -1,76 +1,126 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract the image from a card anchor
-  function getCardImage(card) {
-    return card.querySelector('img');
+  // Helper to get image and text from a card anchor
+  function extractCardContent(cardEl) {
+    let img = cardEl.querySelector('img');
+    // Find all tag elements (optional)
+    const tagGroup = cardEl.querySelector('.tag-group');
+    let tags = [];
+    if (tagGroup) {
+      tags = Array.from(tagGroup.children);
+    }
+    // Find heading (h3)
+    let heading = cardEl.querySelector('h3');
+    // Find paragraph
+    let paragraph = cardEl.querySelector('p');
+    // Compose text cell
+    const textContent = [];
+    if (tags.length) {
+      textContent.push(...tags);
+    }
+    if (heading) {
+      textContent.push(heading);
+    }
+    if (paragraph) {
+      textContent.push(paragraph);
+    }
+    return [img, textContent];
   }
 
-  // Helper to extract all text content from a card anchor, including tags, headings, and paragraphs
-  function getCardText(card) {
-    const fragments = [];
-    card.querySelectorAll('.tag-group').forEach(tag => fragments.push(tag.cloneNode(true)));
-    card.querySelectorAll('h2, h3, h4').forEach(h => fragments.push(h.cloneNode(true)));
-    card.querySelectorAll('p').forEach(p => fragments.push(p.cloneNode(true)));
-    return fragments;
-  }
-
-  // Find the grid container
+  // Main grid container
   const grid = element.querySelector('.grid-layout');
-  if (!grid) return;
-
-  // Get all direct children of the grid
-  const gridChildren = Array.from(grid.children);
-
-  // First card: large card with image and text (anchor)
-  const firstCard = gridChildren.find((el) => el.tagName === 'A');
-
-  // Second group: two cards with images and text (inside flex-horizontal)
-  const flexHorizontal = gridChildren.find((el) => el.classList.contains('flex-horizontal') && !el.classList.contains('flex-vertical'));
-  let imageCards = [];
-  if (flexHorizontal) {
-    imageCards = Array.from(flexHorizontal.querySelectorAll(':scope > a'));
-  }
-
-  // Third group: text-only cards (inside flex-vertical)
-  const flexVertical = gridChildren.find((el) => el.classList.contains('flex-vertical'));
-  let textCards = [];
-  if (flexVertical) {
-    textCards = Array.from(flexVertical.querySelectorAll(':scope > a'));
-  }
-
-  // Compose rows
   const rows = [];
-  const headerRow = ['Cards (cards2)'];
-  rows.push(headerRow);
 
-  // First card (large)
+  // Header row
+  rows.push(['Cards (cards2)']);
+
+  // First card (large, left)
+  const firstCard = grid.querySelector('a.utility-link-content-block');
   if (firstCard) {
-    const img = getCardImage(firstCard);
-    const text = getCardText(firstCard);
-    if (img) {
-      rows.push([
-        img.cloneNode(true),
-        text.length ? text : '',
-      ]);
+    // Image is inside a div
+    const imgDiv = firstCard.querySelector('div[class*="utility-aspect-"]');
+    let img = imgDiv ? imgDiv.querySelector('img') : null;
+    // Tag
+    const tagGroup = firstCard.querySelector('.tag-group');
+    let tags = [];
+    if (tagGroup) {
+      tags = Array.from(tagGroup.children);
     }
+    // Heading
+    let heading = firstCard.querySelector('h3');
+    // Paragraph
+    let paragraph = firstCard.querySelector('p');
+    const textContent = [];
+    if (tags.length) {
+      textContent.push(...tags);
+    }
+    if (heading) {
+      textContent.push(heading);
+    }
+    if (paragraph) {
+      textContent.push(paragraph);
+    }
+    rows.push([img, textContent]);
   }
 
-  // Two image cards
-  imageCards.forEach((card) => {
-    const img = getCardImage(card);
-    const text = getCardText(card);
-    if (img) {
-      rows.push([
-        img.cloneNode(true),
-        text.length ? text : '',
-      ]);
-    }
-  });
+  // Second column: two cards with images
+  // Find the flex-horizontal.flex-vertical.flex-gap-sm (second column)
+  const secondCol = grid.querySelector('.flex-horizontal.flex-vertical.flex-gap-sm');
+  if (secondCol) {
+    const cardLinks = secondCol.querySelectorAll('a.utility-link-content-block');
+    cardLinks.forEach((cardEl) => {
+      // Image is inside a div
+      const imgDiv = cardEl.querySelector('div[class*="utility-aspect-"]');
+      let img = imgDiv ? imgDiv.querySelector('img') : null;
+      // Tag
+      const tagGroup = cardEl.querySelector('.tag-group');
+      let tags = [];
+      if (tagGroup) {
+        tags = Array.from(tagGroup.children);
+      }
+      // Heading
+      let heading = cardEl.querySelector('h3');
+      // Paragraph
+      let paragraph = cardEl.querySelector('p');
+      const textContent = [];
+      if (tags.length) {
+        textContent.push(...tags);
+      }
+      if (heading) {
+        textContent.push(heading);
+      }
+      if (paragraph) {
+        textContent.push(paragraph);
+      }
+      rows.push([img, textContent]);
+    });
+  }
 
-  // Text-only cards (no image): do NOT push rows with empty image cells
-  // Only push rows where there is an image (as per block spec)
+  // Third column: text-only cards separated by dividers
+  const thirdCol = grid.querySelectorAll('.flex-horizontal.flex-vertical.flex-gap-sm')[1];
+  if (thirdCol) {
+    // Each card is an <a>, divider is a <div class="divider">
+    const children = Array.from(thirdCol.children);
+    children.forEach((child) => {
+      if (child.matches('a.utility-link-content-block')) {
+        // No image, just text
+        let heading = child.querySelector('h3');
+        let paragraph = child.querySelector('p');
+        const textContent = [];
+        if (heading) {
+          textContent.push(heading);
+        }
+        if (paragraph) {
+          textContent.push(paragraph);
+        }
+        // Always use two columns, first cell empty if no image
+        rows.push(['', textContent]);
+      }
+    });
+  }
 
-  // Create table and replace
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create the table block
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element
+  element.replaceWith(block);
 }

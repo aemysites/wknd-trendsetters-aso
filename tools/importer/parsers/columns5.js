@@ -1,46 +1,40 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Find the main grid container (contains both columns)
+  // Find the main grid containing the two columns
   const grid = element.querySelector('.grid-layout');
-  let leftCol, rightCol;
+  if (!grid) return;
 
-  // Find all immediate children of the main grid
-  const gridChildren = Array.from(grid.children);
+  // Get the two columns: left (content), right (image)
+  const columns = Array.from(grid.children);
 
-  // Find the left column (content) and right column (image)
-  // The left column is a div with another grid inside, the right is an img
-  leftCol = gridChildren.find(child => child.tagName === 'DIV');
-  rightCol = gridChildren.find(child => child.tagName === 'IMG');
+  // Defensive: ensure we have at least two columns
+  if (columns.length < 2) return;
 
-  // Defensive: If nested grid, get the actual content div
-  let contentDiv = leftCol;
-  if (leftCol && leftCol.querySelector('.section')) {
-    contentDiv = leftCol.querySelector('.section');
-  }
+  // Identify left column (should contain heading) and right column (should be image)
+  let leftCol = null;
+  let rightCol = null;
+  columns.forEach(col => {
+    if (!leftCol && col.querySelector('h2, .h2-heading')) {
+      leftCol = col;
+    } else if (!rightCol && col.tagName === 'IMG') {
+      rightCol = col;
+    }
+  });
 
-  // Compose left column content: heading, paragraph, buttons
-  const heading = contentDiv.querySelector('h2');
-  const paragraph = contentDiv.querySelector('.rich-text, .w-richtext');
-  const buttonGroup = contentDiv.querySelector('.button-group');
+  if (!leftCol || !rightCol) return;
 
-  // Compose left cell: heading, paragraph, buttons
-  const leftCellContent = [];
-  if (heading) leftCellContent.push(heading);
-  if (paragraph) leftCellContent.push(paragraph);
-  if (buttonGroup) leftCellContent.push(buttonGroup);
-
-  // Compose right cell: image
-  const rightCellContent = rightCol ? [rightCol] : [];
-
-  // Table header row
+  // Table header row: block name as per instructions
   const headerRow = ['Columns (columns5)'];
-  // Table content row: left and right columns
-  const contentRow = [leftCellContent, rightCellContent];
 
-  // Build the table
-  const cells = [headerRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Table second row: leftCol and rightCol DOM references
+  const secondRow = [leftCol, rightCol];
 
-  // Replace original element with block
-  element.replaceWith(block);
+  // Build the table using DOMUtils
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    secondRow
+  ], document);
+
+  // Replace the original section with the table
+  element.replaceWith(table);
 }

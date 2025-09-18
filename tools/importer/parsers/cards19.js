@@ -1,38 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header as required
+  // Header row as required
   const headerRow = ['Cards (cards19)'];
   const rows = [headerRow];
 
-  // Get all immediate card containers (each card is a flex-horizontal)
-  const cardElements = element.querySelectorAll(':scope > div');
+  // Get all direct children (each card)
+  const cardDivs = element.querySelectorAll(':scope > div');
 
-  cardElements.forEach((card) => {
-    // Icon: find the first .icon element inside the card (contains SVG)
-    const iconWrapper = card.querySelector('.icon');
-    // Defensive: ensure we have an icon
-    let icon = null;
-    if (iconWrapper) {
-      icon = iconWrapper;
-    }
+  cardDivs.forEach((cardDiv) => {
+    // Defensive: find the icon (SVG) and the text (p)
+    // Icon is inside: div > div.icon > svg
+    let iconDiv = cardDiv.querySelector(':scope > div .icon');
+    let icon = iconDiv ? iconDiv.querySelector('svg') : null;
+    // Text is the p tag
+    let text = cardDiv.querySelector('p');
 
-    // Text: find the p (description) inside the card
-    const text = card.querySelector('p');
-    // Defensive: ensure we have text
-    let textContent = null;
-    if (text) {
-      textContent = text;
-    }
+    // Defensive: if either is missing, skip this card
+    if (!icon || !text) return;
 
-    // Add the row: [icon, text]
+    // Place icon and text in their respective cells
     rows.push([
       icon,
-      textContent,
+      text
     ]);
   });
 
-  // Create the block table
+  // Create the table block
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element
   element.replaceWith(table);
 }

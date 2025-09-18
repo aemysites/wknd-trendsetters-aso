@@ -1,68 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Ensure element exists
-  if (!element) return;
+  // Helper to get all images for the background collage
+  function getBackgroundImages() {
+    // Find the grid with images
+    const grid = element.querySelector('.ix-hero-scale-3x-to-1x .grid-layout');
+    if (!grid) return [];
+    // Get all img elements inside the grid
+    return Array.from(grid.querySelectorAll('img'));
+  }
 
-  // Header row as required
+  // Helper to get the content (title, subheading, buttons)
+  function getContentBlock() {
+    // Find the content container
+    const content = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
+    if (!content) return null;
+    // We'll collect the heading, subheading, and button group if present
+    const children = [];
+    const heading = content.querySelector('h1, h2, h3, h4, h5, h6');
+    if (heading) children.push(heading);
+    const subheading = content.querySelector('p');
+    if (subheading) children.push(subheading);
+    const buttonGroup = content.querySelector('.button-group');
+    if (buttonGroup) children.push(buttonGroup);
+    return children;
+  }
+
+  // 1. Header row
   const headerRow = ['Hero (hero20)'];
 
-  // --- Background Images ---
-  // Find the grid of images for the background collage
-  let backgroundImagesContainer = null;
-  const gridContainers = element.querySelectorAll('.grid-layout');
-  for (const grid of gridContainers) {
-    // Look for the one with multiple .utility-position-relative children containing <img>
-    const imgDivs = grid.querySelectorAll('.utility-position-relative img');
-    if (imgDivs.length > 0) {
-      backgroundImagesContainer = grid;
-      break;
-    }
+  // 2. Background image row (all images as a collage)
+  const bgImages = getBackgroundImages();
+  let bgCell = '';
+  if (bgImages.length > 0) {
+    bgCell = bgImages;
   }
+  const bgRow = [bgCell];
 
-  // Defensive: If not found, fallback to any images inside element
-  let backgroundImages = [];
-  if (backgroundImagesContainer) {
-    backgroundImages = Array.from(backgroundImagesContainer.querySelectorAll('img'));
-  } else {
-    backgroundImages = Array.from(element.querySelectorAll('img'));
-  }
+  // 3. Content row (title, subheading, cta)
+  const contentBlock = getContentBlock();
+  const contentRow = [contentBlock ? contentBlock : ''];
 
-  // Wrap all images in a div for the background cell
-  const bgDiv = document.createElement('div');
-  backgroundImages.forEach(img => bgDiv.appendChild(img));
+  // Compose table
+  const cells = [headerRow, bgRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
 
-  // --- Content (Heading, Subheading, CTAs) ---
-  // Find the content container
-  let contentContainer = element.querySelector('.ix-hero-scale-3x-to-1x-content');
-  if (!contentContainer) {
-    // Fallback: look for .container or first h1
-    contentContainer = element.querySelector('.container') || element.querySelector('h1')?.parentElement;
-  }
-
-  // Defensive: If not found, fallback to element itself
-  if (!contentContainer) contentContainer = element;
-
-  // Extract heading, subheading, and button group
-  const heading = contentContainer.querySelector('h1');
-  const subheading = contentContainer.querySelector('p');
-  const buttonGroup = contentContainer.querySelector('.button-group');
-
-  // Compose content cell
-  const contentCell = [];
-  if (heading) contentCell.push(heading);
-  if (subheading) contentCell.push(subheading);
-  if (buttonGroup) contentCell.push(buttonGroup);
-
-  // Table rows
-  const rows = [
-    headerRow,
-    [bgDiv],
-    [contentCell]
-  ];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace the original element
-  element.replaceWith(block);
+  // Replace original element
+  element.replaceWith(table);
 }

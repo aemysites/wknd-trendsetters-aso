@@ -1,28 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container with images
+  // Defensive: find the grid container with the images
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Get all direct children of the grid (each column cell)
-  const gridCells = Array.from(grid.children);
+  // Get all immediate children of the grid (each column cell)
+  const gridItems = Array.from(grid.children);
 
-  // For each grid cell, find the image inside
-  const images = gridCells.map(cell => {
+  // For each grid item, find the inner image (if any)
+  const cells = gridItems.map((item) => {
     // Defensive: find the image inside the nested divs
-    const img = cell.querySelector('img');
+    const img = item.querySelector('img');
     return img ? img : '';
   });
 
   // Build the table rows
   const headerRow = ['Columns (columns16)'];
-  const imagesRow = images;
+  const contentRow = cells;
+  const tableRows = [headerRow, contentRow];
 
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    imagesRow,
-  ], document);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(tableRows, document);
 
-  // Replace the original element with the new table
-  element.replaceWith(table);
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }

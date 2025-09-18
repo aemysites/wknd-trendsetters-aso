@@ -1,6 +1,6 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
+  // Header row for the block table
   const headerRow = ['Cards (cards29)'];
 
   // Get all immediate children (each card wrapper)
@@ -8,14 +8,13 @@ export default function parse(element, { document }) {
 
   // Prepare rows for each card
   const rows = [];
+
   cardDivs.forEach((cardDiv) => {
-    // Defensive: look for the image inside this card
+    // Find the image inside this card
     const img = cardDiv.querySelector('img');
-    // Always produce two columns per row (image, text)
-    if (img) {
-      // For this HTML, there is no text content, so second cell is empty
-      rows.push([img, '']);
-    }
+    if (!img) return; // skip if no image
+    // The provided HTML contains only images, no text content, so do not add unnecessary empty columns
+    rows.push([img]);
   });
 
   // Compose the table data
@@ -24,6 +23,6 @@ export default function parse(element, { document }) {
   // Create the table block
   const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element
+  // Replace the original element with the block table
   element.replaceWith(block);
 }

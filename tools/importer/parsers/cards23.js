@@ -1,51 +1,47 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract image, title, and description from a card anchor
-  function extractCardContent(card) {
-    // Get image (if present)
-    let img = card.querySelector('img');
-    // Get heading (h3)
-    let heading = card.querySelector('h3');
-    // Get all paragraphs (all .paragraph-sm inside the card)
-    let descs = Array.from(card.querySelectorAll('.paragraph-sm'));
-    // Compose text cell: heading (if any), then ALL descriptions (if any)
-    const textContent = [];
-    if (heading) textContent.push(heading);
-    descs.forEach(desc => textContent.push(desc));
-    // Only add row if image exists, per block spec (no empty image cells)
-    if (img) {
-      return [img, textContent];
-    }
-    // If no image, skip this card (do not add empty cell)
-    return null;
-  }
-
-  // Find the first active tab pane (should be the visible one)
-  const activePane = element.querySelector('.w-tab-pane.w--tab-active');
-  if (!activePane) return;
-
-  // Find the grid inside the active tab
-  const grid = activePane.querySelector('.w-layout-grid');
-  if (!grid) return;
-
-  // Get all card links (anchor tags)
-  const cards = Array.from(grid.querySelectorAll('a'));
-  if (!cards.length) return;
-
-  // Build table rows
-  const rows = [];
-  // Header row as specified
+  // Table header row as per block spec
   const headerRow = ['Cards (cards23)'];
-  rows.push(headerRow);
+  const rows = [headerRow];
 
-  // For each card, extract [image, text] columns, skip if no image
-  cards.forEach(card => {
-    const row = extractCardContent(card);
-    if (row) rows.push(row);
+  // Find all tab panes (each tab is a block of cards)
+  const tabPanes = element.querySelectorAll(':scope > div');
+  tabPanes.forEach((tabPane) => {
+    // Find the grid layout inside each tab pane
+    const grid = tabPane.querySelector('.w-layout-grid');
+    if (!grid) return;
+
+    // Each card is an <a> inside the grid
+    const cards = grid.querySelectorAll(':scope > a');
+    cards.forEach((card) => {
+      // Try to find image container and image
+      let img = card.querySelector('img');
+      // If no image, skip (per block spec)
+      if (!img) return;
+
+      // Compose text cell by collecting all text content in the card except the image
+      // Remove the image container from the clone, keep only text
+      const cardClone = card.cloneNode(true);
+      // Remove all images from the clone
+      cardClone.querySelectorAll('img').forEach(imgEl => imgEl.remove());
+      // Remove empty divs (like aspect ratio wrappers)
+      cardClone.querySelectorAll('div').forEach(div => {
+        if (!div.textContent.trim() && div.children.length === 0) div.remove();
+      });
+      // The text cell should contain all the remaining content (including heading, description, etc.)
+      const textCell = Array.from(cardClone.childNodes).filter(node => {
+        // Only keep elements or text nodes with content
+        if (node.nodeType === 3) return node.textContent.trim();
+        if (node.nodeType === 1) return node.textContent.trim() || node.querySelector('*');
+        return false;
+      });
+      // Add row: [image, text]
+      rows.push([img, textCell]);
+    });
   });
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element with the new table
-  element.replaceWith(table);
+  // Create table block
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element
+  element.replaceWith(block);
 }
