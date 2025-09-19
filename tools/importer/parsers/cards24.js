@@ -1,53 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from each <a> card
-  function extractCard(cardEl) {
-    // Image: first img inside the card
-    const imgWrapper = cardEl.querySelector('div.utility-aspect-2x3');
+  // Helper to extract card info from each <a>
+  function extractCard(a) {
+    // Find image (first .utility-aspect-2x3 img)
+    const imgWrapper = a.querySelector('.utility-aspect-2x3');
     let img = imgWrapper ? imgWrapper.querySelector('img') : null;
-    
-    // Text content: build a fragment
-    const frag = document.createDocumentFragment();
+    // Defensive: if no img, skip card
+    if (!img) return null;
 
-    // Tag/date row
-    const tagRow = cardEl.querySelector('.flex-horizontal');
-    if (tagRow) {
-      frag.appendChild(tagRow.cloneNode(true));
+    // Find tag/date row (second child div)
+    const infoRow = a.querySelector('.flex-horizontal');
+    let tag = null, date = null;
+    if (infoRow) {
+      const infoDivs = infoRow.querySelectorAll('div');
+      tag = infoDivs[0] || null;
+      date = infoDivs[1] || null;
     }
 
-    // Title (h3)
-    const heading = cardEl.querySelector('h3');
-    if (heading) {
-      frag.appendChild(heading.cloneNode(true));
-    }
+    // Find heading (h3)
+    const heading = a.querySelector('h3');
 
-    // Optionally, add a CTA link (the card itself is a link, but we do not duplicate it as CTA)
-    // If you want to add a CTA, you could add a link to the blog post here
-    // For now, we skip explicit CTA as per visual structure
+    // Compose text cell: tag/date row, then heading
+    const textCellContent = [];
+    if (infoRow) textCellContent.push(infoRow);
+    if (heading) textCellContent.push(heading);
 
-    return [img, frag];
+    return [img, textCellContent];
   }
 
-  // Get all card <a> elements (direct children)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+  // Get all cards (direct children <a> of the grid)
+  const cards = Array.from(element.querySelectorAll(':scope > a'));
 
   // Build table rows
-  const rows = [];
-  // Header row
-  rows.push(['Cards (cards24)']);
-
-  // Card rows
-  cardLinks.forEach(cardEl => {
-    const [img, textFrag] = extractCard(cardEl);
-    // Defensive: if no image, just use null
-    rows.push([
-      img || '',
-      textFrag
-    ]);
+  const headerRow = ['Cards (cards24)'];
+  const rows = [headerRow];
+  cards.forEach((a) => {
+    const cardCells = extractCard(a);
+    if (cardCells) rows.push(cardCells);
   });
 
-  // Create table
+  // Create table and replace element
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace element
   element.replaceWith(table);
 }

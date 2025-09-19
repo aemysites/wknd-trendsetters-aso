@@ -1,41 +1,28 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the grid-layout (3-column) container
+  // Find the grid-layout container (the columns block)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (should be 4: name, tags, heading, rich-text)
-  const gridChildren = Array.from(grid.children);
+  // Get all direct children of the grid (each column's content)
+  const columns = Array.from(grid.children);
 
-  // Defensive: expect at least 4 children for this layout
-  if (gridChildren.length < 4) return;
+  // Defensive: If there are fewer than 2 columns, don't build a columns block
+  if (columns.length < 2) return;
 
-  // Assign elements for clarity
-  const nameEl = gridChildren[0]; // Taylor Brooks
-  const tagsEl = gridChildren[1]; // tags block
-  const headingEl = gridChildren[2]; // h2 heading
-  const descEl = gridChildren[3]; // rich text description
-
-  // Column 1: name and tags
-  const col1 = document.createElement('div');
-  col1.appendChild(nameEl);
-  col1.appendChild(tagsEl);
-
-  // Column 2: heading and description
-  const col2 = document.createElement('div');
-  col2.appendChild(headingEl);
-  col2.appendChild(descEl);
-
-  // Construct table rows
+  // Build the header row
   const headerRow = ['Columns (columns30)'];
-  const contentRow = [col1, col2];
 
-  // Build the block table
+  // Build the columns row: each cell is the content of a column
+  // For this block, the visual layout is 3 columns side by side
+  const columnsRow = columns.map(col => col);
+
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    columnsRow,
   ], document);
 
-  // Replace the original element with the new table
+  // Replace the original element with the table
   element.replaceWith(table);
 }

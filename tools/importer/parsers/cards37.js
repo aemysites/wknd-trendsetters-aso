@@ -2,66 +2,60 @@
 export default function parse(element, { document }) {
   // Helper to extract card info from a card anchor
   function extractCardInfo(cardEl) {
-    // Find the image (mandatory)
+    // Find image (mandatory)
     const imgContainer = cardEl.querySelector('.utility-aspect-2x3, .utility-aspect-1x1');
-    const img = imgContainer ? imgContainer.querySelector('img') : null;
-    // Find the heading (h3 or h4)
-    const heading = cardEl.querySelector('h3, h4');
-    // Find the description (first <p>)
-    const description = cardEl.querySelector('p');
-    // Find the CTA (button or link inside the card)
-    let cta = cardEl.querySelector('.button, .cta, a.button');
-    // Defensive: If CTA is not a link, wrap in a span
-    if (cta && cta.tagName !== 'A') {
-      const span = document.createElement('span');
-      span.append(cta);
-      cta = span;
+    let img = null;
+    if (imgContainer) {
+      img = imgContainer.querySelector('img');
     }
+    // Find heading (optional)
+    let heading = cardEl.querySelector('h3, .h2-heading, .h4-heading');
+    // Find description (optional)
+    let desc = cardEl.querySelector('p');
+    // Find CTA (optional)
+    let cta = cardEl.querySelector('.button');
     // Compose text cell
-    const textCell = [];
-    if (heading) textCell.push(heading);
-    if (description) textCell.push(description);
-    if (cta) textCell.push(cta);
-    return [img, textCell];
+    const textCellContent = [];
+    if (heading) textCellContent.push(heading);
+    if (desc) textCellContent.push(desc);
+    if (cta) textCellContent.push(cta);
+    return [img, textCellContent];
   }
 
-  // Find the main grid containing the cards
-  const mainGrid = element.querySelector('.w-layout-grid.grid-layout');
-  // Get all direct card anchors in the main grid
-  // There may be nested grids (see source HTML)
-  let cardAnchors = Array.from(mainGrid.children).filter(
-    (child) => child.tagName === 'A'
-  );
-  // Check for nested grid(s) and collect their anchors
-  Array.from(mainGrid.children).forEach((child) => {
-    if (child.classList.contains('w-layout-grid')) {
-      cardAnchors.push(...Array.from(child.children).filter(
-        (c) => c.tagName === 'A'
-      ));
-    }
-  });
+  // Get all cards (anchor tags)
+  const cards = [];
+  // The main grid contains the first card and a nested grid with the rest
+  const mainGrid = element.querySelector('.grid-layout');
+  if (!mainGrid) return;
+  // Get all direct children of mainGrid
+  const mainGridChildren = Array.from(mainGrid.children);
+  // First card is a direct anchor child
+  const firstCardAnchor = mainGridChildren.find(el => el.tagName === 'A');
+  if (firstCardAnchor) {
+    cards.push(firstCardAnchor);
+  }
+  // The rest are inside a nested grid
+  const nestedGrid = mainGridChildren.find(el => el.classList.contains('grid-layout'));
+  if (nestedGrid) {
+    // Each card is an anchor child of nested grid
+    const nestedAnchors = Array.from(nestedGrid.querySelectorAll(':scope > a'));
+    cards.push(...nestedAnchors);
+  }
 
   // Compose table rows
-  const headerRow = ['Cards (cards37)'];
-  const rows = [headerRow];
-  cardAnchors.forEach((cardEl) => {
-    const [img, textCell] = extractCardInfo(cardEl);
-    // Defensive: Only add if image and text exist
-    if (img && textCell.length) {
-      // Fix: ensure only two columns per row
-      rows.push([img, textCell]);
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards37)']);
+  // Card rows
+  cards.forEach(cardEl => {
+    const [img, textCellContent] = extractCardInfo(cardEl);
+    // Defensive: only add row if image and text
+    if (img && textCellContent.length) {
+      rows.push([img, textCellContent]);
     }
   });
 
-  // Fix: ensure all data rows have exactly two columns
-  for (let i = 1; i < rows.length; i++) {
-    if (rows[i].length > 2) {
-      rows[i] = [rows[i][0], rows[i].slice(1)];
-    }
-  }
-
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element
-  element.replaceWith(block);
+  // Create table and replace element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

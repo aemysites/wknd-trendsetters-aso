@@ -1,34 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the top-level grid containing both columns
-  const topGrid = element.querySelector(':scope > .w-layout-grid');
-  if (!topGrid) return;
+  // Find the main grid container (should have two columns visually)
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  if (!grid) return;
 
-  // Find the left column: contains heading, paragraph, buttons
-  let leftCol = null;
-  const leftGrid = topGrid.querySelector('.container');
-  if (leftGrid && leftGrid.children.length > 0) {
-    leftCol = leftGrid.children[0]; // section with heading, text, buttons
-  }
-
-  // Find the right column: image (direct child of topGrid)
-  let rightCol = null;
-  for (const child of topGrid.children) {
-    if (child.tagName === 'IMG') {
-      rightCol = child;
-      break;
+  // Find the left column content (text + buttons)
+  // It's the first child grid inside the main grid
+  const leftGrid = grid.querySelector('.w-layout-grid.grid-layout.container');
+  let leftContent = '';
+  if (leftGrid) {
+    // The actual content is inside the first child of leftGrid
+    const leftSection = leftGrid.firstElementChild;
+    if (leftSection) {
+      // Reference the actual element, not clone
+      leftContent = leftSection;
     }
   }
 
-  // Defensive: If either column is missing, fallback to empty cell
+  // Find the right column image (should be a direct child of main grid)
+  // Defensive: find the first img inside the main grid that's not inside leftGrid
+  let rightImage = '';
+  const imgs = Array.from(grid.querySelectorAll('img'));
+  rightImage = imgs.find(img => !leftGrid || !leftGrid.contains(img));
+  if (rightImage) {
+    // Reference the actual image element
+    rightImage = rightImage;
+  }
+
+  // Table header row
   const headerRow = ['Columns (columns11)'];
-  const columnsRow = [leftCol || '', rightCol || ''];
 
-  // Use references to existing elements, not clones
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    columnsRow,
-  ], document);
+  // Table content row: two columns, left is text/buttons, right is image
+  const contentRow = [
+    leftContent || '',
+    rightImage || ''
+  ];
 
-  element.replaceWith(table);
+  // Build the table
+  const cells = [headerRow, contentRow];
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element with the block
+  element.replaceWith(block);
 }

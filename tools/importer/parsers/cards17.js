@@ -4,29 +4,34 @@ export default function parse(element, { document }) {
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Each card is a direct child of the grid
+  // Each direct child of grid is a card wrapper
   const cardDivs = Array.from(grid.children);
 
-  // Table header row
+  // Build the table rows
+  const rows = [];
+  // Header row
   const headerRow = ['Cards (cards17)'];
-  const rows = [headerRow];
+  rows.push(headerRow);
 
-  // For each card div, extract the image and ensure there are two columns per row
-  cardDivs.forEach((cardDiv) => {
-    const imgContainer = cardDiv.querySelector('.utility-aspect-2x3');
-    let img = null;
-    if (imgContainer) {
-      img = imgContainer.querySelector('img');
+  // For each card, extract the image (first cell), and extract text content from the closest alt attribute (second cell)
+  cardDivs.forEach(cardDiv => {
+    // Find the image inside the card
+    const img = cardDiv.querySelector('img');
+    let textContent = '';
+    if (img && img.alt) {
+      textContent = img.alt;
+    } else {
+      // Try to get any text node inside the cardDiv
+      const textNodes = Array.from(cardDiv.childNodes).filter(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+      textContent = textNodes.map(node => node.textContent.trim()).join(' ');
+      if (!textContent) textContent = 'Card';
     }
     if (img) {
-      // Always push two columns: image and empty string for text content
-      rows.push([img, '']);
+      rows.push([img, textContent]);
     }
   });
 
-  // Create the table block
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace the original element
-  element.replaceWith(block);
+  // Create the table and replace the original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

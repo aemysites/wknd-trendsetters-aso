@@ -1,44 +1,40 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Prepare the header row as required
+  // Helper: Get all immediate accordion blocks
+  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
+
+  // Table header row
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  // Get all direct children that are accordions
-  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
-
+  // For each accordion block, extract title and content
   accordions.forEach((accordion) => {
-    // Title cell: find the .w-dropdown-toggle > .paragraph-lg (the label)
-    let title = '';
+    // Title: Find the toggle, then the text container inside
     const toggle = accordion.querySelector('.w-dropdown-toggle');
+    let title = null;
     if (toggle) {
-      const titleDiv = toggle.querySelector('.paragraph-lg');
-      if (titleDiv) {
-        title = titleDiv;
-      }
+      // Find the title text (usually .paragraph-lg)
+      title = toggle.querySelector('.paragraph-lg') || toggle;
     }
 
-    // Content cell: find the .accordion-content, then its .rich-text or all its content
-    let content = '';
-    const contentNav = accordion.querySelector('.accordion-content');
-    if (contentNav) {
-      // There may be a .rich-text inside a padding wrapper
-      const richText = contentNav.querySelector('.rich-text');
-      if (richText) {
-        content = richText;
-      } else {
-        // fallback: use all children of contentNav
-        content = Array.from(contentNav.children);
-      }
+    // Content: Find the dropdown list, then the rich text inside
+    const dropdown = accordion.querySelector('.w-dropdown-list');
+    let content = null;
+    if (dropdown) {
+      // Find the rich text container
+      content = dropdown.querySelector('.rich-text') || dropdown;
     }
 
-    // Defensive: only add if both title and content exist
-    if (title && content) {
-      rows.push([title, content]);
-    }
+    // Defensive: fallback to whole toggle or dropdown if not found
+    rows.push([
+      title || document.createTextNode(''),
+      content || document.createTextNode(''),
+    ]);
   });
 
   // Create the table block
   const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

@@ -1,45 +1,60 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get the main grid layout
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
-  if (!grid) return;
+  // Defensive: Only parse if element exists
+  if (!element) return;
 
-  // Get the two main columns: image and content
-  const gridChildren = grid.children;
-  if (gridChildren.length < 2) return;
-
-  // --- Background Image (row 2) ---
-  let imageCell = '';
-  const imageContainer = gridChildren[0];
-  const img = imageContainer.querySelector('img');
-  if (img) {
-    // Reference the existing image element
-    imageCell = img;
-  }
-
-  // --- Content (row 3) ---
-  let contentCell = '';
-  const contentContainer = gridChildren[1];
-  // Find heading (h1), paragraph, and CTA (a)
-  const h1 = contentContainer.querySelector('h1');
-  const paragraph = contentContainer.querySelector('p');
-  const cta = contentContainer.querySelector('a');
-  // Compose content in order, preserving semantic structure
-  const contentEls = [];
-  if (h1) contentEls.push(h1);
-  if (paragraph) contentEls.push(paragraph);
-  if (cta) contentEls.push(cta);
-  if (contentEls.length) {
-    contentCell = contentEls;
-  }
-
-  // --- Table Construction ---
+  // Table header row
   const headerRow = ['Hero (hero39)'];
-  const rows = [
+
+  // --- Row 2: Background Image (optional) ---
+  // Find the image inside the first grid cell
+  let bgImg = null;
+  const gridDivs = element.querySelectorAll(':scope > div.w-layout-grid > div');
+  if (gridDivs.length > 0) {
+    // Look for an <img> inside the first grid cell
+    bgImg = gridDivs[0].querySelector('img');
+  }
+  // If not found, fallback to any img inside header
+  if (!bgImg) {
+    bgImg = element.querySelector('img');
+  }
+  const imageRow = [bgImg ? bgImg : ''];
+
+  // --- Row 3: Text Content ---
+  // Find the text container (second grid cell)
+  let textContainer = null;
+  if (gridDivs.length > 1) {
+    textContainer = gridDivs[1];
+  }
+  // Defensive: If not found, fallback to any container with heading
+  if (!textContainer) {
+    textContainer = element.querySelector('h1')?.parentElement;
+  }
+
+  // Extract heading, paragraph, and CTA
+  let heading = null, paragraph = null, cta = null;
+  if (textContainer) {
+    heading = textContainer.querySelector('h1');
+    paragraph = textContainer.querySelector('p');
+    cta = textContainer.querySelector('a');
+  }
+
+  // Compose content cell
+  const contentCell = [];
+  if (heading) contentCell.push(heading);
+  if (paragraph) contentCell.push(paragraph);
+  if (cta) contentCell.push(cta);
+  const contentRow = [contentCell.length ? contentCell : ''];
+
+  // Compose table rows
+  const cells = [
     headerRow,
-    [imageCell],
-    [contentCell],
+    imageRow,
+    contentRow
   ];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Replace original element
+  element.replaceWith(block);
 }
