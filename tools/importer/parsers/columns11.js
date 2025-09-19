@@ -1,44 +1,34 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get the main grid layout (first child of section)
-  const grid = element.querySelector(':scope > div');
-  if (!grid) return;
+  // Find the top-level grid containing both columns
+  const topGrid = element.querySelector(':scope > .w-layout-grid');
+  if (!topGrid) return;
 
-  // Get all direct children of the grid
-  const gridChildren = Array.from(grid.children);
+  // Find the left column: contains heading, paragraph, buttons
+  let leftCol = null;
+  const leftGrid = topGrid.querySelector('.container');
+  if (leftGrid && leftGrid.children.length > 0) {
+    leftCol = leftGrid.children[0]; // section with heading, text, buttons
+  }
 
-  // There are two main columns: left (text/buttons), right (image)
-  // Find the left content (the nested grid)
-  let leftContent = null;
-  let rightImage = null;
-
-  // The left content is a div with a grid class and contains the text/buttons
-  for (const child of gridChildren) {
-    if (
-      child.tagName === 'DIV' &&
-      child.classList.contains('w-layout-grid') &&
-      child.querySelector('h2')
-    ) {
-      leftContent = child;
-    } else if (child.tagName === 'IMG') {
-      rightImage = child;
+  // Find the right column: image (direct child of topGrid)
+  let rightCol = null;
+  for (const child of topGrid.children) {
+    if (child.tagName === 'IMG') {
+      rightCol = child;
+      break;
     }
   }
 
-  // Defensive: if not found, fallback to first/last child
-  if (!leftContent && gridChildren.length > 0) leftContent = gridChildren[0];
-  if (!rightImage && gridChildren.length > 1) rightImage = gridChildren[1];
-
-  // Compose the table rows
+  // Defensive: If either column is missing, fallback to empty cell
   const headerRow = ['Columns (columns11)'];
-  const contentRow = [leftContent, rightImage];
+  const columnsRow = [leftCol || '', rightCol || ''];
 
-  // Build the table
+  // Use references to existing elements, not clones
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow,
+    columnsRow,
   ], document);
 
-  // Replace the original element
   element.replaceWith(table);
 }

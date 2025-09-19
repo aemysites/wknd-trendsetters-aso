@@ -1,32 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid-layout container (main columns wrapper)
+  // Find the grid-layout container
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (should be image and content div)
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  // Get direct children of the grid (should be image and content div)
+  const gridChildren = Array.from(grid.children);
+  if (gridChildren.length < 2) return;
 
-  // First column: the image
-  const imgCol = columns.find((col) => col.tagName === 'IMG');
-  // Second column: the content div
-  const contentCol = columns.find((col) => col.tagName !== 'IMG');
+  // First column: image (reference the actual image element)
+  const imageCol = gridChildren[0];
+  // Second column: text content (reference the actual content element)
+  const contentCol = gridChildren[1];
 
-  // Defensive: ensure both columns exist
-  if (!imgCol || !contentCol) return;
-
-  // Do not clone, reference existing elements
-  // Ensure all text and semantic meaning is preserved
-
-  // Table header must match target block name exactly
+  // Table header must match block name exactly
   const headerRow = ['Columns (columns32)'];
-  const contentRow = [imgCol, contentCol];
+  // Table row: reference elements, not clone or create new
+  const columnsRow = [imageCol, contentCol];
 
-  // Create the block table
+  // Create the columns block table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    columnsRow,
   ], document);
 
   // Replace the original element with the new table

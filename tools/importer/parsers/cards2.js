@@ -1,75 +1,71 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract image from a card block
-  function getImage(card) {
-    return card.querySelector('img');
+  // Helper to extract card info from a card link element
+  function extractCard(linkEl) {
+    // Find image (if present)
+    let imgWrapper = linkEl.querySelector(':scope > div[class*="aspect"]');
+    let img = imgWrapper ? imgWrapper.querySelector('img') : null;
+
+    // Find tag (if present)
+    let tagGroup = linkEl.querySelector('.tag-group');
+    let tag = tagGroup ? tagGroup.querySelector('.tag') : null;
+
+    // Find heading (h3 or h4)
+    let heading = linkEl.querySelector('h3, .h3-heading, .h4-heading');
+    // Find description (p)
+    let desc = linkEl.querySelector('p');
+
+    // Compose text cell
+    const textCell = [];
+    if (tag) textCell.push(tag);
+    if (heading) textCell.push(heading);
+    if (desc) textCell.push(desc);
+
+    return [img ? img : '', textCell];
   }
 
-  // Helper to extract text content from a card block
-  function getTextContent(card) {
-    const frag = document.createDocumentFragment();
-    // Tag (optional)
-    const tagGroup = card.querySelector('.tag-group');
-    if (tagGroup) {
-      frag.appendChild(tagGroup.cloneNode(true));
-    }
-    // Heading (h3)
-    const heading = card.querySelector('h3');
-    if (heading) {
-      frag.appendChild(heading.cloneNode(true));
-    }
-    // Paragraph (description)
-    const para = card.querySelector('p');
-    if (para) {
-      frag.appendChild(para.cloneNode(true));
-    }
-    return frag;
-  }
-
-  // Find the main grid
+  // Get main grid
   const grid = element.querySelector('.grid-layout');
-  const cards = [];
+  if (!grid) return;
 
-  // First, get the large card (left side)
-  const firstCard = grid.querySelector('.utility-link-content-block');
-  if (firstCard) {
-    const img = getImage(firstCard);
-    const text = getTextContent(firstCard);
-    cards.push([img, text]);
+  // Cards array
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards2)']);
+
+  // First card: large image and text
+  const firstCardLink = grid.querySelector(':scope > a.utility-link-content-block');
+  if (firstCardLink) {
+    rows.push(extractCard(firstCardLink));
   }
 
-  // Next, get the vertical stack of cards (right side)
-  // These are inside .flex-horizontal.flex-vertical.flex-gap-sm
-  const verticalGroups = grid.querySelectorAll('.flex-horizontal.flex-vertical.flex-gap-sm');
-  verticalGroups.forEach((group) => {
-    // Each group contains multiple .utility-link-content-block elements
-    const groupCards = group.querySelectorAll('.utility-link-content-block');
-    groupCards.forEach((card) => {
-      // Try to get image (if present)
-      const img = getImage(card);
-      let cellImg = img ? img : '';
-      // Tag (optional)
-      const tagGroup = card.querySelector('.tag-group');
-      // Compose text
-      const frag = document.createDocumentFragment();
-      if (tagGroup) frag.appendChild(tagGroup.cloneNode(true));
-      const heading = card.querySelector('h3');
-      if (heading) frag.appendChild(heading.cloneNode(true));
-      const para = card.querySelector('p');
-      if (para) frag.appendChild(para.cloneNode(true));
-      cards.push([cellImg, frag]);
+  // Second row: two cards side by side
+  const secondRow = grid.querySelector(':scope > .flex-horizontal.flex-vertical.flex-gap-sm');
+  if (secondRow) {
+    const cardLinks = Array.from(secondRow.querySelectorAll(':scope > a.utility-link-content-block'));
+    cardLinks.forEach(link => {
+      rows.push(extractCard(link));
     });
-  });
+  }
 
-  // Table header
-  const headerRow = ['Cards (cards2)'];
-  const tableRows = [headerRow];
-  // Add all cards
-  cards.forEach(([img, text]) => {
-    tableRows.push([img || '', text]);
-  });
+  // Third row: vertical stack of text cards (no images)
+  const thirdRow = grid.querySelectorAll(':scope > .flex-horizontal.flex-vertical.flex-gap-sm')[1];
+  // Defensive: if not found, try next sibling
+  let thirdRowEl = thirdRow || grid.children[2];
+  if (thirdRowEl && thirdRowEl.classList.contains('flex-horizontal')) {
+    const cardLinks = Array.from(thirdRowEl.querySelectorAll(':scope > a.utility-link-content-block'));
+    cardLinks.forEach(link => {
+      // For these, no image, just text
+      let heading = link.querySelector('h3, .h3-heading, .h4-heading');
+      let desc = link.querySelector('p');
+      const textCell = [];
+      if (heading) textCell.push(heading);
+      if (desc) textCell.push(desc);
+      rows.push(['', textCell]);
+    });
+  }
 
-  // Create and replace
-  const block = WebImporter.DOMUtils.createTable(tableRows, document);
-  element.replaceWith(block);
+  // Create table and replace
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

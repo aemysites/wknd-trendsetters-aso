@@ -1,43 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row (must match block name exactly)
+  // Table header row as required
   const headerRow = ['Hero (hero35)'];
 
-  // Background image row: none in this source, so empty string
-  const bgImageRow = [''];
+  // --- Row 2: Background image (optional) ---
+  // No image found in the provided HTML, so leave cell empty
+  const imageRow = [''];
 
-  // Content row: extract heading, subheading, CTA
-  let contentCell = '';
+  // --- Row 3: Content (title, subheading, CTA) ---
+  // Find the grid container
   const grid = element.querySelector('.grid-layout');
+  let contentCell = '';
   if (grid) {
-    // Find text block (with heading and subheading)
-    const textBlock = Array.from(grid.children).find(
-      (child) => child.querySelector('h2') || child.querySelector('h1')
-    );
-    // Find CTA block (a.button)
-    const ctaBlock = Array.from(grid.children).find(
-      (child) => child.tagName === 'A' && child.classList.contains('button')
-    );
-    const contentElements = [];
+    // Get all direct children of the grid
+    const gridChildren = grid.querySelectorAll(':scope > *');
+    // The first child contains heading and subheading
+    const textBlock = gridChildren[0];
+    // The second child is the CTA button
+    const ctaBlock = gridChildren[1];
+    // Compose content cell
+    const cellContent = [];
     if (textBlock) {
-      // Add all children of textBlock (preserve heading and paragraph)
-      contentElements.push(...Array.from(textBlock.children));
+      // Heading
+      const heading = textBlock.querySelector('h2');
+      if (heading) cellContent.push(heading);
+      // Subheading
+      const subheading = textBlock.querySelector('p');
+      if (subheading) cellContent.push(subheading);
     }
     if (ctaBlock) {
-      contentElements.push(ctaBlock);
+      cellContent.push(ctaBlock);
     }
-    // Only use referenced elements, not clones or new elements
-    contentCell = contentElements.length ? contentElements : '';
+    contentCell = cellContent;
   }
-  const contentRow = [contentCell];
 
-  // Create table with 1 column and 3 rows
-  const table = WebImporter.DOMUtils.createTable([
+  // Build table rows
+  const rows = [
     headerRow,
-    bgImageRow,
-    contentRow,
-  ], document);
+    imageRow,
+    [contentCell]
+  ];
 
-  // Replace original element with the table
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element
+  element.replaceWith(block);
 }

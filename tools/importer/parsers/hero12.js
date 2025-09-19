@@ -1,48 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children divs
-  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
-
-  // --- Row 1: Block name header ---
+  // Row 1: Block name
   const headerRow = ['Hero (hero12)'];
 
-  // --- Row 2: Background Image ---
-  let bgImg = '';
-  if (topDivs.length > 0) {
-    const bgImgDiv = topDivs[0];
-    const img = bgImgDiv.querySelector('img');
-    if (img) bgImg = img;
-  }
-  const bgImgRow = [bgImg];
-
-  // --- Row 3: Content (headline, subheading, CTA, etc.) ---
-  let contentCell = '';
-  if (topDivs.length > 1) {
-    const contentDiv = topDivs[1];
-    const cardBody = contentDiv.querySelector('.card-body');
-    if (cardBody) {
-      // Collect all content: headline, subpoints, cta
-      const frag = document.createDocumentFragment();
-      // Headline
-      const h2 = cardBody.querySelector('h2');
-      if (h2) frag.appendChild(h2.cloneNode(true));
-      // Subpoints: all .flex-horizontal with a <p>
-      const subpoints = cardBody.querySelectorAll('.flex-horizontal p');
-      subpoints.forEach(p => {
-        frag.appendChild(p.cloneNode(true));
-      });
-      // CTA button
-      const button = cardBody.querySelector('.button-group a, .button-group button');
-      if (button) frag.appendChild(button.cloneNode(true));
-      // Set contentCell to fragment if content, else empty string
-      contentCell = frag.childNodes.length > 0 ? frag : '';
+  // Row 2: Background image (optional)
+  let backgroundImg = '';
+  // Find the first direct child div, then its img
+  const grid = element.querySelector('.grid-layout.desktop-1-column');
+  if (grid) {
+    const firstDiv = grid.querySelector(':scope > div');
+    if (firstDiv) {
+      const bgImg = firstDiv.querySelector('img');
+      if (bgImg) backgroundImg = bgImg;
     }
   }
+  const backgroundRow = [backgroundImg];
 
-  // Always produce 3 rows (header, bg, content), third row empty if no content
-  const cells = [headerRow, bgImgRow, [contentCell]];
-  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
+  // Row 3: Title, subheading, CTA, etc.
+  let contentCell = document.createElement('div');
+  const cardBody = element.querySelector('.card-body');
+  if (cardBody) {
+    // Find the text container inside the grid (skip the image)
+    const innerGrid = cardBody.querySelector('.grid-layout');
+    if (innerGrid) {
+      const children = Array.from(innerGrid.children);
+      for (const child of children) {
+        if (child.tagName !== 'IMG') {
+          // Collect all relevant content inside text container
+          Array.from(child.childNodes).forEach(node => {
+            contentCell.appendChild(node.cloneNode(true));
+          });
+        }
+      }
+    }
+  }
+  // If no content was added, fallback to ''
+  if (!contentCell.hasChildNodes()) contentCell = '';
 
-  // Replace the original element
-  element.replaceWith(blockTable);
+  const cells = [
+    headerRow,
+    backgroundRow,
+    [contentCell]
+  ];
+
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(table);
 }

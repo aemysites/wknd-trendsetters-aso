@@ -1,57 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container
-  let gridDiv = element.querySelector('.w-layout-grid');
-  if (!gridDiv) gridDiv = element;
-
-  // Find the image (background)
-  let img = gridDiv.querySelector('img');
-
-  // Find the text container
-  let textDiv = null;
-  const gridChildren = gridDiv.querySelectorAll(':scope > div');
-  if (gridChildren.length > 1) {
-    textDiv = gridChildren[1];
-  } else {
-    textDiv = gridDiv.querySelector('.container');
+  // Helper: safely get first matching descendant by selector
+  function getDescendant(parent, selector) {
+    return parent.querySelector(selector);
   }
 
-  // Find heading (h1)
-  let heading = textDiv ? textDiv.querySelector('h1') : null;
+  // 1. Header row: block name
+  const headerRow = ['Hero (hero14)'];
 
-  // Find subheading (h2/h3/p) and CTA (button-group)
-  let subheading = null;
-  let cta = null;
-  if (textDiv) {
-    const buttonGroup = textDiv.querySelector('.button-group');
-    if (buttonGroup && buttonGroup.children.length > 0) {
-      cta = buttonGroup;
-    }
-    // Try to find a subheading (h2, h3, p) below h1
-    if (heading) {
-      let sib = heading.nextElementSibling;
-      while (sib) {
-        if (!subheading && (sib.tagName === 'H2' || sib.tagName === 'H3' || sib.tagName === 'P')) {
-          subheading = sib;
-        }
-        sib = sib.nextElementSibling;
+  // 2. Background image row
+  // Find the image inside the .ix-parallax-scale-out-hero div
+  let bgImg = null;
+  const parallaxDiv = element.querySelector('.ix-parallax-scale-out-hero');
+  if (parallaxDiv) {
+    bgImg = parallaxDiv.querySelector('img');
+  }
+  const bgImgRow = [bgImg ? bgImg : ''];
+
+  // 3. Content row (title, subheading, CTA)
+  // Find the container with the heading and possible CTA
+  let contentCell = [];
+  // The heading is inside .container .utility-margin-bottom-6rem > h1
+  const container = element.querySelector('.container');
+  if (container) {
+    const headingWrapper = container.querySelector('.utility-margin-bottom-6rem');
+    if (headingWrapper) {
+      // Heading
+      const h1 = headingWrapper.querySelector('h1');
+      if (h1) contentCell.push(h1);
+      // Button group (CTA), if present
+      const buttonGroup = headingWrapper.querySelector('.button-group');
+      if (buttonGroup && buttonGroup.children.length > 0) {
+        contentCell.push(buttonGroup);
       }
     }
   }
+  // Defensive: if nothing found, leave cell empty
+  const contentRow = [contentCell.length > 0 ? contentCell : ''];
 
-  // Compose text cell
-  const textCellContent = [];
-  if (heading) textCellContent.push(heading);
-  if (subheading) textCellContent.push(subheading);
-  if (cta) textCellContent.push(cta);
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    bgImgRow,
+    contentRow,
+  ], document);
 
-  // Table rows
-  const headerRow = ['Hero (hero14)'];
-  const imageRow = [img ? img : ''];
-  const textRow = [textCellContent.length ? textCellContent : ''];
-  const cells = [headerRow, imageRow, textRow];
-
-  // Create table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Replace the original element
+  element.replaceWith(table);
 }

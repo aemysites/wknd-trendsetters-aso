@@ -1,42 +1,60 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid layout (the two columns)
-  const grid = element.querySelector('.grid-layout');
-  let leftCol = null;
-  let rightCol = null;
-
-  if (grid) {
-    // The grid has two children: left column (content), right column (image)
-    const gridChildren = Array.from(grid.children);
-    // Find the div (content) and the img (image)
-    leftCol = gridChildren.find((el) => el.tagName === 'DIV');
-    rightCol = gridChildren.find((el) => el.tagName === 'IMG');
+  // Helper to get direct children by tag name
+  function getDirectChildByTag(parent, tagName) {
+    return Array.from(parent.children).find(child => child.tagName.toLowerCase() === tagName.toLowerCase());
   }
 
-  // Compose left column content: include ALL content blocks in the left column div
-  let leftColContent = [];
-  if (leftCol) {
-    // Instead of picking only h1, p, and button-group, include all child nodes
-    leftColContent = Array.from(leftCol.childNodes).filter(node => {
-      // Filter out empty text nodes
-      return !(node.nodeType === Node.TEXT_NODE && !node.textContent.trim());
-    });
-  }
-
-  // Compose right column content (image)
-  let rightColContent = [];
-  if (rightCol) rightColContent.push(rightCol);
-
-  // Build table rows
+  // 1. Header row
   const headerRow = ['Columns (columns15)'];
-  const contentRow = [leftColContent, rightColContent];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable([
+  // 2. Find the main grid layout (2 columns)
+  // The grid is: [left column: text/buttons] [right column: image]
+  const container = getDirectChildByTag(element, 'DIV');
+  if (!container) return;
+  const grid = getDirectChildByTag(container, 'DIV');
+  if (!grid) return;
+
+  // Find left column (text/buttons) and right column (image)
+  // The grid's children: [0]=text column, [1]=image
+  const gridChildren = Array.from(grid.children);
+  if (gridChildren.length < 2) return;
+  const leftCol = gridChildren[0];
+  const rightCol = gridChildren[1];
+
+  // 2nd row: left column (all text/buttons), right column (image)
+  const row2 = [leftCol, rightCol];
+
+  // 3. Find navigation bar (bottom row)
+  // The nav is the next direct child after the grid
+  const nav = Array.from(container.parentElement.children).find(
+    el => el.classList && el.classList.contains('nav')
+  );
+  // Defensive: if not found, fallback to searching in element
+  const navEl = nav || Array.from(element.children).find(el => el.classList && el.classList.contains('nav'));
+  if (!navEl) return;
+
+  // 3rd row: nav bar spanning both columns
+  // To match the visual balance, split nav into left and right sections
+  // nav-left (logo/menu), nav-right (subscribe button)
+  const navContainer = getDirectChildByTag(navEl, 'DIV');
+  if (!navContainer) return;
+  const navLeft = navContainer.querySelector('.nav-left');
+  const navRight = navContainer.querySelector('.nav-right');
+  // Defensive: if not found, fallback to navContainer's children
+  const navLeftCell = navLeft || navContainer.children[0];
+  const navRightCell = navRight || navContainer.children[navContainer.children.length - 2];
+
+  const row3 = [navLeftCell, navRightCell];
+
+  // Build the table
+  const cells = [
     headerRow,
-    contentRow,
-  ], document);
+    row2,
+    row3
+  ];
 
-  // Replace original element
+  // Create and replace
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

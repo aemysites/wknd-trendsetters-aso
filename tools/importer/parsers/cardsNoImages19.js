@@ -1,27 +1,22 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row
+  // Always use the required block name as header
   const headerRow = ['Cards (cardsNoImages19)'];
+  const rows = [headerRow];
 
-  // Defensive: get all direct children (each card)
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+  // Get all immediate child divs (each card)
+  const cardDivs = element.querySelectorAll(':scope > div');
 
-  // Each cardDiv contains an icon and a <p> with the description
-  const rows = cardDivs.map(cardDiv => {
-    // Find the <p> inside this cardDiv (description)
+  cardDivs.forEach(cardDiv => {
+    // Find the text content (the p tag)
     const p = cardDiv.querySelector('p');
-    // Defensive: if no <p>, skip this card
-    if (!p) return null;
-    // Only use the <p> (no icon, no heading)
-    return [p];
-  }).filter(Boolean);
+    if (p) {
+      // Add only the paragraph (description) as the card content
+      rows.push([p]);
+    }
+  });
 
-  // Build table data
-  const tableData = [headerRow, ...rows];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
-
-  // Replace original element with the block table
-  element.replaceWith(block);
+  // Create the table and replace the original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

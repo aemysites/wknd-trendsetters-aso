@@ -1,48 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get all immediate child cards (each slide)
-  const cardWrappers = element.querySelectorAll(':scope > div');
+  // Helper: Get all immediate child divs
+  const topDivs = element.querySelectorAll(':scope > div');
 
-  // Table header row (block name)
+  // Header row for the block
   const headerRow = ['Carousel (carousel21)'];
-  const rows = [headerRow];
 
-  // For each card, extract image and text content
-  cardWrappers.forEach((cardWrapper) => {
-    // Defensive: Find .card-body inside this card
-    const cardBody = cardWrapper.querySelector('.card-body');
-    if (!cardBody) return;
+  // Slides rows
+  const rows = [];
 
-    // Image: first cell
-    const img = cardBody.querySelector('img');
-    // Defensive: only add row if image exists
-    if (!img) return;
+  // Defensive: Find the card container
+  let cardBody;
+  let imgEl;
+  let headingEl;
 
-    // Text content: second cell
-    // Try to find heading and description
-    const title = cardBody.querySelector('.h4-heading');
-    // For description, get all elements except the heading and image
-    const descriptionEls = Array.from(cardBody.childNodes).filter((node) => {
-      // Exclude heading and image
-      if (node === title || node === img) return false;
-      // Only include element nodes or text nodes with content
-      if (node.nodeType === 1) return true;
-      if (node.nodeType === 3 && node.textContent.trim()) return true;
-      return false;
-    });
-    // Compose text cell
-    const textCell = [];
-    if (title) textCell.push(title);
-    if (descriptionEls.length) textCell.push(...descriptionEls);
+  // Find the card-body div (contains heading and image)
+  for (const div of topDivs) {
+    // Look for nested card-body
+    cardBody = div.querySelector('.card-body');
+    if (cardBody) break;
+  }
 
-    // Add row: [image, text content]
-    rows.push([
-      img,
-      textCell.length ? textCell : ''
-    ]);
-  });
+  if (cardBody) {
+    // Find the image element
+    imgEl = cardBody.querySelector('img');
+    // Find the heading element (optional)
+    headingEl = cardBody.querySelector('.h4-heading');
+  }
 
-  // Create table and replace element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // First cell: image only
+  let imageCell = imgEl ? imgEl : '';
+
+  // Second cell: text content (heading if present)
+  let textCell = '';
+  if (headingEl) {
+    // Create a heading element (use <h3> for semantic heading)
+    const h3 = document.createElement('h3');
+    h3.textContent = headingEl.textContent;
+    textCell = h3;
+  }
+
+  // Only add slide row if image is present
+  if (imageCell) {
+    rows.push([imageCell, textCell]);
+  }
+
+  // Compose table cells
+  const cells = [headerRow, ...rows];
+
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }
