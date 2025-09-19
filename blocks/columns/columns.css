@@ -394,11 +394,10 @@
 .columns.columns7 > div {
   display: flex;
   flex-direction: row;
-  gap: 26px; /* reduced gap to bring columns closer, matching original */
+  gap: 26px;
   align-items: flex-start;
 }
 
-/* Responsive: stack vertically on small screens */
 @media (width <= 899px) {
   .columns.columns7 > div {
     flex-direction: column;
@@ -412,7 +411,6 @@
   justify-content: flex-start;
 }
 
-/* Heading styling: unchanged, matches original */
 .columns.columns7 > div > div:first-child h2 {
   margin-top: 0;
   margin-bottom: 0;
@@ -423,7 +421,6 @@
   letter-spacing: 0.04em;
 }
 
-/* Right column: no extra margin/padding, very compact */
 .columns.columns7 > div > div:last-child {
   display: flex;
   flex-direction: column;
@@ -434,7 +431,6 @@
   padding: 0;
 }
 
-/* Paragraph: tight wrap, subtle gap below */
 .columns.columns7 > div > div:last-child p:not(.button-container) {
   margin: 0 0 2px;
   padding: 0;
@@ -445,7 +441,6 @@
   max-width: 320px;
 }
 
-/* Button container: left-aligned, no width expansion */
 .columns.columns7 .button-container {
   display: flex;
   align-items: flex-start;
@@ -455,7 +450,6 @@
   width: auto;
 }
 
-/* Button: compact, matches paragraph start */
 .columns.columns7 .button-container .button {
   background: #fff;
   color: #181818;
@@ -473,11 +467,177 @@
   transition: background 0.2s, color 0.2s;
 }
 
-/* Button hover effect: invert colors */
 .columns.columns7 .button-container .button:hover,
 .columns.columns7 .button-container .button:focus {
   background: #181818;
   color: #fff;
   border-color: #181818;
   text-decoration: none;
+}
+
+
+.columns.columns9 {
+  background: #000;
+  padding: 40px 0 30px;
+  position: relative;
+}
+
+/* Grid layout for four columns, first column wider for branding */
+.columns.columns9 > div {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) 1fr 1fr 1fr;
+  gap: 0 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+@media (width <= 900px) {
+  .columns.columns9 > div {
+    grid-template-columns: 1fr;
+    gap: 32px 0;
+  }
+
+  .columns.columns9 > div > div {
+    min-width: 0;
+  }
+}
+
+/* First column: vertical stack for branding */
+.columns.columns9 > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 220px;
+  justify-content: flex-start;
+  padding-top: 8px; /* subtle vertical centering tweak */
+}
+
+/* Branding row (logo + text) */
+.columns.columns9 > div > div:first-child > p,
+.columns.columns9 > div > div:first-child .button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Logo image size */
+.columns.columns9 > div > div:first-child picture img {
+  width: 33px;
+  height: 33px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* "Fashion Blog" branding (override button styles) */
+.columns.columns9 > div > div:first-child .button-container .button {
+  background: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  padding: 0;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  min-width: unset;
+  max-width: unset;
+  text-align: left;
+  display: inline-block;
+}
+
+/* Social icons: horizontal row, spaced below branding */
+.columns.columns9 > div > div:first-child ul {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  margin: 40px 0 0 2px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Hide non-icon <li> ONLY in social row, show icons only */
+.columns.columns9 > div > div:first-child ul li {
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.columns.columns9 > div > div:first-child ul li:not(:has(picture)) {
+  display: none;
+}
+
+.columns.columns9 > div > div:first-child ul li picture img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+  vertical-align: middle;
+}
+
+/* Navigation columns */
+.columns.columns9 > div > div:not(:first-child) {
+  min-width: 150px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* Section headings */
+.columns.columns9 > div > div:not(:first-child) h2 {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: #595959;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* Navigation lists */
+.columns.columns9 > div > div:not(:first-child) ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.columns.columns9 > div > div:not(:first-child) ul li {
+  margin-bottom: 10px;
+  display: list-item;
+}
+
+.columns.columns9 > div > div:not(:first-child) ul li:last-child {
+  margin-bottom: 0;
+}
+
+/* Navigation links */
+.columns.columns9 > div > div:not(:first-child) ul li a {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  line-height: 1.7;
+  display: inline-block;
+}
+
+/* Remove bullets for all lists, just in case */
+.columns.columns9 ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Bottom divider line */
+.columns.columns9::after {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
