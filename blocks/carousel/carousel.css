@@ -154,188 +154,201 @@
 
 
 .carousel.carousel21 .carousel-slide {
-  transform: rotate(-7deg) scale(0.97);
-  box-shadow: 0 20px 50px rgb(44 44 44 / 24%), 0 0 0 2px #282828;
-  border-radius: 24px;
-  overflow: visible;
+  transform: rotate(-7deg) scale(0.98);
+  box-shadow: 0 24px 60px 0 rgb(44 44 44 / 22%), 0 0 0 2px #dedede;
+  border-radius: 28px;
   background: #fff;
+  overflow: visible;
   position: relative;
 }
 
-/* Collage rectangle: top left, pastel fill with soft border and SVG text watermark */
+/* Collage layer: faint colored gradient behind the image for scrapbook effect */
 .carousel.carousel21 .carousel-slide::before {
-  content: "";
   position: absolute;
-  top: -60px;
-  left: -90px;
+  top: -40px;
+  left: -60px;
   width: 95%;
-  height: 78%;
-  background: linear-gradient(120deg, #f6f7f9 80%, #e7edea 100%);
-  border: 2.5px solid #b0b0b0;
-  border-radius: 22px;
-  transform: rotate(-19deg);
-  opacity: 0.43;
+  height: 70%;
+  background: linear-gradient(110deg, #f7ede8 65%, #eaf7f6 100%);
+  border: 2px solid #c9d5e7;
+  border-radius: 26px;
+  transform: rotate(-15deg);
+  opacity: 0.26;
   z-index: 1;
-  box-shadow: 0 22px 30px rgb(44 44 44 / 11%);
-  background-image: url("data:image/svg+xml;utf8,<svg width='400' height='70' xmlns='http://www.w3.org/2000/svg'><text x='0' y='50' font-size='30' fill='rgba(34,34,34,0.13)' transform='rotate(-22)'>PARTY NIGHTS TREND ON</text></svg>");
-  background-repeat: no-repeat;
-  background-position: 38% 18%;
-  background-size: 70% auto;
-}
-
-/* Collage rectangle: top right, faint fill, pale blue border, cropped by edge */
-.carousel.carousel21 .carousel-slide::after {
-  content: "";
-  position: absolute;
-  top: 30px;
-  right: -70px;
-  width: 66%;
-  height: 49%;
-  background: linear-gradient(117deg, #eef3fa 65%, transparent 100%);
-  border: 2.5px solid #7eb3e5;
-  border-radius: 15px;
-  transform: rotate(15deg);
-  opacity: 0.39;
-  z-index: 2;
-  box-shadow: 0 2px 22px rgb(40 40 40 / 11%);
-}
-
-/* Collage rectangle: bottom right, transparent border, pastel fill */
-.carousel.carousel21 .carousel-slide-image::before {
-  content: "";
-  position: absolute;
-  bottom: -38px;
-  right: 8vw;
-  width: 50%;
-  height: 41%;
-  background: linear-gradient(120deg, #fdf6ea 90%, #fffaef 100%);
-  border: 2px solid #e2d6c2;
-  border-radius: 18px;
-  transform: rotate(21deg);
-  opacity: 0.37;
-  z-index: 3;
-  box-shadow: 0 3px 13px rgb(22 22 22 / 8%);
-}
-
-/* Collage rectangle: bottom left, thin border, cropped */
-.carousel.carousel21 .carousel-slide-image::after {
-  content: "";
-  position: absolute;
-  bottom: -54px;
-  left: -50px;
-  width: 42%;
-  height: 30%;
-  background: linear-gradient(90deg, #f6faf7 80%, transparent 100%);
-  border: 2px solid #abd7b1;
-  border-radius: 13px;
-  transform: rotate(-11deg);
-  opacity: 0.38;
-  z-index: 4;
-  box-shadow: 0 2px 11px rgb(20 40 20 / 8%);
-}
-
-/* Scribble lines: organic, curved, SVG backgrounds overlaid */
-.carousel.carousel21 .carousel-slide-content::before {
-  content: "";
-  position: absolute;
-  top: -38px;
-  left: -18px;
-  width: 160px;
-  height: 28px;
-  opacity: 0.32;
-  z-index: 5;
+  box-shadow: 0 14px 28px rgb(44 44 44 / 12%);
   pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg width='160' height='28' xmlns='http://www.w3.org/2000/svg'><path d='M7 14 Q35 -2,100 22 Q120 18,153 10' stroke='rgba(40,40,40,0.4)' stroke-width='3' fill='none'/></svg>");
+}
+
+/* Collage layer: translucent blue accent card layered on top right */
+.carousel.carousel21 .carousel-slide::after {
+  position: absolute;
+  top: 36px;
+  right: -52px;
+  width: 54%;
+  height: 34%;
+  background: rgb(108 172 237 / 8%);
+  border: 2px solid #a1c6ef;
+  border-radius: 17px;
+  transform: rotate(14deg);
+  opacity: 0.21;
+  z-index: 2;
+  box-shadow: 0 2px 18px rgb(40 40 40 / 9%);
+  pointer-events: none;
+}
+
+/* Subtle squiggle accent for scrapbook look */
+.carousel.carousel21 .carousel-slide-image::before {
+  position: absolute;
+  top: 16%;
+  left: 2vw;
+  width: 150px;
+  height: 28px;
+  opacity: 0.22;
+  z-index: 3;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg width='150' height='28' xmlns='http://www.w3.org/2000/svg'><path d='M7 14 Q35 -2,100 22 Q120 18,143 10' stroke='rgba(40,40,40,0.25)' stroke-width='3' fill='none'/></svg>");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
 
-.carousel.carousel21 .carousel-slide-content::after {
-  content: "";
+/* Main image with polaroid effect, some rotation and strong shadow */
+.carousel.carousel21 .carousel-slide-image {
   display: block;
   position: absolute;
-  left: 39px;
-  bottom: -28px;
-  width: 128px;
-  height: 4px;
-  background: linear-gradient(90deg, #222 71%, transparent 100%);
-  opacity: 0.27;
-  border-radius: 2px;
-  transform: rotate(-13deg);
+  inset: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 13px 42px 0 rgb(44 44 44 / 19%), 0 0 0 2px #ccc;
+  transform: rotate(-4deg) scale(1.01);
+  background: #fff;
+  z-index: 4;
 }
 
-/* Main image styling: shadow, border, rounded */
+/* Slightly rotate the image for extra scrapbook effect */
 .carousel.carousel21 .carousel-slide-image picture > img {
-  border-radius: 19px;
-  border: 2px solid #e8e8e8;
-  box-shadow: 0 10px 38px rgb(44 44 44 / 17%);
+  border-radius: 18px;
+  border: 2px solid #e9e9e9;
+  box-shadow: 0 10px 28px 0 rgb(44 44 44 / 13%);
+  transform: rotate(-2deg) scale(1.00);
+  background: #fff;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Caption block: rotated, organic rounding, slightly tucked under collage layers */
+/* Overlay text card: white, rounded, rotated, with shadow and accent underline */
 .carousel.carousel21 .carousel-slide-content {
   background: #fff;
-  color: #222;
-  border-radius: 18px 24px 22px 16px / 16px 22px 24px 20px;
-  box-shadow: 0 6px 22px rgb(44 44 44 / 17%);
+  color: #202020;
+  border-radius: 22px 27px 21px 25px / 18px 24px 21px 19px;
+  box-shadow: 0 13px 34px 0 rgb(44 44 44 / 13%);
+  border: 2.5px solid #ececec;
   position: absolute;
-  left: 56px;
-  bottom: 32px;
-  padding: 19px 36px;
-  margin: 0;
-  min-width: 200px;
-  max-width: 74vw;
-  transform: rotate(-15deg);
+  left: 7vw;
+  bottom: 7vw;
+  padding: 26px 45px 22px;
+  min-width: 240px;
+  max-width: 76vw;
+  transform: rotate(-13deg);
   opacity: 0.97;
-  font-size: 1.19em;
-  font-weight: 500;
-  letter-spacing: 0.025em;
-  z-index: 6;
-  border: 2px solid #ececec;
+  z-index: 10;
+  font-size: 1.28em;
+  font-weight: 600;
+  letter-spacing: 0.034em;
 }
 
-/* Responsive collage & caption tweaks */
+/* Decorative squiggle above the card */
+.carousel.carousel21 .carousel-slide-content::before {
+  position: absolute;
+  top: -30px;
+  left: -10px;
+  width: 120px;
+  height: 22px;
+  opacity: 0.26;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg width='120' height='22' xmlns='http://www.w3.org/2000/svg'><path d='M7 12 Q35 -4,90 15 Q110 12,118 7' stroke='rgba(40,40,40,0.21)' stroke-width='3' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: block;
+  content: "";
+}
+
+/* Accent underline below the card */
+.carousel.carousel21 .carousel-slide-content::after {
+  position: absolute;
+  left: 31px;
+  bottom: -13px;
+  width: 100px;
+  height: 5px;
+  background: linear-gradient(90deg,#222 68%,transparent 100%);
+  opacity: 0.19;
+  border-radius: 2.5px;
+  transform: rotate(-11deg);
+  z-index: 2;
+  pointer-events: none;
+  display: block;
+  content: "";
+}
+
+/* Responsive adjustments for mobile */
 @media (width <= 600px) {
-  .carousel.carousel21 .carousel-slide::before {
-    left: -32px;
-    top: -22px;
-    width: 88%;
-    height: 60%;
-    background-size: 90% auto;
+  .carousel.carousel21 .carousel-slide {
+    border-radius: 15px;
   }
 
-  .carousel.carousel21 .carousel-slide::after {
-    right: -13px;
-    top: 14px;
-    width: 76%;
-    height: 34%;
+  .carousel.carousel21 .carousel-slide-image {
+    border-radius: 9px;
+    transform: rotate(-2.5deg) scale(1.00);
   }
 
-  .carousel.carousel21 .carousel-slide-image::before {
-    right: 2vw;
-    bottom: -18px;
-    width: 60%;
-    height: 24%;
-  }
-
-  .carousel.carousel21 .carousel-slide-image::after {
-    left: -18px;
-    bottom: -24px;
-    width: 60%;
-    height: 22%;
+  .carousel.carousel21 .carousel-slide-image picture > img {
+    border-radius: 7px;
+    border-width: 1.2px;
   }
 
   .carousel.carousel21 .carousel-slide-content {
-    left: 13px;
-    bottom: 7px;
-    padding: 12px 10px;
-    min-width: 130px;
+    left: 6vw;
+    bottom: 3vw;
+    padding: 13px 12px 8px;
+    min-width: 120px;
     font-size: 1em;
   }
 
   .carousel.carousel21 .carousel-slide-content::after {
-    left: 14px;
-    bottom: -12px;
-    width: 80px;
-    height: 3px;
+    left: 11px;
+    bottom: -6px;
+    width: 50px;
+    height: 2px;
   }
+
+  .carousel.carousel21 .carousel-slide-content::before {
+    left: -4px;
+    top: -9px;
+    width: 43px;
+    height: 8px;
+  }
+
+  .carousel.carousel21 .carousel-slide::before {
+    left: -13px;
+    top: -8px;
+    width: 65%;
+    height: 40%;
+    border-radius: 13px;
+  }
+
+  .carousel.carousel21 .carousel-slide::after {
+    right: -4px;
+    top: 7px;
+    width: 30%;
+    height: 14%;
+    border-radius: 7px;
+  }
+}
+
+/* Hide navigation and indicators */
+.carousel.carousel21 .carousel-navigation-buttons,
+.carousel.carousel21 .carousel-slide-indicators {
+  display: none;
 }
