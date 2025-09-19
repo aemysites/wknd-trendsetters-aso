@@ -1,4 +1,3 @@
-/* stylelint-disable no-descending-specificity */
 .accordion details {
   border: 1px solid #dadada;
 }
@@ -62,102 +61,110 @@
 
 
 .accordion.accordion34 {
-  background: #FAFAF6;
-  max-width: 900px;
-  margin: 40px auto;
-  box-sizing: border-box;
+  background-color: #f7f7f3;
+  width: 100%;
+  margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* Remove extra margin/padding from details */
-.accordion.accordion34 details {
-  border: none;
+/* Remove all spacing around each details to make rows touch edge-to-edge */
+.accordion.accordion34 > details {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  border: none;
   background: transparent;
   box-sizing: border-box;
+
+  /* Remove default outline that some browsers show on focus/active */
+  outline: none;
 }
 
-/* Accordion row layout */
-.accordion.accordion34 details summary {
+/* Summary row: Only apply horizontal padding for text, no extra vertical */
+.accordion.accordion34 > details > summary {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
-  font-size: 14px;
-  color: #232323;
-  font-weight: 400;
-  background: transparent;
+  height: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 24px;
   border: none;
   outline: none;
+  background: transparent;
   cursor: pointer;
-  min-height: 40px;
-  transition: background 0.2s;
   width: 100%;
   box-sizing: border-box;
   gap: 10px;
+  list-style: none;
 }
 
-.accordion.accordion34 details:not(:last-child) summary {
-  border-bottom: 1px solid #E0E0E0;
+/* Divider line: full width, no row spacing */
+.accordion.accordion34 > details:not(:last-child) > summary {
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.accordion.accordion34 details summary::-webkit-details-marker,
-.accordion.accordion34 details summary::marker {
+/* Question text: perfectly centered, no extra margin or padding */
+.accordion.accordion34 > details > summary > p {
+  color: #222;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 44px;
+
+  /* Remove display:flex or align-self here to allow flex parent centering to work */
+}
+
+/* Hide default details marker */
+.accordion.accordion34 > details > summary::marker,
+.accordion.accordion34 > details > summary::-webkit-details-marker {
   display: none;
 }
 
-/* Chevron styling */
-.accordion.accordion34 details summary::after {
+/* Chevron arrow: right aligned, visually centered with text */
+.accordion.accordion34 > details > summary::after {
   display: inline-block;
   width: 6px;
   height: 6px;
-  border: solid #232323;
+  border: solid #222;
   border-width: 0 1.2px 1.2px 0;
   transform: rotate(45deg);
   margin-left: 6px;
   transition: transform 0.2s;
   flex-shrink: 0;
   vertical-align: middle;
+  position: relative;
+  top: 2px; /* Nudge for more accurate centering */
 }
 
-.accordion.accordion34 details[open] summary::after {
+/* Chevron flip when open */
+.accordion.accordion34 > details[open] > summary::after {
   transform: rotate(-135deg);
 }
 
-/* Ensure summary text wraps naturally */
-.accordion.accordion34 details summary p {
-  color: #232323;
-  font-size: 14px;
-  margin: 0;
-  line-height: 1.5;
-  font-weight: 400;
-  flex: 1 1 auto;
-  min-width: 0;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-}
-
-.accordion.accordion34 .accordion-item-body {
-  padding: 0 20px 16px;
-  background: #FAFAF6;
-  color: #232323;
-  font-size: 14px;
-  box-sizing: border-box;
+/* Accordion body: indented, no extra vertical margin */
+.accordion.accordion34 > details > .accordion-item-body {
+  padding: 0 24px 16px;
+  color: #222;
+  font-size: 15px;
+  background: transparent;
   border: none;
   margin: 0;
+  box-sizing: border-box;
 }
 
-/* Responsive adjustment for mobile */
+/* Responsive: reduce horizontal padding for small screens */
 @media (width <= 600px) {
-  .accordion.accordion34 {
-    max-width: 100vw;
-    margin: 24px 0;
-  }
-
-  .accordion.accordion34 details summary,
-  .accordion.accordion34 .accordion-item-body {
+  .accordion.accordion34 > details > summary,
+  .accordion.accordion34 > details > .accordion-item-body {
     padding-left: 10px;
     padding-right: 10px;
   }
