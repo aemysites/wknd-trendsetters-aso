@@ -1,56 +1,71 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
   // Helper to get immediate children by selector
-  const getChildren = (el, selector) => Array.from(el.querySelectorAll(selector));
+  const getChildren = (parent, selector) => Array.from(parent.querySelectorAll(selector));
 
   // 1. Header row
   const headerRow = ['Columns (columns16)'];
 
-  // 2. Identify main column groups
-  // The first grid (grid-layout tablet-1-column grid-gap-lg) contains the text and author info
-  // The second grid (grid-layout mobile-portrait-1-column grid-gap-md utility-margin-top-8rem y-top) contains the two images
+  // 2. Find main content columns (top grid)
+  // The first .grid-layout is the main content area (headline, intro, author, button)
+  const mainContainer = element.querySelector('.container');
+  const mainGrid = mainContainer.querySelector('.grid-layout.tablet-1-column');
+  const mainGridChildren = getChildren(mainGrid, ':scope > div');
 
-  // Find the main grids
-  const grids = element.querySelectorAll('.w-layout-grid.grid-layout');
+  // Left column: headline and eyebrow
+  const leftCol = mainGridChildren[0];
+  // Right column: intro, author, button
+  const rightCol = mainGridChildren[1];
 
-  // --- Left column: Title, subtitle, description, author, button ---
-  // Get title block
-  const titleBlock = element.querySelector('.utility-margin-bottom-0'); // h1
-  const eyebrow = element.querySelector('.eyebrow');
-  // Get description paragraph
-  const descPara = element.querySelector('.rich-text.paragraph-lg p');
-  // Get author block (avatar, name, date, read time)
-  const authorRow = element.querySelector('.flex-horizontal.y-center.flex-gap-xs');
-  // Get button
-  const readMoreBtn = element.querySelector('.button');
+  // Compose left column cell
+  // Contains eyebrow and headline
+  const leftCellContent = [];
+  const eyebrow = leftCol.querySelector('.eyebrow');
+  if (eyebrow) leftCellContent.push(eyebrow);
+  const headline = leftCol.querySelector('h1');
+  if (headline) leftCellContent.push(headline);
 
-  // Compose left column
-  const leftCol = document.createElement('div');
-  if (eyebrow) leftCol.appendChild(eyebrow);
-  if (titleBlock) leftCol.appendChild(titleBlock);
-  if (descPara) leftCol.appendChild(descPara);
-  if (authorRow) leftCol.appendChild(authorRow);
-  if (readMoreBtn) leftCol.appendChild(readMoreBtn);
-
-  // --- Right column: Two images stacked vertically ---
-  // Get image grid
-  const imageGrid = element.querySelector('.w-layout-grid.mobile-portrait-1-column');
-  let images = [];
-  if (imageGrid) {
-    images = Array.from(imageGrid.querySelectorAll('img'));
+  // Compose right column cell
+  const rightCellContent = [];
+  // Paragraph
+  const intro = rightCol.querySelector('.rich-text');
+  if (intro) rightCellContent.push(intro);
+  // Author block
+  const authorRow = rightCol.querySelector('.w-layout-grid.grid-layout');
+  if (authorRow) {
+    // Author info (avatar, name, date, read time)
+    const authorInfo = authorRow.querySelector('.flex-horizontal.y-center');
+    if (authorInfo) rightCellContent.push(authorInfo);
+    // Button
+    const button = authorRow.querySelector('a.button');
+    if (button) rightCellContent.push(button);
   }
-  // Compose right column
-  const rightCol = document.createElement('div');
-  images.forEach(img => rightCol.appendChild(img));
 
-  // 3. Build table rows
-  // Screenshot shows two main columns: left (text/author/button), right (images)
-  const secondRow = [leftCol, rightCol];
+  // 3. Find image columns (bottom grid)
+  const bottomGrid = element.querySelector('.w-layout-grid.mobile-portrait-1-column');
+  const bottomGridChildren = getChildren(bottomGrid, ':scope > .utility-aspect-1x1');
 
-  // 4. Create block table
-  const cells = [headerRow, secondRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Compose bottom row cells
+  const bottomRowCells = [];
+  bottomGridChildren.forEach((aspectDiv) => {
+    const img = aspectDiv.querySelector('img');
+    if (img) bottomRowCells.push(img);
+  });
 
-  // 5. Replace original element
-  element.replaceWith(block);
+  // 4. Build table rows
+  // Second row: headline/eyebrow | intro/author/button
+  const secondRow = [leftCellContent, rightCellContent];
+  // Third row: image | image
+  const thirdRow = bottomRowCells;
+
+  // 5. Create table
+  const cells = [
+    headerRow,
+    secondRow,
+    thirdRow,
+  ];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+
+  // 6. Replace original element
+  element.replaceWith(table);
 }

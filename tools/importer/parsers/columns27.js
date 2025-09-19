@@ -1,27 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container
+  // 1. Find the grid layout (the columns container)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
+  const gridChildren = Array.from(grid.children);
 
-  // Get immediate children of the grid (should be 2: content and image)
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  // 2. Identify left (text) and right (image) columns
+  let leftCell = null;
+  let rightCell = null;
 
-  // First column: all content (text, heading, button)
-  const leftCol = columns[0];
-  // Second column: image
-  const rightCol = columns[1];
+  gridChildren.forEach((child) => {
+    if (child.tagName === 'IMG') {
+      rightCell = child;
+    } else {
+      leftCell = child;
+    }
+  });
 
-  // Header row must match block name exactly
+  // 3. Defensive: If missing, fallback to empty div
+  leftCell = leftCell || document.createElement('div');
+  rightCell = rightCell || document.createElement('div');
+
+  // 4. Table header must match block name exactly
   const headerRow = ['Columns (columns27)'];
+  // 5. Table content row: reference the actual DOM nodes
+  const row = [leftCell, rightCell];
 
-  // Second row: use references to the actual elements
-  const secondRow = [leftCol, rightCol];
+  // 6. Create the table (no markdown, only HTML)
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    row,
+  ], document);
 
-  // Build table
-  const table = WebImporter.DOMUtils.createTable([headerRow, secondRow], document);
-
-  // Replace the original section with the new table
+  // 7. Replace the original element
   element.replaceWith(table);
 }

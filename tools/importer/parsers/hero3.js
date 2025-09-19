@@ -1,53 +1,60 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Header row
+  // Helper: Get immediate child divs
+  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
+
+  // --- HEADER ROW ---
   const headerRow = ['Hero (hero3)'];
 
-  // 2. Background image row (row 2)
-  // Find the background image: it's the <img> inside the first grid cell
+  // --- BACKGROUND IMAGE ROW ---
+  // Find image element (background)
   let bgImg = null;
-  const gridLayout = element.querySelector('.w-layout-grid');
-  let gridDivs = [];
-  if (gridLayout) {
-    gridDivs = Array.from(gridLayout.children);
-  }
-  if (gridDivs.length > 0) {
-    const img = gridDivs[0].querySelector('img');
-    if (img) bgImg = img;
-  }
-  const bgImgRow = [bgImg ? bgImg : ''];
-
-  // 3. Content row (row 3)
-  // Find the card with heading, subheading, and buttons
-  let contentCell = [];
-  if (gridDivs.length > 1) {
-    // The second grid cell contains the content
-    const card = gridDivs[1].querySelector('.card');
-    if (card) {
-      // Extract heading, subheading, and button group
-      const h1 = card.querySelector('h1');
-      if (h1) contentCell.push(h1);
-      const subheading = card.querySelector('p.subheading');
-      if (subheading) contentCell.push(subheading);
-      const buttonGroup = card.querySelector('.button-group');
-      if (buttonGroup) {
-        // Only include actual links/buttons
-        const buttons = Array.from(buttonGroup.querySelectorAll('a'));
-        if (buttons.length > 0) {
-          contentCell = contentCell.concat(buttons);
-        }
-      }
+  for (const div of topDivs) {
+    const img = div.querySelector('img');
+    if (img) {
+      bgImg = img;
+      break;
     }
   }
-  const contentRow = [contentCell.length > 0 ? contentCell : ''];
+  // Defensive: If not found, leave cell empty
+  const bgImgRow = [bgImg ? bgImg : ''];
 
-  // Assemble the table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    bgImgRow,
-    contentRow,
-  ], document);
+  // --- CONTENT ROW ---
+  // Find the card containing heading, subheading, and buttons
+  let contentCell = '';
+  for (const div of topDivs) {
+    // Find nested card
+    const card = div.querySelector('.card');
+    if (card) {
+      // Build content fragment
+      const frag = document.createDocumentFragment();
+      // Heading
+      const h1 = card.querySelector('h1');
+      if (h1) frag.appendChild(h1);
+      // Subheading (paragraph)
+      const sub = card.querySelector('p');
+      if (sub) frag.appendChild(sub);
+      // Button group
+      const btnGroup = card.querySelector('.button-group');
+      if (btnGroup) {
+        // Only include links (not the group container)
+        const btns = Array.from(btnGroup.querySelectorAll('a'));
+        if (btns.length) {
+          const btnWrap = document.createElement('div');
+          btns.forEach(btn => btnWrap.appendChild(btn));
+          frag.appendChild(btnWrap);
+        }
+      }
+      contentCell = frag;
+      break;
+    }
+  }
+  const contentRow = [contentCell];
 
-  // Replace the original element
+  // --- BUILD TABLE ---
+  const cells = [headerRow, bgImgRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace original element
   element.replaceWith(table);
 }

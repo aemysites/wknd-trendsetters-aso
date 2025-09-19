@@ -1,37 +1,46 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
+  // Helper to extract card content from each grid child
+  function extractCardContent(cardDiv) {
+    // Find the first image inside the card
+    const img = cardDiv.querySelector('img');
+    // Find the heading and description (if present)
+    let heading = null;
+    let description = null;
+    // Find the content container
+    const contentContainer = cardDiv.querySelector('.utility-padding-all-2rem');
+    if (contentContainer) {
+      heading = contentContainer.querySelector('h3');
+      description = contentContainer.querySelector('p');
+    }
+    // If no heading/description, try to find them directly
+    if (!heading) heading = cardDiv.querySelector('h3');
+    if (!description) description = cardDiv.querySelector('p');
+    // Compose the text cell
+    const textCell = document.createElement('div');
+    if (heading) textCell.appendChild(heading);
+    if (description) textCell.appendChild(description);
+    return [img, textCell];
+  }
+
+  // Get all immediate children of the grid
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+
+  // Table header
   const headerRow = ['Cards (cards25)'];
   const rows = [headerRow];
 
-  // Get all immediate children of the grid container
-  const cardDivs = element.querySelectorAll(':scope > div');
-
+  // For each card div, extract image and text content
   cardDivs.forEach((cardDiv) => {
-    // Find the image (mandatory)
+    // Defensive: Only process if there's an image
     const img = cardDiv.querySelector('img');
-    // Defensive: skip if no image
-    if (!img) return;
-
-    // Find text content (h3 and p) if present
-    let textContent = null;
-    const h3 = cardDiv.querySelector('h3');
-    const p = cardDiv.querySelector('p');
-    if (h3 || p) {
-      // Create a wrapper div for text
-      textContent = document.createElement('div');
-      if (h3) textContent.appendChild(h3);
-      if (p) textContent.appendChild(p);
-    }
-
-    // If no h3/p, leave text cell empty
-    const textCell = textContent || '';
-
-    // Add row: [image, text]
-    rows.push([img, textCell]);
+    if (!img) return; // skip non-card items
+    const [imageEl, textEl] = extractCardContent(cardDiv);
+    rows.push([imageEl, textEl]);
   });
 
-  // Create table and replace original element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element
+  element.replaceWith(block);
 }

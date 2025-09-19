@@ -1,87 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
-  const headerRow = ['Cards (cards24)'];
-  const rows = [headerRow];
+  // Helper to extract card info from each <a> card
+  function extractCard(cardEl) {
+    // Image: first img inside the card
+    const imgWrapper = cardEl.querySelector('div.utility-aspect-2x3');
+    let img = imgWrapper ? imgWrapper.querySelector('img') : null;
+    
+    // Text content: build a fragment
+    const frag = document.createDocumentFragment();
 
-  // Get all card links (each card is an <a>)
-  const cards = Array.from(element.querySelectorAll(':scope > a'));
-
-  cards.forEach(card => {
-    // --- First cell: Image ---
-    // Find the image inside the card
-    const img = card.querySelector('img');
-    const imgCell = img ? img : '';
-
-    // --- Second cell: Text content ---
-    // Get tag and date
-    let tag = '', date = '';
-    const metaRow = card.querySelector('.flex-horizontal');
-    if (metaRow) {
-      const tagEl = metaRow.querySelector('.tag');
-      const dateEl = metaRow.querySelector('.paragraph-sm');
-      tag = tagEl ? tagEl.textContent.trim() : '';
-      date = dateEl ? dateEl.textContent.trim() : '';
-    }
-    // Get title
-    const titleEl = card.querySelector('h3');
-    const title = titleEl ? titleEl.textContent.trim() : '';
-
-    // Compose text cell: meta (tag/date), title (heading)
-    const textCellDiv = document.createElement('div');
-    // meta row
-    if (tag || date) {
-      const metaDiv = document.createElement('div');
-      metaDiv.style.display = 'flex';
-      metaDiv.style.gap = '0.5em';
-      if (tag) {
-        const tagSpan = document.createElement('span');
-        tagSpan.textContent = tag;
-        tagSpan.style.fontWeight = 'bold';
-        metaDiv.appendChild(tagSpan);
-      }
-      if (date) {
-        const dateSpan = document.createElement('span');
-        dateSpan.textContent = date;
-        metaDiv.appendChild(dateSpan);
-      }
-      textCellDiv.appendChild(metaDiv);
-    }
-    // title
-    if (title) {
-      const heading = document.createElement('h4');
-      heading.textContent = title;
-      heading.style.margin = '0.5em 0 0 0';
-      textCellDiv.appendChild(heading);
+    // Tag/date row
+    const tagRow = cardEl.querySelector('.flex-horizontal');
+    if (tagRow) {
+      frag.appendChild(tagRow.cloneNode(true));
     }
 
-    // Add all text content from the card (for flexibility)
-    // Get all direct text nodes and <div>, <h3> children except the image container
-    // Defensive: get everything except the image container
-    Array.from(card.children).forEach(child => {
-      if (
-        child.tagName !== 'DIV' ||
-        !child.classList.contains('utility-aspect-2x3')
-      ) {
-        // For h3, already included as title
-        if (child.tagName === 'H3') return;
-        // For meta row, already included
-        if (child.classList.contains('flex-horizontal')) return;
-        // For other divs (if any), include their text
-        if (child.tagName === 'DIV') {
-          if (child.textContent.trim()) {
-            const p = document.createElement('p');
-            p.textContent = child.textContent.trim();
-            textCellDiv.appendChild(p);
-          }
-        }
-      }
-    });
+    // Title (h3)
+    const heading = cardEl.querySelector('h3');
+    if (heading) {
+      frag.appendChild(heading.cloneNode(true));
+    }
 
-    rows.push([imgCell, textCellDiv]);
+    // Optionally, add a CTA link (the card itself is a link, but we do not duplicate it as CTA)
+    // If you want to add a CTA, you could add a link to the blog post here
+    // For now, we skip explicit CTA as per visual structure
+
+    return [img, frag];
+  }
+
+  // Get all card <a> elements (direct children)
+  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+
+  // Build table rows
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards24)']);
+
+  // Card rows
+  cardLinks.forEach(cardEl => {
+    const [img, textFrag] = extractCard(cardEl);
+    // Defensive: if no image, just use null
+    rows.push([
+      img || '',
+      textFrag
+    ]);
   });
 
-  // Create table and replace element
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(block);
+  // Create table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace element
+  element.replaceWith(table);
 }

@@ -1,25 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all direct children (should be 3 columns)
-  const columns = Array.from(element.querySelectorAll(':scope > div'));
-
-  // Defensive: Only proceed if we have columns
-  if (!columns.length) return;
-
-  // Table header row
+  // Defensive: get all immediate child divs (each column cell)
+  const cells = [];
   const headerRow = ['Columns (columns6)'];
 
-  // Table content row: one cell per column, each containing the image
-  const contentRow = columns.map(col => {
-    // Each col is a div.utility-aspect-1x1 containing an img
-    // We want to reference the whole div so that any aspect/image styling is preserved
-    return col;
+  // Get all direct children divs (each is a column)
+  const columnDivs = element.querySelectorAll(':scope > div');
+
+  // For this block, each column is a cell in the second row
+  const columns = Array.from(columnDivs).map((div) => {
+    // If the div contains only an image, use the image element directly
+    const img = div.querySelector('img');
+    if (img && div.children.length === 1 && div.children[0] === img) {
+      return img;
+    }
+    // Otherwise, use the whole div (for future-proofing, but not needed here)
+    return div;
   });
 
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    contentRow
-  ], document);
+  // Build the table rows
+  cells.push(headerRow);
+  cells.push(columns);
 
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }

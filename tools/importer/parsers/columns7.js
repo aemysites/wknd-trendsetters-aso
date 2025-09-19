@@ -1,45 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get immediate children of a node
-  function getDirectChildrenByTag(parent, tagName) {
-    return Array.from(parent.children).filter(child => child.tagName.toLowerCase() === tagName.toLowerCase());
-  }
-
-  // 1. Header row (block name)
-  const headerRow = ['Columns (columns7)'];
-
-  // 2. Find the grid layout
+  // Find the grid layout
   const grid = element.querySelector('.w-layout-grid');
-  if (!grid) return; // Defensive: if grid not found, do nothing
+  if (!grid) return;
 
-  // 3. Get direct children of grid
+  // Get all direct children of the grid (these are the columns)
   const gridChildren = Array.from(grid.children);
 
-  // Defensive: Expecting two columns (left: h2, right: content)
-  // Left column: h2
-  const leftCol = gridChildren.find(child => child.tagName === 'H2');
-  // Right column: div (contains paragraph and button)
-  const rightCol = gridChildren.find(child => child.tagName === 'DIV');
+  // Each child is a column: if it's an h2 or div, include its content
+  const columnsRow = gridChildren.map((child) => {
+    if (child.tagName === 'DIV') {
+      // For DIV, include all its element children
+      return Array.from(child.childNodes).filter(node => node.nodeType === Node.ELEMENT_NODE);
+    }
+    // For other elements (e.g., H2), include as is
+    return child;
+  });
 
-  // Defensive: If either column missing, fallback to all grid children
-  let columns;
-  if (leftCol && rightCol) {
-    columns = [leftCol, rightCol];
-  } else {
-    columns = gridChildren;
-  }
+  // Table header row
+  const headerRow = ['Columns (columns7)'];
 
-  // 4. Build the columns row
-  // For the right column, include all its children (paragraph + button)
-  const rightColContent = rightCol ? Array.from(rightCol.children) : [];
-  const row = [leftCol, rightColContent];
+  // Create table with header and columns
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // 5. Build table cells array
-  const cells = [headerRow, row];
-
-  // 6. Create table block
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-
-  // 7. Replace original element
+  // Replace original element
   element.replaceWith(table);
 }

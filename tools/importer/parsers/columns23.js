@@ -1,30 +1,28 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header
+  // Get all immediate children with class 'divider' (each represents a row)
+  const rows = Array.from(element.querySelectorAll(':scope > .divider'));
+  if (!rows.length) return;
+
+  // Table header row
   const headerRow = ['Columns (columns23)'];
 
-  // Defensive: get all immediate child divs (each is a 'divider' block)
-  const dividers = Array.from(element.querySelectorAll(':scope > div.divider'));
-
-  // Each divider contains a grid with two children: heading and paragraph
-  const contentRows = dividers.map(divider => {
-    // Find the grid inside the divider
-    const grid = divider.querySelector('.w-layout-grid');
-    if (!grid) return ['', ''];
-    // Get the two children: heading and rich text
-    const children = Array.from(grid.children);
-    // Defensive: ensure two columns
-    const heading = children[0] || document.createElement('div');
-    const richText = children[1] || document.createElement('div');
-    return [heading, richText];
+  // Build table rows
+  const tableRows = rows.map(row => {
+    // Each row contains a grid-layout with two children: heading and paragraph
+    const grid = row.querySelector('.w-layout-grid');
+    if (!grid) return ['', '']; // Defensive: always two columns
+    const cells = Array.from(grid.children);
+    // Defensive: Expecting two cells per row
+    return [cells[0] || '', cells[1] || ''];
   });
 
-  // Build table data
-  const tableData = [headerRow, ...contentRows];
+  // Compose final table array
+  const cells = [headerRow, ...tableRows];
 
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace element
+  // Replace original element with block
   element.replaceWith(block);
 }

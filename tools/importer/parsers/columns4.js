@@ -1,25 +1,25 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout containing the columns
-  const grid = element.querySelector('.w-layout-grid');
+  // Find the grid-layout container (the columns wrapper)
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (these are the columns)
+  // Get all immediate children of the grid (these are the columns)
   const columns = Array.from(grid.children);
   if (columns.length === 0) return;
 
-  // Header row as specified
+  // Table header row as required
   const headerRow = ['Columns (columns4)'];
 
-  // Second row: each cell is a reference to the original column element
+  // Second row: one cell per column, referencing the existing column elements
   const contentRow = columns.map((col) => col);
 
   // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    contentRow,
   ], document);
 
-  // Replace the original element with the new block table
+  // Replace the original element with the new table
   element.replaceWith(table);
 }
