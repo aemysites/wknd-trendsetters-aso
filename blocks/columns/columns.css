@@ -648,7 +648,6 @@
   }
 }
 
-/* Left column: text content */
 .columns.columns11 > div > div:first-child {
   flex: 1 1 50%;
   display: flex;
@@ -673,7 +672,6 @@
   }
 }
 
-/* Headline spacing and style */
 .columns.columns11 h2 {
   font-size: var(--heading-font-size-xl);
   color: var(--text-color);
@@ -686,7 +684,6 @@
   line-height: 1.06;
 }
 
-/* Supporting text */
 .columns.columns11 p:not(.button-container) {
   font-size: var(--body-font-size-s);
   color: #1a1a1a;
@@ -697,7 +694,6 @@
   max-width: 390px;
 }
 
-/* Button container: buttons side by side, aligned left */
 .columns.columns11 .button-container {
   display: flex;
   flex-direction: row;
@@ -738,7 +734,6 @@
   color: var(--text-color);
 }
 
-/* Right column: image */
 .columns.columns11 > div > .columns-img-col {
   flex: 1 1 50%;
   display: flex;
@@ -764,9 +759,113 @@
   box-sizing: border-box;
 }
 
-/* Remove extra margin/padding for block in main/section */
 .columns.columns11 {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+
+.columns.columns15 {
+  background: #f6f7f4;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+
+.columns.columns15 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 4vw;
+  min-height: 620px;
+
+  /* Instead of aligning everything to the top, use relative positioning for image column for fine control */
+}
+
+@media (width <= 900px) {
+  .columns.columns15 > div {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: unset;
+    gap: 32px;
+  }
+}
+
+.columns.columns15 > div > div:first-child {
+  flex: 1 1 52%;
+  max-width: 52vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  padding-top: 0;
+}
+
+.columns.columns15 > div > .columns-img-col {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-width: 0;
+  height: auto;
+  position: relative;
+}
+
+.columns.columns15 .columns-img-col picture,
+.columns.columns15 .columns-img-col img {
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 4px 28px 0 rgb(36 36 36 / 10%);
+  width: 100%;
+  max-width: 600px;
+  object-fit: cover;
+  display: block;
+
+  /* Instead of margin-top, use translateY for fine centering without breaking flow */
+  transform: translateY(12%);
+  height: auto;
+}
+
+.columns.columns15 h1 {
+  margin-bottom: 24px;
+  line-height: 1.05;
+  color: #242424;
+  font-weight: 400;
+}
+
+.columns.columns15 p:not(.button-container) {
+  color: #62625f;
+  font-size: 1.06rem;
+  margin-bottom: 22px;
+  max-width: 480px;
+}
+
+.columns.columns15 .button-container {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.columns.columns15 a.button {
+  display: inline-block;
+  padding: 10px 28px;
+  border: 1.5px solid #242424;
+  border-radius: 24px;
+  background: #fff;
+  color: #242424;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow 0.2s, background 0.2s;
+  margin: 0;
+}
+
+.columns.columns15 a.button:hover,
+.columns.columns15 a.button:focus {
+  box-shadow: 0 2px 12px rgb(36 36 36 / 7%);
+  background: #f6f7f4;
 }
