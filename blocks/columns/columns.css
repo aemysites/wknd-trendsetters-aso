@@ -1448,7 +1448,6 @@
   padding: 0;
 }
 
-/* Use a landscape aspect ratio for image columns to better match the original block */
 .columns.columns29 .columns-img-col {
   flex: 1 1 0;
   display: flex;
@@ -1457,7 +1456,6 @@
   aspect-ratio: 4 / 3;
 }
 
-/* Responsive: stack columns vertically on narrow screens */
 @media (width <= 900px) {
   .columns.columns29 > div {
     flex-direction: column;
@@ -1470,7 +1468,6 @@
   }
 }
 
-/* Images fill their containers and have rounded corners */
 .columns.columns29 .columns-img-col img {
   width: 100%;
   height: 100%;
@@ -1479,4 +1476,115 @@
   display: block;
   margin: 0;
   padding: 0;
+}
+
+
+.columns.columns30 > div {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) 3.5fr;
+  gap: 0 56px;
+  align-items: start;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 56px;
+  padding-bottom: 0;
+}
+
+/* Taylor Brooks: reduce margin to bring pills up, aligning with headline bottom */
+.columns.columns30 > div > div:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+  margin-bottom: 120px;
+}
+
+.columns.columns30 > div > div:nth-child(1) p {
+  color: #7a7a7a;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pills: left-aligned, visually by headline bottom */
+.columns.columns30 > div > div:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.columns.columns30 > div > div:nth-child(2) p {
+  display: inline-block;
+  background: #e6e6e6;
+  color: #5a5a5a;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-radius: 15px;
+  padding: 6px 22px;
+  margin: 0;
+  letter-spacing: 0.04em;
+  min-width: 0;
+  max-width: 180px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* Headline flush with top, margin for visual grouping */
+.columns.columns30 > div > div:nth-child(3) {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0;
+  margin-bottom: 34px;
+}
+
+.columns.columns30 > div > div:nth-child(3) h2 {
+  font-size: 60px;
+  color: #131313;
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  margin: 0 0 28px;
+  text-align: left;
+  padding: 0;
+}
+
+/* Paragraphs: no extra top margin */
+.columns.columns30 > div > div:nth-child(4) {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 540px;
+}
+
+.columns.columns30 > div > div:nth-child(4) p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.57;
+  margin: 0 0 18px;
+  padding: 0;
+  max-width: 540px;
+}
+
+/* Responsive - stack on mobile */
+@media (width <= 900px) {
+  .columns.columns30 > div {
+    grid-template-columns: 1fr;
+    gap: 28px 0;
+    padding-top: 32px;
+  }
+
+  .columns.columns30 > div > div:nth-child(1),
+  .columns.columns30 > div > div:nth-child(2),
+  .columns.columns30 > div > div:nth-child(3),
+  .columns.columns30 > div > div:nth-child(4) {
+    grid-column: 1;
+    grid-row: auto;
+    margin-bottom: 0;
+    max-width: 100%;
+  }
+
+  .columns.columns30 > div > div:nth-child(3) h2 {
+    font-size: 34px;
+    margin-bottom: 24px;
+  }
 }
