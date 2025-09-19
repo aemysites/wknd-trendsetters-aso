@@ -1,60 +1,47 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only parse if element exists
-  if (!element) return;
+  // Find the main grid layout container
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  if (!grid) return;
 
-  // Table header row
-  const headerRow = ['Hero (hero39)'];
-
-  // --- Row 2: Background Image (optional) ---
-  // Find the image inside the first grid cell
+  // 1. Extract background image (first grid cell)
   let bgImg = null;
-  const gridDivs = element.querySelectorAll(':scope > div.w-layout-grid > div');
-  if (gridDivs.length > 0) {
-    // Look for an <img> inside the first grid cell
-    bgImg = gridDivs[0].querySelector('img');
+  const gridCells = grid.children;
+  if (gridCells.length > 0) {
+    const bgImgEl = gridCells[0].querySelector('img');
+    if (bgImgEl) bgImg = bgImgEl;
   }
-  // If not found, fallback to any img inside header
-  if (!bgImg) {
-    bgImg = element.querySelector('img');
+
+  // 2. Extract content (second grid cell)
+  let contentCell = [];
+  if (gridCells.length > 1) {
+    // Find the inner grid (contains h1, paragraph, button)
+    const innerGrid = gridCells[1].querySelector('.grid-layout');
+    if (innerGrid) {
+      // Heading
+      const heading = innerGrid.querySelector('h1');
+      if (heading) contentCell.push(heading);
+      // Paragraph and CTA
+      const flex = innerGrid.querySelector('.flex-vertical');
+      if (flex) {
+        const para = flex.querySelector('p');
+        if (para) contentCell.push(para);
+        const btnGroup = flex.querySelector('.button-group');
+        if (btnGroup) contentCell.push(btnGroup);
+      }
+    }
   }
+
+  // Compose rows for the table
+  const headerRow = ['Hero (hero39)'];
   const imageRow = [bgImg ? bgImg : ''];
-
-  // --- Row 3: Text Content ---
-  // Find the text container (second grid cell)
-  let textContainer = null;
-  if (gridDivs.length > 1) {
-    textContainer = gridDivs[1];
-  }
-  // Defensive: If not found, fallback to any container with heading
-  if (!textContainer) {
-    textContainer = element.querySelector('h1')?.parentElement;
-  }
-
-  // Extract heading, paragraph, and CTA
-  let heading = null, paragraph = null, cta = null;
-  if (textContainer) {
-    heading = textContainer.querySelector('h1');
-    paragraph = textContainer.querySelector('p');
-    cta = textContainer.querySelector('a');
-  }
-
-  // Compose content cell
-  const contentCell = [];
-  if (heading) contentCell.push(heading);
-  if (paragraph) contentCell.push(paragraph);
-  if (cta) contentCell.push(cta);
   const contentRow = [contentCell.length ? contentCell : ''];
 
-  // Compose table rows
-  const cells = [
+  const table = WebImporter.DOMUtils.createTable([
     headerRow,
     imageRow,
-    contentRow
-  ];
+    contentRow,
+  ], document);
 
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  // Replace original element
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

@@ -1,56 +1,44 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get direct children divs for main content
-  const mainContainer = element.querySelector(':scope > div.container');
-  let grid;
-  if (mainContainer) {
-    grid = mainContainer.querySelector(':scope > div');
-  }
-  // Defensive: fallback to first div if structure changes
-  if (!grid) {
-    grid = element.querySelector(':scope > div');
-  }
-  // Get grid children (content and CTA)
-  let gridChildren = [];
-  if (grid) {
-    gridChildren = Array.from(grid.children);
-  }
-
-  // Find heading/subheading container
-  let headingBlock = null;
-  let cta = null;
-  gridChildren.forEach((child) => {
-    // Heuristic: If contains h2, it's heading block
-    if (child.querySelector('h1, h2, h3, h4, h5, h6')) {
-      headingBlock = child;
-    } else if (child.tagName === 'A' || child.querySelector('a')) {
-      cta = child;
-    }
-  });
-
-  // Compose content cell for row 3
-  const contentCell = [];
-  if (headingBlock) {
-    // Grab heading
-    const heading = headingBlock.querySelector('h1, h2, h3, h4, h5, h6');
-    if (heading) contentCell.push(heading);
-    // Grab subheading/paragraph
-    const subheading = headingBlock.querySelector('p, .subheading');
-    if (subheading) contentCell.push(subheading);
-  }
-  if (cta) {
-    // Use the CTA link directly
-    contentCell.push(cta);
-  }
-
-  // Table rows
+  // 1. Header row
   const headerRow = ['Hero (hero35)'];
-  // No image in source, so row 2 is empty
-  const imageRow = [''];
-  // Row 3: content
+
+  // 2. Background image row (none in this HTML)
+  const backgroundImageRow = [''];
+
+  // 3. Content row: Title, Subheading, CTA
+  // Find the grid layout
+  const grid = element.querySelector('.w-layout-grid');
+  let contentCell = [];
+  if (grid) {
+    // Find the text container and CTA
+    const children = Array.from(grid.children);
+    let textBlock = null;
+    let cta = null;
+    children.forEach((child) => {
+      if (child.querySelector('h1, h2, h3, h4, h5, h6')) {
+        textBlock = child;
+      } else if (child.tagName === 'A') {
+        cta = child;
+      }
+    });
+    contentCell = [];
+    if (textBlock) contentCell.push(textBlock);
+    if (cta) contentCell.push(cta);
+  } else {
+    // Fallback: just use all children
+    contentCell = Array.from(element.children);
+  }
+
   const contentRow = [contentCell];
 
-  const cells = [headerRow, imageRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    backgroundImageRow,
+    contentRow,
+  ], document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

@@ -1,38 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate child divs of the root element
-  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
-
-  // Defensive: if no children, do nothing
-  if (!topDivs.length) return;
-
-  // Each 'divider' is a row, each with a grid containing two children: heading and paragraph
-  // We'll build a 2-column table: first col = question, second col = answer
+  // Header row as required
   const headerRow = ['Columns (columns23)'];
-  const rows = [];
 
-  // For each divider (row)
-  topDivs.forEach(divider => {
-    // Find the grid inside this divider
+  // Find all direct children with class 'divider' (each is a row)
+  const dividers = Array.from(element.querySelectorAll(':scope > .divider'));
+
+  // Each divider contains a grid with two children: heading and rich text
+  const rows = dividers.map(divider => {
+    // Defensive: find the grid inside the divider
     const grid = divider.querySelector('.w-layout-grid');
-    if (!grid) return;
-    // The grid has two children: heading and rich text
-    const gridChildren = Array.from(grid.children);
-    if (gridChildren.length < 2) return;
-    const question = gridChildren[0];
-    const answer = gridChildren[1];
-    rows.push([question, answer]);
+    if (!grid) return ['', ''];
+    // Get the two children: heading and rich text
+    const cells = Array.from(grid.children);
+    // Defensive: ensure two columns
+    const col1 = cells[0] || '';
+    const col2 = cells[1] || '';
+    return [col1, col2];
   });
 
-  // Defensive: if no rows, do nothing
-  if (!rows.length) return;
+  // Compose the table cells array
+  const table = [headerRow, ...rows];
 
-  // Build the table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    ...rows
-  ], document);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(table, document);
 
   // Replace the original element
-  element.replaceWith(table);
+  element.replaceWith(block);
 }

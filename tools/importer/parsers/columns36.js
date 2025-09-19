@@ -1,53 +1,34 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid containing columns
-  const mainGrid = element.querySelector('.grid-layout');
-  if (!mainGrid) return;
-  const gridChildren = Array.from(mainGrid.children);
+  // Locate the main grid containing columns
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  if (!grid) return;
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Defensive: Expecting two main columns (left: text/buttons, right: images)
-  let leftCol = null;
-  let rightCol = null;
-  if (gridChildren.length >= 2) {
-    leftCol = gridChildren[0];
-    rightCol = gridChildren[1];
-  } else {
-    // fallback: treat all as one column
-    leftCol = mainGrid;
+  // LEFT COLUMN: Heading, subheading, buttons
+  const leftCol = columns[0];
+  const leftContent = [];
+  // Heading
+  const heading = leftCol.querySelector('h1');
+  if (heading) leftContent.push(heading);
+  // Subheading
+  const subheading = leftCol.querySelector('p');
+  if (subheading) leftContent.push(subheading);
+  // Buttons
+  const buttonGroup = leftCol.querySelector('.button-group');
+  if (buttonGroup) {
+    buttonGroup.querySelectorAll('a').forEach(btn => leftContent.push(btn));
   }
 
-  // Left column: headline, subheading, buttons
-  let leftContent = [];
-  if (leftCol) {
-    // headline
-    const headline = leftCol.querySelector('h1');
-    if (headline) leftContent.push(headline);
-    // subheading
-    const subheading = leftCol.querySelector('p');
-    if (subheading) leftContent.push(subheading);
-    // button group
-    const buttonGroup = leftCol.querySelector('.button-group');
-    if (buttonGroup) leftContent.push(buttonGroup);
-  }
+  // RIGHT COLUMN: Images
+  const rightCol = columns[1];
+  const imagesGrid = rightCol.querySelector('.w-layout-grid');
+  const images = imagesGrid ? Array.from(imagesGrid.querySelectorAll('img')) : [];
 
-  // Right column: images (in a grid)
-  let rightContent = [];
-  if (rightCol) {
-    // Find the grid containing images
-    const imageGrid = rightCol.querySelector('.grid-layout');
-    if (imageGrid) {
-      // Only images
-      const images = Array.from(imageGrid.querySelectorAll('img'));
-      if (images.length) {
-        rightContent = images;
-      }
-    }
-  }
-
-  // Table structure: header row, then one row with two columns
+  // Compose the table
   const headerRow = ['Columns (columns36)'];
-  const contentRow = [leftContent, rightContent];
-
+  const contentRow = [leftContent, images];
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
     contentRow,

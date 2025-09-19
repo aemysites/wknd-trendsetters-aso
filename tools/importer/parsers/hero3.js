@@ -1,54 +1,46 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // --- 1. Header row ---
+  // Defensive: Only proceed if element exists
+  if (!element) return;
+
+  // 1. Header row
   const headerRow = ['Hero (hero3)'];
 
-  // --- 2. Background image row ---
-  // Find the image element (background)
-  let imgEl = null;
-  const img = element.querySelector('img');
-  if (img) {
-    imgEl = img;
-  }
-  const imageRow = [imgEl ? imgEl : ''];
+  // 2. Background image row
+  // Find the background image (img.cover-image)
+  let bgImg = element.querySelector('img.cover-image');
+  // Only include the image if it exists
+  const imageRow = [bgImg ? bgImg : ''];
 
-  // --- 3. Content row ---
-  // Find the card with heading, subheading, buttons
-  let cardDiv = element.querySelector('.card');
-
-  // Defensive: If not found, fallback to first div with heading
-  if (!cardDiv) {
-    for (const div of element.querySelectorAll('div')) {
-      if (div.querySelector('h1')) {
-        cardDiv = div;
-        break;
-      }
-    }
-  }
-
-  // Compose content cell: heading, subheading, buttons
-  const contentCell = [];
-  if (cardDiv) {
+  // 3. Content row (title, subheading, CTA)
+  // Find the card containing the text and buttons
+  let card = element.querySelector('.card');
+  let contentElements = [];
+  if (card) {
     // Heading
-    const heading = cardDiv.querySelector('h1');
-    if (heading) contentCell.push(heading);
-    // Subheading (paragraph)
-    const subheading = cardDiv.querySelector('p');
-    if (subheading) contentCell.push(subheading);
-    // Button group
-    const buttonGroup = cardDiv.querySelector('.button-group');
+    const heading = card.querySelector('h1');
+    if (heading) contentElements.push(heading);
+    // Subheading
+    const subheading = card.querySelector('p');
+    if (subheading) contentElements.push(subheading);
+    // CTA buttons (button-group)
+    const buttonGroup = card.querySelector('.button-group');
     if (buttonGroup) {
-      const buttons = Array.from(buttonGroup.querySelectorAll('a'));
-      contentCell.push(...buttons);
+      // Only include links (a) inside buttonGroup
+      const links = Array.from(buttonGroup.querySelectorAll('a'));
+      if (links.length) contentElements.push(...links);
     }
   }
-  if (contentCell.length === 0) contentCell.push('');
-  const contentRow = [contentCell];
+  const contentRow = [contentElements.length ? contentElements : ''];
 
-  // --- Compose table ---
-  const rows = [headerRow, imageRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Build the table
+  const cells = [
+    headerRow,
+    imageRow,
+    contentRow,
+  ];
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // --- Replace original element ---
-  element.replaceWith(table);
+  // Replace the original element
+  element.replaceWith(block);
 }

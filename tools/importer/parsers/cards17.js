@@ -1,37 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the cards
-  const grid = element.querySelector('.w-layout-grid');
+  // Cards (cards17) block: 2 columns, header row, each card = [image, text]
+  const headerRow = ['Cards (cards17)'];
+  const rows = [headerRow];
+
+  // Find the grid container
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Each direct child of grid is a card wrapper
+  // Each immediate child of grid is a card wrapper
   const cardDivs = Array.from(grid.children);
 
-  // Build the table rows
-  const rows = [];
-  // Header row
-  const headerRow = ['Cards (cards17)'];
-  rows.push(headerRow);
-
-  // For each card, extract the image (first cell), and extract text content from the closest alt attribute (second cell)
-  cardDivs.forEach(cardDiv => {
-    // Find the image inside the card
-    const img = cardDiv.querySelector('img');
-    let textContent = '';
-    if (img && img.alt) {
-      textContent = img.alt;
-    } else {
-      // Try to get any text node inside the cardDiv
-      const textNodes = Array.from(cardDiv.childNodes).filter(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-      textContent = textNodes.map(node => node.textContent.trim()).join(' ');
-      if (!textContent) textContent = 'Card';
+  cardDivs.forEach((cardDiv) => {
+    // Find the image inside this card
+    const imgContainer = cardDiv.querySelector('.utility-aspect-2x3');
+    let imgEl = null;
+    if (imgContainer) {
+      imgEl = imgContainer.querySelector('img');
     }
-    if (img) {
-      rows.push([img, textContent]);
+    if (!imgEl) return;
+
+    // Extract text content from the cardDiv itself
+    // Only include visible text, skip alt text and hidden nodes
+    let textContent = '';
+    // Get all direct text nodes inside cardDiv (not inside the image container)
+    Array.from(cardDiv.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        textContent += node.textContent.trim() + ' ';
+      }
+      // If it's an element and not the image container, get its text
+      if (node.nodeType === Node.ELEMENT_NODE && node !== imgContainer) {
+        textContent += node.textContent.trim() + ' ';
+      }
+    });
+    textContent = textContent.trim();
+
+    // If no text content, do not add an unnecessary empty column
+    if (textContent) {
+      rows.push([imgEl, textContent]);
+    } else {
+      rows.push([imgEl]);
     }
   });
 
-  // Create the table and replace the original element
+  // Create the block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

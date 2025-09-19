@@ -1,61 +1,54 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from a card anchor
+  // Helper to extract card info from a card anchor element
   function extractCardInfo(cardEl) {
     // Find image (mandatory)
-    const imgContainer = cardEl.querySelector('.utility-aspect-2x3, .utility-aspect-1x1');
+    const imgWrapper = cardEl.querySelector('.utility-aspect-2x3, .utility-aspect-1x1');
     let img = null;
-    if (imgContainer) {
-      img = imgContainer.querySelector('img');
+    if (imgWrapper) {
+      img = imgWrapper.querySelector('img');
     }
-    // Find heading (optional)
-    let heading = cardEl.querySelector('h3, .h2-heading, .h4-heading');
-    // Find description (optional)
+    // Title (optional)
+    let title = cardEl.querySelector('h2, h3, h4');
+    // Description (optional)
     let desc = cardEl.querySelector('p');
-    // Find CTA (optional)
+    // CTA (optional)
     let cta = cardEl.querySelector('.button');
     // Compose text cell
-    const textCellContent = [];
-    if (heading) textCellContent.push(heading);
-    if (desc) textCellContent.push(desc);
-    if (cta) textCellContent.push(cta);
-    return [img, textCellContent];
+    const textCell = document.createElement('div');
+    if (title) textCell.appendChild(title);
+    if (desc) textCell.appendChild(desc);
+    if (cta) textCell.appendChild(cta);
+    // Return image and text cell
+    return [img, textCell];
   }
 
-  // Get all cards (anchor tags)
-  const cards = [];
-  // The main grid contains the first card and a nested grid with the rest
+  // Get the main grid containing cards
   const mainGrid = element.querySelector('.grid-layout');
-  if (!mainGrid) return;
-  // Get all direct children of mainGrid
-  const mainGridChildren = Array.from(mainGrid.children);
-  // First card is a direct anchor child
-  const firstCardAnchor = mainGridChildren.find(el => el.tagName === 'A');
-  if (firstCardAnchor) {
-    cards.push(firstCardAnchor);
-  }
-  // The rest are inside a nested grid
-  const nestedGrid = mainGridChildren.find(el => el.classList.contains('grid-layout'));
-  if (nestedGrid) {
-    // Each card is an anchor child of nested grid
-    const nestedAnchors = Array.from(nestedGrid.querySelectorAll(':scope > a'));
-    cards.push(...nestedAnchors);
-  }
+  // Defensive: if not found, fallback to element itself
+  const cardContainers = mainGrid ? mainGrid.children : element.children;
 
-  // Compose table rows
+  // Prepare table rows
   const rows = [];
   // Header row
   rows.push(['Cards (cards37)']);
-  // Card rows
-  cards.forEach(cardEl => {
-    const [img, textCellContent] = extractCardInfo(cardEl);
-    // Defensive: only add row if image and text
-    if (img && textCellContent.length) {
-      rows.push([img, textCellContent]);
-    }
-  });
 
-  // Create table and replace element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Loop through top-level children (cards)
+  for (const child of cardContainers) {
+    // If it's a grid containing more cards, recurse into its children
+    if (child.classList.contains('grid-layout')) {
+      for (const subCard of child.children) {
+        if (subCard.tagName === 'A') {
+          rows.push(extractCardInfo(subCard));
+        }
+      }
+    } else if (child.tagName === 'A') {
+      rows.push(extractCardInfo(child));
+    }
+  }
+
+  // Create table block
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace original element
+  element.replaceWith(block);
 }

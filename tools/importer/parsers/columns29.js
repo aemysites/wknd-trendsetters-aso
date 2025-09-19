@@ -3,31 +3,24 @@ export default function parse(element, { document }) {
   // Header row as required by block spec
   const headerRow = ['Columns (columns29)'];
 
-  // Get all direct children of the grid (should be 2 divs, each with an image)
+  // Get all direct children (should be two .utility-aspect-1x1 divs)
   const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Defensive: only proceed if we have at least one column
-  if (!columnDivs.length) return;
+  // Defensive: Only process if we have at least one column
+  if (columnDivs.length === 0) return;
 
-  // For each column, extract the image (if present)
-  const columns = columnDivs.map(colDiv => {
-    // Find the first image inside this column div
-    const img = colDiv.querySelector('img');
-    // If found, return the image element
-    if (img) return img;
-    // If not, return the entire column div as fallback
-    return colDiv;
-  });
+  // Each column cell will contain the entire .utility-aspect-1x1 div (which contains an image)
+  const columnsRow = columnDivs.map((col) => col);
 
-  // Build the table rows
-  const tableRows = [
+  // Build the table structure
+  const tableCells = [
     headerRow,
-    columns
+    columnsRow,
   ];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
+  // Create the table block
+  const table = WebImporter.DOMUtils.createTable(tableCells, document);
 
-  // Replace the original element with the new block table
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

@@ -1,71 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children
-  const children = Array.from(element.querySelectorAll(':scope > div'));
+  // Get top-level divs inside the section
+  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Defensive: find background image (first immediate child with img)
-  let bgImgDiv = children.find(div => div.querySelector('img.cover-image.utility-position-absolute'));
-  let bgImg = bgImgDiv ? bgImgDiv.querySelector('img.cover-image.utility-position-absolute') : null;
-
-  // Defensive: find card content (second immediate child)
-  let cardDiv = children.find(div => div.querySelector('.card'));
-  let cardBody = cardDiv ? cardDiv.querySelector('.card-body') : null;
-
-  // Defensive: find foreground image (inside card grid)
-  let fgImg = cardBody ? cardBody.querySelector('img.cover-image.utility-aspect-1x1') : null;
-
-  // Defensive: find text content (h2, paragraphs, button)
-  let h2 = cardBody ? cardBody.querySelector('h2') : null;
-  let flexVertical = cardBody ? cardBody.querySelector('.flex-vertical') : null;
-  let buttonGroup = cardBody ? cardBody.querySelector('.button-group') : null;
-  let button = buttonGroup ? buttonGroup.querySelector('a.button') : null;
-
-  // Compose text content cell
-  let textContent = [];
-  if (h2) textContent.push(h2);
-  if (flexVertical) {
-    // Each flex-horizontal is a row with icon and paragraph
-    Array.from(flexVertical.querySelectorAll('.flex-horizontal')).forEach(row => {
-      textContent.push(row);
-      // Add divider after each except last
-      const divider = row.nextElementSibling;
-      if (divider && divider.classList.contains('divider')) {
-        textContent.push(divider);
-      }
-    });
+  // 1. Background image: first image in the first div
+  let bgImg = null;
+  if (topDivs.length > 0) {
+    const bgImgDiv = topDivs[0];
+    bgImg = bgImgDiv.querySelector('img');
   }
-  if (button) textContent.push(button);
 
-  // Compose the table rows
+  // 2. Content: find the card body in the second div
+  let cardBody = null;
+  if (topDivs.length > 1) {
+    const cardDiv = topDivs[1];
+    cardBody = cardDiv.querySelector('.card-body');
+  }
+
+  // Extract all text and elements from cardBody for the content row
+  let contentCell = '';
+  if (cardBody) {
+    // Create a fragment to hold all relevant content
+    const frag = document.createDocumentFragment();
+    // Heading
+    const heading = cardBody.querySelector('h2');
+    if (heading) frag.appendChild(heading.cloneNode(true));
+    // All flex-vertical blocks (contains icon/text pairs)
+    const flexVertical = cardBody.querySelector('.flex-vertical');
+    if (flexVertical) {
+      Array.from(flexVertical.children).forEach(child => {
+        frag.appendChild(child.cloneNode(true));
+      });
+    }
+    // Button group
+    const buttonGroup = cardBody.querySelector('.button-group');
+    if (buttonGroup) frag.appendChild(buttonGroup.cloneNode(true));
+    // If fragment has content, use it
+    if (frag.childNodes.length > 0) {
+      contentCell = frag;
+    }
+  }
+
+  // Table rows
   const headerRow = ['Hero (hero12)'];
-  // Row 2: background image (optional)
-  const bgRow = [bgImg ? bgImg : ''];
-  // Row 3: foreground image + text content (combine visually as screenshot shows)
-  // If fgImg exists, group it with textContent
-  let contentRow;
-  if (fgImg) {
-    // Group image and text in a div for layout fidelity
-    const groupDiv = document.createElement('div');
-    groupDiv.style.display = 'flex';
-    groupDiv.style.alignItems = 'flex-start';
-    groupDiv.appendChild(fgImg);
-    // Wrap text content in another div
-    const textDiv = document.createElement('div');
-    textContent.forEach(el => textDiv.appendChild(el));
-    groupDiv.appendChild(textDiv);
-    contentRow = [groupDiv];
-  } else {
-    contentRow = [textContent];
-  }
+  const bgImgRow = [bgImg ? bgImg : ''];
+  const cells = [headerRow, bgImgRow];
+  // Always add a third row, even if empty
+  cells.push([contentCell && (contentCell.textContent?.trim() || contentCell.childNodes?.length) ? contentCell : '']);
 
-  // Build the table
-  const cells = [
-    headerRow,
-    bgRow,
-    contentRow
-  ];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace original element
-  element.replaceWith(block);
+  // Replace the original element
+  element.replaceWith(table);
 }

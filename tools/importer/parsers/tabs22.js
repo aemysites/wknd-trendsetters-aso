@@ -2,54 +2,50 @@
 export default function parse(element, { document }) {
   // Helper to get direct children by selector
   function getDirectChildren(parent, selector) {
-    return Array.from(parent.querySelectorAll(':scope > ' + selector));
+    return Array.from(parent.children).filter(el => el.matches(selector));
   }
 
   // 1. Header row
   const headerRow = ['Tabs (tabs22)'];
 
-  // 2. Find tab labels and tab contents
-  // The first child div is the tab menu, the second is the tab contents
-  const children = getDirectChildren(element, 'div');
-  if (children.length < 2) return;
+  // 2. Find tab labels and tab panes
+  const tabMenu = element.querySelector('.w-tab-menu');
+  const tabLinks = tabMenu ? Array.from(tabMenu.children) : [];
+  const tabContent = element.querySelector('.w-tab-content');
+  const tabPanes = tabContent ? Array.from(tabContent.children) : [];
 
-  const tabMenu = children[0];
-  const tabContent = children[1];
-
-  // Get tab labels
-  const tabLinks = getDirectChildren(tabMenu, 'a');
-  const labels = tabLinks.map(link => {
-    // The label is the text inside the inner div
-    const labelDiv = link.querySelector('div');
-    // Defensive: fallback to link text if no inner div
-    return labelDiv ? labelDiv.textContent.trim() : link.textContent.trim();
-  });
-
-  // Get tab panes (each tab's content)
-  const tabPanes = getDirectChildren(tabContent, 'div');
-
-  // Defensive: Only process as many tabs as both labels and panes exist
-  const tabCount = Math.min(labels.length, tabPanes.length);
-
-  // 3. Build rows: each row is [label, content]
-  const rows = [];
-  for (let i = 0; i < tabCount; i++) {
-    const label = labels[i];
-    const pane = tabPanes[i];
-    // The actual content is inside a grid div within pane
-    // We'll grab the first child div inside pane
-    const gridDiv = pane.querySelector('div');
-    // Defensive: fallback to pane itself if gridDiv missing
-    rows.push([
-      label,
-      gridDiv ? gridDiv : pane
-    ]);
+  // Defensive: if not found, don't proceed
+  if (!tabLinks.length || !tabPanes.length) {
+    return;
   }
 
-  // 4. Compose table data
-  const cells = [headerRow, ...rows];
+  // 3. Build rows: [tab label, tab content]
+  const rows = tabLinks.map((tabLink, idx) => {
+    // Tab label (text content of inner div if present, else textContent)
+    let label = '';
+    const labelDiv = tabLink.querySelector('div');
+    if (labelDiv) {
+      label = labelDiv.textContent.trim();
+    } else {
+      label = tabLink.textContent.trim();
+    }
 
-  // 5. Create table and replace
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+    // Tab content: find corresponding tab pane by index
+    const tabPane = tabPanes[idx];
+    let content = '';
+    if (tabPane) {
+      // The actual content is inside the first child div of tabPane
+      // Defensive: if not, use tabPane itself
+      const grid = tabPane.querySelector('.w-layout-grid') || tabPane;
+      content = grid;
+    }
+    return [label, content];
+  });
+
+  // 4. Assemble table data
+  const tableData = [headerRow, ...rows];
+
+  // 5. Create table and replace element
+  const table = WebImporter.DOMUtils.createTable(tableData, document);
   element.replaceWith(table);
 }

@@ -1,32 +1,21 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: ensure element exists and has children
-  if (!element || !element.children || element.children.length === 0) return;
+  // Defensive: get all immediate child divs (each contains an image)
+  const columnDivs = element.querySelectorAll(':scope > div');
 
-  // Get all immediate children (should be 5 divs, each with an image)
-  const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
-  if (columnDivs.length === 0) return;
+  // Defensive: Only proceed if we have at least one column
+  if (!columnDivs.length) return;
 
-  // Each column cell should contain the image inside the child div
-  const columnCells = columnDivs.map((colDiv) => {
-    // Try to find the image inside the div
-    const img = colDiv.querySelector('img');
-    if (img) {
-      return img;
-    }
-    // If no image, fallback to the div itself
-    return colDiv;
-  });
-
-  // Build the table rows
+  // Header row as required
   const headerRow = ['Columns (columns5)'];
-  const columnsRow = columnCells;
 
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    columnsRow,
-  ], document);
+  // Second row: each cell is the image div (contains the image)
+  const imageRow = Array.from(columnDivs);
 
-  // Replace the original element with the new table
+  // Build the table
+  const cells = [headerRow, imageRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

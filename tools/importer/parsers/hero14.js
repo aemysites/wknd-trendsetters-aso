@@ -4,47 +4,52 @@ export default function parse(element, { document }) {
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
   const gridChildren = Array.from(grid.children);
+  // Defensive: expect two children
+  const imageCol = gridChildren[0];
+  const textCol = gridChildren[1];
 
-  // --- Extract background image ---
-  let bgImg = null;
-  if (gridChildren.length > 0) {
-    const imgWrap = gridChildren[0];
-    const img = imgWrap.querySelector('img');
-    if (img) {
-      // Reference the existing image element
-      bgImg = img;
-    }
-  }
-
-  // --- Extract content (heading, etc.) ---
-  let contentCell = document.createElement('div');
-  if (gridChildren.length > 1) {
-    const contentWrap = gridChildren[1];
-    const headingContainer = contentWrap.querySelector('.utility-margin-bottom-6rem');
-    if (headingContainer) {
-      // Find the main heading
-      const heading = headingContainer.querySelector('h1');
-      if (heading) {
-        contentCell.appendChild(heading);
-      }
-      // Find subheading, paragraph, CTA (none present in this HTML, but structure for future)
-      // Find button group (if any)
-      const buttonGroup = headingContainer.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.childNodes.length) {
-        contentCell.appendChild(buttonGroup);
-      }
-    }
-  }
-  // If nothing was appended, leave cell empty
-  if (!contentCell.hasChildNodes()) contentCell = '';
-
-  // --- Build table rows ---
+  // --- Row 1: Block name header ---
   const headerRow = ['Hero (hero14)'];
-  const imageRow = [bgImg ? bgImg : ''];
-  const contentRow = [contentCell];
 
-  const rows = [headerRow, imageRow, contentRow];
+  // --- Row 2: Background image (optional) ---
+  let imageCell = '';
+  if (imageCol) {
+    const img = imageCol.querySelector('img');
+    if (img) imageCell = img;
+  }
+
+  // --- Row 3: Title, subheading, CTA ---
+  // Only include actual content nodes (skip empty button group)
+  let textNodes = [];
+  if (textCol) {
+    // Find h1 for title
+    const h1 = textCol.querySelector('h1');
+    if (h1) textNodes.push(h1);
+    // Find button group (CTA)
+    const buttonGroup = textCol.querySelector('.button-group');
+    if (buttonGroup && buttonGroup.children.length > 0) {
+      textNodes.push(buttonGroup);
+    }
+    // If no content found, fallback to all children
+    if (textNodes.length === 0) {
+      textNodes = Array.from(textCol.children).filter(node => node.textContent.trim() !== '');
+    }
+  }
+  let textCell = '';
+  if (textNodes.length === 1) {
+    textCell = textNodes[0];
+  } else if (textNodes.length > 1) {
+    textCell = textNodes;
+  }
+
+  // Compose table rows
+  const rows = [
+    headerRow,
+    [imageCell],
+    [textCell]
+  ];
+  
+  // Create block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
-
   element.replaceWith(table);
 }

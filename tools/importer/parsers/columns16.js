@@ -4,36 +4,30 @@ export default function parse(element, { document }) {
   const container = element.querySelector('.container');
   if (!container) return;
 
-  // Find the two main grids: top (2 columns), bottom (2 images)
+  // Get the two main grid sections
   const grids = container.querySelectorAll('.w-layout-grid');
   if (grids.length < 2) return;
 
-  // --- Top grid: left (headline), right (desc, author, button) ---
-  const topGrid = grids[0];
-  const leftCol = topGrid.children[0];
-  const rightCol = topGrid.children[1];
+  // First grid: header/content columns
+  const headerGrid = grids[0];
+  const headerCols = Array.from(headerGrid.children).filter(el => el.tagName === 'DIV');
+  if (headerCols.length < 2) return;
+  const leftCol = headerCols[0].cloneNode(true);
+  const rightCol = headerCols[1].cloneNode(true);
 
-  // --- Bottom grid: two images ---
-  const bottomGrid = grids[1];
-  const leftImgCol = bottomGrid.children[0];
-  const rightImgCol = bottomGrid.children[1];
+  // Second grid: images
+  const imagesGrid = grids[1];
+  const imageDivs = Array.from(imagesGrid.children).filter(el => el.tagName === 'DIV');
+  if (imageDivs.length < 2) return;
+  const imgCell1 = imageDivs[0].cloneNode(true);
+  const imgCell2 = imageDivs[1].cloneNode(true);
 
-  // Compose first row (header)
+  // Build table rows
   const headerRow = ['Columns (columns16)'];
-
-  // Compose second row (top columns)
-  const secondRow = [leftCol.cloneNode(true), rightCol.cloneNode(true)];
-
-  // Compose third row (bottom columns)
-  const thirdRow = [leftImgCol.cloneNode(true), rightImgCol.cloneNode(true)];
-
-  // Build table
-  const tableRows = [
-    headerRow,
-    secondRow,
-    thirdRow,
-  ];
+  const secondRow = [leftCol, rightCol];
+  const thirdRow = [imgCell1, imgCell2];
+  const tableRows = [headerRow, secondRow, thirdRow];
 
   const table = WebImporter.DOMUtils.createTable(tableRows, document);
-  element.replaceWith(table);
+  if (table) element.replaceWith(table);
 }

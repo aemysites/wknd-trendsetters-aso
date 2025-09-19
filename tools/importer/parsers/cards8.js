@@ -1,41 +1,40 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row: must be exactly one column
+  // Block header row as specified, exactly one column
   const headerRow = ['Cards (cards8)'];
 
-  // Get all direct child divs (each is a card container)
+  // Get all immediate child divs (each is a card container with an image)
   const cardDivs = element.querySelectorAll(':scope > div');
 
-  // Prepare card rows
+  // Build rows for each card: each row is a two-cell array [image, text]
   const rows = Array.from(cardDivs).map((cardDiv) => {
     // Find the image inside the card div
     const img = cardDiv.querySelector('img');
     if (!img) return null;
-
-    // Try to extract all text content from the cardDiv, not just the alt text
+    // First cell: image element (cloned)
+    const imgCell = img.cloneNode(true);
+    // Second cell: extract all text nodes and alt
     let textContent = '';
-    Array.from(cardDiv.childNodes).forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        textContent += node.textContent.trim() + ' ';
-      } else if (node.nodeType === Node.ELEMENT_NODE && node !== img) {
+    cardDiv.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
         textContent += node.textContent.trim() + ' ';
       }
     });
-    textContent = textContent.trim();
-    if (!textContent) {
+    // If no direct text, fallback to alt
+    if (!textContent.trim()) {
       textContent = img.getAttribute('alt') || '';
     }
-
-    // Each card row: [image, text cell]
-    return [img, textContent];
+    // Always return a two-cell array
+    return [imgCell, textContent.trim()];
   }).filter(Boolean);
 
-  // Compose final table data
-  const tableData = [headerRow, ...rows];
+  // Compose the cells array: each row is an array of two cells
+  // But header row must be a single-cell array
+  const cells = [headerRow, ...rows];
 
   // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
+  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element
-  element.replaceWith(blockTable);
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }

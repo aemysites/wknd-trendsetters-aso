@@ -1,38 +1,33 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always use the required header row
+  // Find the grid layout container
+  const grid = element.querySelector(':scope > .grid-layout');
+  if (!grid) return;
+
+  // Get all direct children of the grid (these are the columns)
+  const columns = Array.from(grid.children);
+  if (columns.length === 0) return;
+
+  // Block header row (must match exactly)
   const headerRow = ['Columns (columns31)'];
 
-  // Find the grid-layout container (should be the first child of the outer container)
-  const grid = element.querySelector(':scope > .grid-layout');
-  let columns = [];
+  // Second row: each cell contains all content from the corresponding column
+  // Reference existing elements, preserve semantic structure
+  const row = columns.map((col) => {
+    // If column is empty, return an empty string
+    if (!col.children.length) return '';
+    // If only one child, reference it directly
+    if (col.children.length === 1) return col.firstElementChild;
+    // Otherwise, return an array of all children
+    return Array.from(col.children);
+  });
 
-  if (grid) {
-    // Get all immediate children of the grid, each is a column
-    const colEls = Array.from(grid.children);
-    // Defensive: Only include non-empty columns
-    columns = colEls.map((col) => {
-      // If the column has only one child, just use that child
-      if (col.children.length === 1) {
-        return col.firstElementChild;
-      }
-      // Otherwise, return the column as-is
-      return col;
-    });
-  }
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    row,
+  ], document);
 
-  // If no grid found, fallback: treat all direct children as columns
-  if (columns.length === 0) {
-    columns = Array.from(element.children);
-  }
-
-  // Build the table rows
-  const tableRows = [headerRow];
-  tableRows.push(columns);
-
-  // Create the table block
-  const block = WebImporter.DOMUtils.createTable(tableRows, document);
-
-  // Replace the original element
-  element.replaceWith(block);
+  // Replace the element with the table
+  element.replaceWith(table);
 }

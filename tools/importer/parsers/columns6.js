@@ -1,21 +1,23 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate children (columns)
-  const columns = Array.from(element.querySelectorAll(':scope > div'));
-
-  // Each column is a .utility-aspect-1x1 div containing an image
-  // We want each image in its own column cell, referencing the actual <img> elements
-  const images = columns.map(col => {
-    const img = col.querySelector('img');
-    return img ? img : document.createTextNode('');
+  // Get all direct children (should be 3 divs, each with an img)
+  const children = Array.from(element.querySelectorAll(':scope > div'));
+  // Each child is a .utility-aspect-1x1 div containing an img
+  const columns = children.map((colDiv) => {
+    // Find the first image inside this column
+    const img = colDiv.querySelector('img');
+    // Only include if image exists, reference the actual element
+    return img || '';
   });
 
-  // Table rows: header, then one row with all images as columns
+  // Build the table rows
   const headerRow = ['Columns (columns6)'];
-  const contentRow = images;
+  const columnsRow = columns;
+  const tableRows = [headerRow, columnsRow];
 
-  const cells = [headerRow, contentRow];
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
 
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }

@@ -1,25 +1,24 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the main grid layout inside the footer
-  const grid = element.querySelector('.w-layout-grid');
+  // Find the grid layout containing the columns
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
 
-  // Get all immediate children of the grid (these are the columns)
-  const columns = Array.from(grid.children);
+  // Get all direct children of the grid (each column)
+  const columns = Array.from(grid.children).filter(col => col && col.childNodes.length > 0);
 
-  // Table header row
+  // Build the header row exactly as required
   const headerRow = ['Columns (columns9)'];
 
-  // Second row: each column's content as a cell
-  // For robustness, we include each column's entire content block
-  const secondRow = columns.map((col) => col);
+  // Each cell is the actual DOM node for that column, preserving all content and semantics
+  const columnsRow = columns.map(col => col);
 
-  // Table rows array
-  const rows = [headerRow, secondRow];
+  // Create the columns block table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace the original element with the block table
-  element.replaceWith(blockTable);
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }
