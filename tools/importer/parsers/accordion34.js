@@ -1,44 +1,55 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header as required
+  // Find all direct child accordions
+  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
+
+  // Defensive fallback: find all .accordion inside if none found as direct children
+  if (accordions.length === 0) {
+    accordions.push(...element.querySelectorAll('.accordion'));
+  }
+
+  // Table header row as per block guidelines
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  // Get all immediate children that are accordions
-  const accordionDivs = Array.from(element.querySelectorAll(':scope > div.accordion'));
-
-  accordionDivs.forEach((accordion) => {
-    // Title: find the .w-dropdown-toggle, then the .paragraph-lg inside it
-    const toggle = accordion.querySelector('.w-dropdown-toggle');
-    let title = '';
+  accordions.forEach((acc) => {
+    // Title: .w-dropdown-toggle > .paragraph-lg
+    let titleCell = null;
+    const toggle = acc.querySelector('.w-dropdown-toggle');
     if (toggle) {
       const titleDiv = toggle.querySelector('.paragraph-lg');
       if (titleDiv) {
-        title = titleDiv;
+        titleCell = titleDiv;
       } else {
-        // fallback: use toggle textContent
-        title = document.createElement('span');
-        title.textContent = toggle.textContent.trim();
+        // fallback: use toggle's textContent
+        titleCell = document.createElement('div');
+        titleCell.textContent = toggle.textContent.trim();
       }
+    } else {
+      // fallback: use acc's textContent
+      titleCell = document.createElement('div');
+      titleCell.textContent = acc.textContent.trim();
     }
 
-    // Content: find nav.accordion-content .rich-text or the first .w-richtext inside
-    let content = '';
-    const nav = accordion.querySelector('nav.accordion-content');
+    // Content: .accordion-content or .w-dropdown-list, prefer .w-richtext inside
+    let contentCell = null;
+    const nav = acc.querySelector('.accordion-content, .w-dropdown-list');
     if (nav) {
-      const richText = nav.querySelector('.w-richtext');
-      if (richText) {
-        content = richText;
+      const rich = nav.querySelector('.w-richtext');
+      if (rich) {
+        contentCell = rich;
       } else {
-        // fallback: use nav innerHTML
-        content = document.createElement('div');
-        content.innerHTML = nav.innerHTML;
+        contentCell = nav;
       }
+    } else {
+      // fallback: empty div
+      contentCell = document.createElement('div');
     }
 
-    rows.push([title, content]);
+    rows.push([titleCell, contentCell]);
   });
 
+  // Create table using WebImporter utility
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

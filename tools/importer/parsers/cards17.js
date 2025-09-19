@@ -1,33 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the cards
-  const grid = element.querySelector('.w-layout-grid');
+  // Find the grid container with the cards
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all immediate children of the grid (each card)
+  // Each direct child of grid is a card wrapper
   const cardDivs = Array.from(grid.children);
 
-  // Build the table rows
-  const rows = [];
-  // Header row as specified
-  rows.push(['Cards (cards17)']);
+  // Prepare the header row (must be exactly one column)
+  const headerRow = ['Cards (cards17)'];
+  const rows = [headerRow];
 
+  // For each card, extract the image (first cell) and text content (second cell)
   cardDivs.forEach((cardDiv) => {
-    // Find the image element
-    const imgWrap = cardDiv.querySelector(':scope > div');
-    let img = null;
-    if (imgWrap) {
-      img = imgWrap.querySelector('img');
+    // Find the image inside the card
+    const img = cardDiv.querySelector('img');
+    let textContent = '';
+    // Extract all text content from the cardDiv, excluding image alt
+    // If there is no visible text, fallback to alt text
+    // Get all text nodes that are not inside <img>
+    const walker = document.createTreeWalker(cardDiv, NodeFilter.SHOW_TEXT, {
+      acceptNode: (node) => {
+        if (node.parentNode.nodeName !== 'IMG' && node.textContent.trim()) {
+          return NodeFilter.FILTER_ACCEPT;
+        }
+        return NodeFilter.FILTER_REJECT;
+      }
+    });
+    let node, texts = [];
+    while ((node = walker.nextNode())) {
+      texts.push(node.textContent.trim());
     }
-    // Defensive: If no image, skip this card
-    if (!img) return;
-
-    // There is no text content for these cards in the source HTML, so omit the second cell entirely
-    // Only add the image in its own cell
-    rows.push([img, '']);
+    if (texts.length) {
+      textContent = texts.join(' ');
+    } else if (img && img.alt && img.alt.trim()) {
+      textContent = img.alt.trim();
+    }
+    rows.push([img, textContent]);
   });
 
-  // Create the table
+  // Create the table block
   const table = WebImporter.DOMUtils.createTable(rows, document);
 
   // Replace the original element

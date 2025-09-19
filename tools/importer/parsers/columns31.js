@@ -1,21 +1,22 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (the direct child of the main container)
-  const grid = element.querySelector(':scope > .grid-layout');
+  // Find the grid-layout container (the columns)
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
   // Get all direct children of the grid (these are the columns)
   const columns = Array.from(grid.children);
-  if (columns.length === 0) return;
 
-  // Build the table rows
+  // Build the header row exactly as required
   const headerRow = ['Columns (columns31)'];
-  const contentRow = columns.map(col => col);
 
-  // Create the table
+  // Each column cell should reference the actual DOM node (not clone or new)
+  const columnsRow = columns.map(col => col);
+
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow,
+    columnsRow,
   ], document);
 
   // Replace the original element with the new table

@@ -2,62 +2,56 @@
 export default function parse(element, { document }) {
   // Helper to extract card info from a card anchor element
   function extractCardInfo(cardEl) {
-    // Find image (mandatory)
-    const imgContainer = cardEl.querySelector('.utility-aspect-2x3, .utility-aspect-1x1');
-    let img = imgContainer ? imgContainer.querySelector('img') : null;
-    // Defensive: fallback to any img inside the card
-    if (!img) img = cardEl.querySelector('img');
-
-    // Find heading (h2 or h3 or h4)
-    let heading = cardEl.querySelector('h2, h3, h4');
-    // Find description (first <p> inside the card)
-    let desc = cardEl.querySelector('p');
-    // Find CTA (button or link or .button div)
-    let cta = cardEl.querySelector('.button, button, a.button');
-
-    // Compose text cell
-    const textCellContent = [];
-    if (heading) textCellContent.push(heading);
-    if (desc) textCellContent.push(desc);
-    if (cta) textCellContent.push(cta);
-    return [img, textCellContent];
+    // Find the image (mandatory, always in a div > img)
+    const img = cardEl.querySelector('img');
+    // Find the heading (h3)
+    const heading = cardEl.querySelector('h2, h3, h4, h5, h6');
+    // Find the description (p)
+    const desc = cardEl.querySelector('p');
+    // Find CTA (button or .button or a inside card, but not the card itself)
+    let cta = cardEl.querySelector('.button, button');
+    // If not found, look for a link that is not the card itself
+    if (!cta) {
+      const links = Array.from(cardEl.querySelectorAll('a'));
+      cta = links.find((a) => a !== cardEl);
+    }
+    // Build the text cell content
+    const textContent = [];
+    if (heading) textContent.push(heading);
+    if (desc) textContent.push(desc);
+    if (cta) textContent.push(cta);
+    return [img, textContent];
   }
 
-  // Find the grid containing cards
-  const mainGrid = element.querySelector('.grid-layout');
-  // Defensive: fallback to any grid-layout
-  const cardContainers = mainGrid ? Array.from(mainGrid.children) : Array.from(element.querySelectorAll(':scope > div > .grid-layout > *'));
+  // Get the main grid containing all cards
+  const mainGrid = element.querySelector(':scope > div > div');
+  if (!mainGrid) return;
 
-  // Build cards array
-  const cards = [];
+  // The first card is a direct child <a>, the rest are inside a nested grid
+  const cardRows = [];
 
-  cardContainers.forEach((cardEl) => {
-    // If it's a nested grid, get its children
-    if (cardEl.classList.contains('grid-layout')) {
-      Array.from(cardEl.children).forEach((nestedCardEl) => {
-        if (nestedCardEl.classList.contains('utility-link-content-block')) {
-          cards.push(extractCardInfo(nestedCardEl));
-        }
-      });
-    } else if (cardEl.classList.contains('utility-link-content-block')) {
-      cards.push(extractCardInfo(cardEl));
-    }
-  });
+  // First card
+  const firstCard = mainGrid.querySelector(':scope > a.utility-link-content-block');
+  if (firstCard) {
+    cardRows.push(extractCardInfo(firstCard));
+  }
 
-  // Header row
+  // Nested grid with the rest of the cards
+  const nestedGrid = mainGrid.querySelector(':scope > div.grid-layout');
+  if (nestedGrid) {
+    const nestedCards = nestedGrid.querySelectorAll(':scope > a.utility-link-content-block');
+    nestedCards.forEach(cardEl => {
+      cardRows.push(extractCardInfo(cardEl));
+    });
+  }
+
+  // Table header row
   const headerRow = ['Cards (cards37)'];
-  const tableRows = [headerRow];
+  const tableRows = [headerRow, ...cardRows];
 
-  // Each card becomes a row: [image, text content]
-  cards.forEach(([img, textContent]) => {
-    // Defensive: if no image or text, skip
-    if (img && textContent.length) {
-      tableRows.push([img, textContent]);
-    }
-  });
-
-  // Create block table
+  // Create the block table
   const block = WebImporter.DOMUtils.createTable(tableRows, document);
-  // Replace original element
+
+  // Replace the original element
   element.replaceWith(block);
 }

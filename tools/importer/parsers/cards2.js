@@ -1,53 +1,78 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Compose text cell for a card
-  function buildTextCell(card) {
-    const frag = document.createElement('div');
-    // Tag (optional)
-    const tag = card.querySelector('.tag');
-    if (tag) frag.appendChild(tag.cloneNode(true));
-    // Title (h2, h3, or h4)
-    const title = card.querySelector('h2, h3, h4');
-    if (title) frag.appendChild(title.cloneNode(true));
-    // Description (first p)
-    const desc = card.querySelector('p');
-    if (desc) frag.appendChild(desc.cloneNode(true));
-    return frag;
-  }
-
-  // Find all cards in visual order
-  const cards = [];
-  // 1. Main card (large left)
-  const mainCard = element.querySelector('.w-layout-grid > a.utility-link-content-block');
-  if (mainCard) cards.push(mainCard);
-  // 2. Two image cards (top right)
-  const flexRows = element.querySelectorAll('.w-layout-grid > .flex-horizontal');
-  if (flexRows[0]) {
-    flexRows[0].querySelectorAll('a.utility-link-content-block').forEach(a => cards.push(a));
-  }
-  // 3. Text-only cards (bottom right)
-  if (flexRows[1]) {
-    flexRows[1].querySelectorAll('a.utility-link-content-block').forEach(a => cards.push(a));
-  }
-
-  // Build table rows
-  const rows = [];
-  rows.push(['Cards (cards2)']);
-  cards.forEach(card => {
-    // Image (if present)
+  // Helper to extract card data from an <a> card element
+  function extractCard(cardEl) {
+    // Find image (if any)
+    const imgContainer = cardEl.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
     let img = null;
-    // Only image cards have an image container
-    const imgDiv = card.querySelector('div[class*="utility-aspect"]');
-    if (imgDiv) img = imgDiv.querySelector('img');
-    // Text cell (tag, title, desc)
-    const textCell = buildTextCell(card);
-    rows.push([
-      img ? img : '',
-      textCell
-    ]);
-  });
+    if (imgContainer) {
+      img = imgContainer.querySelector('img');
+    }
+    // Find tag (if any)
+    const tagGroup = cardEl.querySelector('.tag-group');
+    let tag = null;
+    if (tagGroup) {
+      tag = tagGroup.querySelector('.tag');
+    }
+    // Find heading
+    let heading = cardEl.querySelector('h3');
+    // Find description
+    let desc = cardEl.querySelector('p');
+    // Compose text cell
+    const textCell = document.createElement('div');
+    if (tag) {
+      const tagDiv = document.createElement('div');
+      tagDiv.appendChild(tag);
+      textCell.appendChild(tagDiv);
+    }
+    if (heading) textCell.appendChild(heading);
+    if (desc) textCell.appendChild(desc);
+    return [img || '', textCell];
+  }
 
-  // Create and replace with table
+  // Get the grid-layout container
+  const grid = element.querySelector('.grid-layout');
+  if (!grid) return;
+
+  // The first card is the big left card (first child <a> of grid)
+  const mainCard = grid.querySelector('a.utility-link-content-block');
+
+  // The next group is the vertical stack of cards (inside .flex-horizontal)
+  const flexGroups = grid.querySelectorAll('.flex-horizontal');
+
+  // Compose table rows
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards2)']);
+
+  // First card (big left card)
+  if (mainCard) {
+    rows.push(extractCard(mainCard));
+  }
+
+  // Cards in the first flex-horizontal (images, tags, headings, descriptions)
+  if (flexGroups[0]) {
+    const flexCards = flexGroups[0].querySelectorAll('a.utility-link-content-block');
+    flexCards.forEach(card => {
+      rows.push(extractCard(card));
+    });
+  }
+
+  // Cards in the second flex-horizontal (just headings/descriptions)
+  if (flexGroups[1]) {
+    const flexCards = flexGroups[1].querySelectorAll('a.utility-link-content-block');
+    flexCards.forEach(card => {
+      // For these, no image, just heading/desc
+      let heading = card.querySelector('h3');
+      let desc = card.querySelector('p');
+      const textCell = document.createElement('div');
+      if (heading) textCell.appendChild(heading);
+      if (desc) textCell.appendChild(desc);
+      rows.push(['', textCell]);
+    });
+  }
+
+  // Create and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

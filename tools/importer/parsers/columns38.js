@@ -1,20 +1,23 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate child divs (each containing an image)
+  // Get all immediate child divs (columns)
   const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Defensive: Only proceed if at least one column exists
-  if (!columns.length) return;
-
-  // Build the table rows
+  // Block header row
   const headerRow = ['Columns (columns38)'];
-  // Each column cell contains the entire div (which contains the image)
-  const columnsRow = columns.map(col => col);
 
-  const table = WebImporter.DOMUtils.createTable([
+  // Content row: each cell is the referenced column div (preserving images and semantics)
+  const contentRow = columns.map((col) => col);
+
+  // Table data
+  const tableData = [
     headerRow,
-    columnsRow,
-  ], document);
+    contentRow,
+  ];
 
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(tableData, document);
+
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }

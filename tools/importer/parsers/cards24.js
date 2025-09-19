@@ -1,51 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all direct child <a> elements (each is a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+  // Helper: Extracts the image from the card anchor
+  function extractImage(card) {
+    // Find the first image inside the card
+    return card.querySelector('img');
+  }
 
-  // Table header as required by spec
-  const headerRow = ['Cards (cards24)'];
-  const rows = [headerRow];
-
-  cardLinks.forEach((card) => {
-    // Image: first child div > img
-    const imgDiv = card.querySelector(':scope > div');
-    const img = imgDiv ? imgDiv.querySelector('img') : null;
-
-    // Meta (tag and date): second child div
-    const metaDiv = card.querySelectorAll(':scope > div')[1];
-    let metaContent = [];
-    if (metaDiv) {
-      // Tag
-      const tag = metaDiv.querySelector('.tag');
-      if (tag) metaContent.push(tag);
-      // Date
-      const date = metaDiv.querySelector('.paragraph-sm');
-      if (date) metaContent.push(date);
+  // Helper: Extracts the text content (tag, date, title) from the card anchor
+  function extractTextContent(card) {
+    const fragments = [];
+    // Tag and date row
+    const tagRow = card.querySelector('.flex-horizontal');
+    if (tagRow) {
+      // Clone to avoid removing from DOM
+      fragments.push(tagRow.cloneNode(true));
     }
-
-    // Heading (title)
-    const heading = card.querySelector('h3');
-
-    // Compose text cell: meta row (if present) + heading
-    const textCell = [];
-    if (metaContent.length) {
-      const metaWrap = document.createElement('div');
-      metaWrap.style.display = 'flex';
-      metaWrap.style.gap = '0.5em';
-      metaWrap.append(...metaContent);
-      textCell.push(metaWrap);
+    // Title (h3)
+    const title = card.querySelector('h3');
+    if (title) {
+      fragments.push(title.cloneNode(true));
     }
-    if (heading) textCell.push(heading);
+    return fragments;
+  }
 
-    // Add row: [image, text cell]
+  // 1. Header row
+  const rows = [
+    ['Cards (cards24)']
+  ];
+
+  // 2. Card rows
+  // Each direct child <a> is a card
+  const cards = element.querySelectorAll(':scope > a');
+  cards.forEach(card => {
+    // First column: image
+    const img = extractImage(card);
+    // Second column: text content (tag/date + title)
+    const textContent = extractTextContent(card);
     rows.push([
-      img ? img : '',
-      textCell.length ? textCell : ''
+      img,
+      textContent
     ]);
   });
 
-  // Create table and replace
+  // Create table and replace element
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

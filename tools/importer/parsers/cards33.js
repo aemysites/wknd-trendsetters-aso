@@ -1,59 +1,70 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
-  const headerRow = ['Cards (cards33)'];
+  // Helper to extract card info from each card anchor
+  function extractCardInfo(cardAnchor) {
+    // Find the image (first img descendant)
+    const img = cardAnchor.querySelector('img');
 
-  // Get all direct child <a> elements (each is a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
+    // Find the content container (the div after the image)
+    const contentDiv = img.nextElementSibling;
 
-  // Build rows for each card
-  const rows = cardLinks.map((cardLink) => {
-    // Find image (mandatory)
-    const img = cardLink.querySelector('img');
-
-    // Find the card content wrapper (the div after the image)
-    const contentWrapper = img && img.nextElementSibling;
-
-    // Defensive: If no content wrapper, fallback to the cardLink itself
-    const contentDiv = contentWrapper || cardLink;
-
-    // Compose the right cell: Tag, read time, title, description, CTA
-    const rightCellContent = [];
-
-    // Tag and read time (horizontal flex)
-    const tagRow = contentDiv.querySelector('.flex-horizontal');
-    if (tagRow) {
-      rightCellContent.push(tagRow);
+    // Defensive: if contentDiv is missing, return minimal info
+    if (!contentDiv) {
+      return [img, ''];
     }
 
-    // Title (h3)
+    // Extract tag (optional) and read time (optional)
+    const metaRow = contentDiv.querySelector('.flex-horizontal');
+    let metaFrag = null;
+    if (metaRow) {
+      // Clone metaRow to avoid moving it from original DOM
+      metaFrag = document.createDocumentFragment();
+      metaRow.childNodes.forEach((node) => {
+        metaFrag.appendChild(node.cloneNode(true));
+      });
+    }
+
+    // Extract title (h3)
     const title = contentDiv.querySelector('h3');
-    if (title) {
-      rightCellContent.push(title);
-    }
-
-    // Description (p)
+    // Extract description (p)
     const desc = contentDiv.querySelector('p');
-    if (desc) {
-      rightCellContent.push(desc);
-    }
-
-    // CTA ("Read" div)
+    // Extract CTA (the last div inside contentDiv, with text 'Read')
+    let cta = null;
     const ctaDivs = Array.from(contentDiv.querySelectorAll('div'));
-    const cta = ctaDivs.find(d => d.textContent.trim().toLowerCase() === 'read');
-    if (cta) {
-      rightCellContent.push(cta);
+    if (ctaDivs.length > 0) {
+      // The last div is usually the CTA
+      const lastDiv = ctaDivs[ctaDivs.length - 1];
+      if (lastDiv.textContent.trim().toLowerCase() === 'read') {
+        // Make a link with the card's href
+        cta = document.createElement('a');
+        cta.href = cardAnchor.href;
+        cta.textContent = lastDiv.textContent.trim();
+      }
     }
 
-    // Left cell: image (mandatory)
-    // Right cell: all extracted content
-    return [img, rightCellContent];
+    // Compose the text cell's content as an array
+    const textCell = [];
+    if (metaFrag && metaFrag.textContent.trim()) {
+      textCell.push(metaFrag);
+    }
+    if (title) textCell.push(title);
+    if (desc) textCell.push(desc);
+    if (cta) textCell.push(cta);
+
+    return [img, textCell];
+  }
+
+  // Build the table rows
+  const headerRow = ['Cards (cards33)'];
+  const rows = [headerRow];
+
+  // Each card is an <a> direct child of the main element
+  const cards = Array.from(element.querySelectorAll(':scope > a'));
+  cards.forEach((cardAnchor) => {
+    rows.push(extractCardInfo(cardAnchor));
   });
 
-  // Compose the table
-  const tableCells = [headerRow, ...rows];
-  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
-
-  // Replace original element with the new block table
-  element.replaceWith(blockTable);
+  // Create the table and replace the original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

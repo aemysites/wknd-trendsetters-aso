@@ -1,31 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (the columns)
+  // Find the grid container holding the columns
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Get all direct children of the grid
-  const gridChildren = Array.from(grid.children);
+  // Get all direct children of the grid (these are the columns)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Find the heading (column 1)
-  const heading = gridChildren.find((el) => el.tagName === 'H2');
-  // Find the content block (column 2)
-  const contentBlock = gridChildren.find((el) => el.tagName !== 'H2');
+  // First column: heading (h2)
+  const heading = columns[0];
+  // Second column: content (paragraph, button)
+  const content = columns[1];
 
-  // Defensive: If missing, fallback to all children
-  const col1 = heading || gridChildren[0];
-  const col2 = contentBlock || gridChildren[1];
-
-  // Table header: must be exactly one column
+  // Build the header row exactly as required
   const headerRow = ['Columns (columns7)'];
 
-  // Table columns: visually, this is a 2-column layout
+  // For the first cell, reference the heading element directly
+  const col1 = heading;
+
+  // For the second cell, reference all children of the content column
+  let col2;
+  if (content.children.length > 0) {
+    col2 = Array.from(content.children);
+  } else {
+    col2 = content;
+  }
+
+  // Build the table rows
   const columnsRow = [col1, col2];
 
-  // Build table
-  const cells = [headerRow, columnsRow];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the table using WebImporter.DOMUtils.createTable
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Replace the original element
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

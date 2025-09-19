@@ -1,31 +1,32 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always use the block name as the header row
+  // Header row as required
   const headerRow = ['Columns (columns23)'];
-  
-  // Defensive: get all immediate children that represent each Q&A pair
-  // Each divider contains a grid with two children: question and answer
+
+  // Get all immediate children of the block (each is a 'divider' containing a grid)
   const dividers = Array.from(element.querySelectorAll(':scope > .divider'));
 
-  // Each row will have two columns: left (question), right (answer)
-  const rows = dividers.map(divider => {
+  // Defensive: fallback if .divider is not direct child (rare)
+  const fallbackDividers = dividers.length ? dividers : Array.from(element.children);
+
+  // For each divider, extract the grid's two children: question and answer
+  const rows = fallbackDividers.map(divider => {
     // Find the grid inside the divider
     const grid = divider.querySelector('.w-layout-grid');
-    if (!grid) return ['', ''];
-    // Get the two children: question and answer
-    const cells = Array.from(grid.children);
-    // Defensive: ensure we have at least two cells
-    const left = cells[0] || document.createElement('div');
-    const right = cells[1] || document.createElement('div');
-    return [left, right];
+    if (!grid) return [divider.cloneNode(true), '']; // fallback: put whole divider in first cell
+    const gridChildren = Array.from(grid.children);
+    // Defensive: expect at least two children per grid
+    const question = gridChildren[0] || document.createElement('div');
+    const answer = gridChildren[1] || document.createElement('div');
+    return [question, answer];
   });
 
-  // Compose the table data
-  const tableData = [headerRow, ...rows];
-
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
+  // Compose the table: header row, then each Q/A row
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    ...rows
+  ], document);
 
   // Replace the original element
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

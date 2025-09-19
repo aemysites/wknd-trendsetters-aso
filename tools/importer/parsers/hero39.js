@@ -1,63 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get immediate children of a node
-  function getDirectChildrenByTag(parent, tag) {
-    return Array.from(parent.children).filter(child => child.tagName.toLowerCase() === tag);
-  }
+  if (!element) return;
 
-  // 1. Header row
+  // --- HEADER ROW ---
   const headerRow = ['Hero (hero39)'];
 
-  // 2. Background image row
-  // Find the prominent image (background)
-  let bgImg = null;
-  // The image is inside the first grid-layout div
-  const gridDivs = element.querySelectorAll(':scope > div > div');
-  for (const div of gridDivs) {
-    const img = div.querySelector('img');
-    if (img) {
-      bgImg = img;
-      break;
-    }
-  }
-  // Defensive: If not found, try fallback
-  if (!bgImg) {
-    bgImg = element.querySelector('img');
-  }
-  const imageRow = [bgImg ? bgImg : ''];
+  // --- ROW 2: Background Image ---
+  let bgImg = '';
+  const img = element.querySelector('img');
+  if (img) bgImg = img;
+  const bgImgRow = [bgImg];
 
-  // 3. Content row
-  // Find headline, paragraph, and button
-  let title = null, subheading = null, cta = null;
-  // The second grid-layout div contains the text and CTA
-  let contentDiv = null;
-  for (const div of gridDivs) {
-    if (div.querySelector('h1')) {
-      contentDiv = div;
-      break;
-    }
-  }
-  if (contentDiv) {
-    // Headline
-    title = contentDiv.querySelector('h1');
-    // Paragraph (subheading)
-    subheading = contentDiv.querySelector('p');
-    // CTA (button link)
-    cta = contentDiv.querySelector('a');
-  }
-  // Compose content cell
+  // --- ROW 3: Headline, Subheading, CTA ---
+  // Find the main content container (the one with the text and button)
+  let contentContainer = null;
+  const containers = element.querySelectorAll('.container');
+  if (containers.length) contentContainer = containers[0];
+
+  // Collect all content blocks (headings, paragraphs, buttons)
   const contentCell = [];
-  if (title) contentCell.push(title);
-  if (subheading) contentCell.push(subheading);
-  if (cta) contentCell.push(cta);
+  if (contentContainer) {
+    // Get all headings, paragraphs, and CTA in order
+    const selectors = 'h1, h2, h3, h4, h5, h6, p, a';
+    const nodes = contentContainer.querySelectorAll(selectors);
+    nodes.forEach((node) => {
+      // Only add if has text content or is a link
+      if (node.tagName === 'A' || node.textContent.trim()) {
+        contentCell.push(node);
+      }
+    });
+  }
   const contentRow = [contentCell.length ? contentCell : ''];
 
-  // Compose table
   const cells = [
     headerRow,
-    imageRow,
+    bgImgRow,
     contentRow
   ];
+
   const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

@@ -1,42 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the collage grid of images for the background
-  const grid = element.querySelector('.grid-layout.desktop-3-column');
-  let images = [];
-  if (grid) {
-    images = Array.from(grid.querySelectorAll('img'));
+  // Helper: get all images from the hero background grid
+  function getHeroImages() {
+    // Find the grid with images
+    const grid = element.querySelector('.grid-layout.desktop-3-column.utility-min-height-100dvh');
+    if (!grid) return [];
+    // Get all img elements inside the grid
+    return Array.from(grid.querySelectorAll('img'));
   }
 
-  // Find the hero content: headline, subheading, CTA
-  const content = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
+  // Helper: get the hero content (title, subheading, CTAs)
+  function getHeroContent() {
+    // Find the content container
+    const content = element.querySelector('.ix-hero-scale-3x-to-1x-content');
+    if (!content) return null;
+    return content;
+  }
 
-  // Table header must exactly match the block name
+  // Table header row
   const headerRow = ['Hero (hero20)'];
 
-  // Row 2: background image(s) collage
-  let bgCell = '';
-  if (images.length > 0) {
-    // Group all images in a div for layout and semantic clarity
-    const collageDiv = document.createElement('div');
-    collageDiv.className = 'hero20-background-collage';
-    images.forEach(img => collageDiv.appendChild(img));
-    bgCell = collageDiv;
-  }
+  // Row 2: Background images (all images stacked in one cell)
+  const images = getHeroImages();
+  const imagesCell = images.length ? images : [''];
 
-  // Row 3: headline, subheading, CTA
-  let contentCell = '';
-  if (content) {
-    contentCell = content;
-  }
+  // Row 3: Content (title, subheading, CTAs)
+  const heroContent = getHeroContent();
+  const contentCell = heroContent ? [heroContent] : [''];
 
   // Compose table rows
   const rows = [
     headerRow,
-    [bgCell],
-    [contentCell]
+    [imagesCell],
+    [contentCell],
   ];
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element
+  element.replaceWith(block);
 }

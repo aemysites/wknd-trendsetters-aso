@@ -1,49 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Header row
+  // Table header row
   const headerRow = ['Hero (hero35)'];
 
-  // 2. Background image row (none in this HTML)
+  // There is no background image in the source HTML, so row 2 is empty
   const bgImageRow = [''];
 
-  // 3. Content row: Title, Subheading, CTA
-  // Find the grid container
+  // Find the grid layout div (contains the content)
   const grid = element.querySelector('.w-layout-grid');
-  let contentCell = [];
+  let contentCell = '';
   if (grid) {
-    // Get all direct children of the grid
-    const gridChildren = Array.from(grid.children);
-    // Find the div with the heading and subheading
-    const contentDiv = gridChildren.find((child) => child.querySelector('h2'));
-    // Find the CTA (button link)
-    const ctaLink = gridChildren.find((child) => child.tagName === 'A');
-
+    // The first child div contains heading and subheading
+    const contentDiv = grid.querySelector('div');
+    // The button is the <a> in the grid
+    const cta = grid.querySelector('a');
     // Compose content cell
+    const cellContent = [];
     if (contentDiv) {
-      // Get heading and subheading
-      const heading = contentDiv.querySelector('h2');
-      const subheading = contentDiv.querySelector('p');
-      if (heading) contentCell.push(heading);
-      if (subheading) contentCell.push(subheading);
+      // Add all children of contentDiv (e.g., h2, p)
+      Array.from(contentDiv.children).forEach((child) => {
+        cellContent.push(child);
+      });
     }
-    if (ctaLink) {
-      contentCell.push(ctaLink);
+    if (cta) {
+      cellContent.push(cta);
+    }
+    if (cellContent.length) {
+      contentCell = cellContent;
     }
   }
-  // Defensive: if nothing found, just use the whole element
-  if (contentCell.length === 0) {
-    contentCell = [element];
-  }
-
   const contentRow = [contentCell];
 
-  // Build table
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
     bgImageRow,
     contentRow,
   ], document);
 
-  // Replace original element
+  // Replace the original element
   element.replaceWith(table);
 }

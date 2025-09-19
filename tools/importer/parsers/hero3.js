@@ -4,37 +4,42 @@ export default function parse(element, { document }) {
   const headerRow = ['Hero (hero3)'];
 
   // 2. Background image row
-  // Find the background image (img.cover-image)
-  let bgImg = element.querySelector('img.cover-image');
-  let bgImgCell = '';
-  if (bgImg) {
-    bgImgCell = bgImg;
+  // Find the image (background)
+  let bgImg = null;
+  const imgCandidates = element.querySelectorAll('img');
+  if (imgCandidates.length > 0) {
+    bgImg = imgCandidates[0];
   }
 
   // 3. Content row (title, subheading, CTA)
-  // Find the card that contains the text content
-  let card = element.querySelector('.card');
-  let contentCell = '';
+  // Find the card with heading, subheading, and buttons
+  let contentCell = [];
+  // Find the card (contains h1, p, and button group)
+  const card = element.querySelector('.card');
   if (card) {
-    // Extract heading, subheading, and button group
-    const content = [];
-    const heading = card.querySelector('h1, h2, h3, h4, h5, h6');
-    if (heading) content.push(heading);
-    const subheading = card.querySelector('p.subheading');
-    if (subheading) content.push(subheading);
-    const btnGroup = card.querySelector('.button-group');
-    if (btnGroup) content.push(btnGroup);
-    contentCell = content;
+    // Title (h1)
+    const h1 = card.querySelector('h1');
+    if (h1) contentCell.push(h1);
+    // Subheading (p)
+    const subheading = card.querySelector('p');
+    if (subheading) contentCell.push(subheading);
+    // CTA buttons
+    const buttonGroup = card.querySelector('.button-group');
+    if (buttonGroup) {
+      // Clone the button group so we don't move original DOM nodes
+      const btnGroupClone = buttonGroup.cloneNode(true);
+      contentCell.push(btnGroupClone);
+    }
   }
 
-  // Build the table rows
+  // Compose the table rows
   const rows = [
     headerRow,
-    [bgImgCell],
-    [contentCell],
+    [bgImg ? bgImg : ''],
+    [contentCell.length ? contentCell : ''],
   ];
 
-  // Create the table block
+  // Create the table
   const table = WebImporter.DOMUtils.createTable(rows, document);
 
   // Replace the original element
