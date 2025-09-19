@@ -1,88 +1,72 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
   // Helper to extract card info from a card anchor
-  function extractCardInfo(cardAnchor) {
+  function extractCard(anchor) {
     // Find image (if present)
-    const imgContainer = cardAnchor.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
+    const imgContainer = anchor.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
     let img = null;
     if (imgContainer) {
       img = imgContainer.querySelector('img');
     }
-    // Find tag (if present)
-    const tagGroup = cardAnchor.querySelector('.tag-group');
+    // Tag (optional)
+    const tagGroup = anchor.querySelector('.tag-group');
     let tag = null;
     if (tagGroup) {
       tag = tagGroup.querySelector('.tag');
     }
-    // Find heading (h3)
-    let heading = cardAnchor.querySelector('h3');
-    // Find description (p)
-    let desc = cardAnchor.querySelector('p');
-    // Compose text cell
+    // Heading
+    let heading = anchor.querySelector('h3');
+    // Description
+    let desc = anchor.querySelector('p');
+    // Build text cell
     const textCell = document.createElement('div');
     if (tag) {
-      const tagSpan = document.createElement('span');
-      tagSpan.textContent = tag.textContent;
-      tagSpan.style.display = 'inline-block';
-      tagSpan.style.fontSize = '0.75em';
-      tagSpan.style.marginBottom = '0.5em';
-      textCell.appendChild(tagSpan);
-      textCell.appendChild(document.createElement('br'));
+      const tagDiv = document.createElement('div');
+      tagDiv.appendChild(tag);
+      textCell.appendChild(tagDiv);
     }
     if (heading) {
-      textCell.appendChild(heading.cloneNode(true));
+      textCell.appendChild(heading);
     }
     if (desc) {
-      textCell.appendChild(desc.cloneNode(true));
+      textCell.appendChild(desc);
     }
-    // Only return a card if there is an image
-    if (img) {
-      return [img.cloneNode(true), textCell];
-    }
-    // If no image, skip this card (do not return anything)
-    return null;
+    return [img ? img : '', textCell]; // Use empty string instead of null for missing image
   }
+
   // Get main grid
-  const container = element.querySelector(':scope > div > div');
-  // Compose table rows
+  const grid = element.querySelector('.grid-layout');
+  const flexGroups = Array.from(grid.querySelectorAll(':scope > .flex-horizontal'));
+
+  // Compose rows
   const rows = [];
   // Header row
-  const headerRow = ['Cards (cards2)'];
-  rows.push(headerRow);
-  // Main card (large left card)
-  const mainCardAnchor = container.querySelector(':scope > a.utility-link-content-block');
-  if (mainCardAnchor) {
-    const card = extractCardInfo(mainCardAnchor);
-    if (card) rows.push(card);
+  rows.push(['Cards (cards2)']);
+
+  // First card (big left)
+  const firstCardAnchor = grid.querySelector(':scope > a.utility-link-content-block');
+  if (firstCardAnchor) {
+    rows.push(extractCard(firstCardAnchor));
   }
-  // Right column, top row: two cards with images
-  const rightTopRow = container.querySelector(':scope > div.flex-horizontal');
-  if (rightTopRow) {
-    const rightTopCards = Array.from(rightTopRow.querySelectorAll(':scope > a.utility-link-content-block'));
-    rightTopCards.forEach(cardAnchor => {
-      const card = extractCardInfo(cardAnchor);
-      if (card) rows.push(card);
+
+  // Next two cards (with images)
+  if (flexGroups.length > 0) {
+    const imgCards = Array.from(flexGroups[0].querySelectorAll(':scope > a.utility-link-content-block'));
+    imgCards.forEach((anchor) => {
+      rows.push(extractCard(anchor));
     });
   }
-  // Right column, bottom: text-only cards (no image)
-  const rightBottomRow = container.querySelector(':scope > div.flex-horizontal.flex-vertical.flex-gap-sm.w-node-f71f504d-ed02-fbe1-5974-4ebc66911f34-86a1a9b3');
-  if (rightBottomRow) {
-    // Each card is an anchor
-    const textCards = Array.from(rightBottomRow.querySelectorAll(':scope > a.utility-link-content-block'));
-    textCards.forEach(cardAnchor => {
-      // For text-only cards, build text cell with heading and description
-      let heading = cardAnchor.querySelector('h3');
-      let desc = cardAnchor.querySelector('p');
-      if (heading || desc) {
-        const textCell = document.createElement('div');
-        if (heading) textCell.appendChild(heading.cloneNode(true));
-        if (desc) textCell.appendChild(desc.cloneNode(true));
-        rows.push(['', textCell]);
-      }
+
+  // Remaining cards (text only, right column)
+  if (flexGroups.length > 1) {
+    const textCards = Array.from(flexGroups[1].querySelectorAll(':scope > a.utility-link-content-block'));
+    textCards.forEach((anchor) => {
+      // Use empty string instead of null for missing image
+      rows.push(['', extractCard(anchor)[1]]);
     });
   }
-  // Create table
+
+  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace element
   element.replaceWith(table);
 }

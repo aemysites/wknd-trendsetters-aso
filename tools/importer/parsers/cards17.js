@@ -1,37 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the cards
+  // Cards (cards17) block: 2 columns, multiple rows
+  // Each card: image in first cell, text content in second cell
+
+  // Header row
+  const headerRow = ['Cards (cards17)'];
+
+  // Find the grid container (holds all cards)
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Each direct child of grid is a card wrapper
+  // Get all immediate card divs (each is a card)
   const cardDivs = Array.from(grid.children);
 
-  // Build the table rows
-  const rows = [];
-  // Header row
-  const headerRow = ['Cards (cards17)'];
-  rows.push(headerRow);
-
-  // For each card, extract the image (first cell), and extract text content from the closest alt attribute (second cell)
-  cardDivs.forEach(cardDiv => {
-    // Find the image inside the card
+  // For each card, extract image (first cell), and text content (second cell)
+  const rows = cardDivs.map(cardDiv => {
+    // Find image inside card
     const img = cardDiv.querySelector('img');
-    let textContent = '';
-    if (img && img.alt) {
-      textContent = img.alt;
-    } else {
-      // Try to get any text node inside the cardDiv
-      const textNodes = Array.from(cardDiv.childNodes).filter(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-      textContent = textNodes.map(node => node.textContent.trim()).join(' ');
-      if (!textContent) textContent = 'Card';
+    const imageCell = img || '';
+    // Try to find text content from the closest parent section
+    let textCell = '';
+    const section = element.closest('section');
+    if (section) {
+      // Try to find a heading and paragraph for each card by index
+      // Find all headings and paragraphs in the section
+      const headings = Array.from(section.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+      const paragraphs = Array.from(section.querySelectorAll('p'));
+      // Use the card index to match heading/paragraph
+      const idx = cardDivs.indexOf(cardDiv);
+      const heading = headings[idx];
+      const para = paragraphs[idx];
+      let textParts = [];
+      if (heading) textParts.push(heading.outerHTML);
+      if (para) textParts.push(para.outerHTML);
+      textCell = textParts.join('\n');
     }
-    if (img) {
-      rows.push([img, textContent]);
-    }
+    return [imageCell, textCell];
   });
 
-  // Create the table and replace the original element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Build table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    ...rows
+  ], document);
+
+  // Replace original element
   element.replaceWith(table);
 }

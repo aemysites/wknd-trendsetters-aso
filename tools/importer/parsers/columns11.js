@@ -1,45 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid container (should have two columns visually)
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  // Find the main grid container (direct child of section)
+  const grid = element.querySelector(':scope > .w-layout-grid');
   if (!grid) return;
 
-  // Find the left column content (text + buttons)
-  // It's the first child grid inside the main grid
-  const leftGrid = grid.querySelector('.w-layout-grid.grid-layout.container');
-  let leftContent = '';
-  if (leftGrid) {
-    // The actual content is inside the first child of leftGrid
-    const leftSection = leftGrid.firstElementChild;
-    if (leftSection) {
-      // Reference the actual element, not clone
-      leftContent = leftSection;
-    }
+  // The grid contains two children: left (content), right (image)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
+
+  // Left column: content
+  const leftCol = columns[0];
+  // Right column: image
+  const rightCol = columns[1];
+
+  // Extract left column content: heading, paragraph, buttons
+  const contentBlock = leftCol.querySelector(':scope > .section');
+  let leftContent = [];
+  if (contentBlock) {
+    // Heading
+    const heading = contentBlock.querySelector('h2');
+    if (heading) leftContent.push(heading);
+    // Paragraph (rich-text)
+    const paragraph = contentBlock.querySelector('.rich-text, p');
+    if (paragraph) leftContent.push(paragraph);
+    // Button group
+    const buttonGroup = contentBlock.querySelector('.button-group');
+    if (buttonGroup) leftContent.push(buttonGroup);
+  } else {
+    // Fallback: use all children
+    leftContent = Array.from(leftCol.children);
   }
 
-  // Find the right column image (should be a direct child of main grid)
-  // Defensive: find the first img inside the main grid that's not inside leftGrid
-  let rightImage = '';
-  const imgs = Array.from(grid.querySelectorAll('img'));
-  rightImage = imgs.find(img => !leftGrid || !leftGrid.contains(img));
-  if (rightImage) {
-    // Reference the actual image element
-    rightImage = rightImage;
-  }
+  // Right column: image (reference the actual element, do not clone)
+  let rightContent = [];
+  const img = rightCol.tagName === 'IMG' ? rightCol : rightCol.querySelector('img');
+  if (img) rightContent.push(img);
 
-  // Table header row
+  // Compose the table: header row, then content row
   const headerRow = ['Columns (columns11)'];
+  const columnsRow = [leftContent, rightContent];
 
-  // Table content row: two columns, left is text/buttons, right is image
-  const contentRow = [
-    leftContent || '',
-    rightImage || ''
-  ];
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Build the table
-  const cells = [headerRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace the original element with the block
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

@@ -1,50 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid-layout container
-  const grid = element.querySelector('.grid-layout');
-  if (!grid) return;
-  const gridChildren = Array.from(grid.children);
+  // Defensive: Ensure element is present
+  if (!element) return;
 
-  // --- Extract background image ---
-  let bgImg = null;
-  if (gridChildren.length > 0) {
-    const imgWrap = gridChildren[0];
-    const img = imgWrap.querySelector('img');
-    if (img) {
-      // Reference the existing image element
-      bgImg = img;
-    }
-  }
-
-  // --- Extract content (heading, etc.) ---
-  let contentCell = document.createElement('div');
-  if (gridChildren.length > 1) {
-    const contentWrap = gridChildren[1];
-    const headingContainer = contentWrap.querySelector('.utility-margin-bottom-6rem');
-    if (headingContainer) {
-      // Find the main heading
-      const heading = headingContainer.querySelector('h1');
-      if (heading) {
-        contentCell.appendChild(heading);
-      }
-      // Find subheading, paragraph, CTA (none present in this HTML, but structure for future)
-      // Find button group (if any)
-      const buttonGroup = headingContainer.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.childNodes.length) {
-        contentCell.appendChild(buttonGroup);
-      }
-    }
-  }
-  // If nothing was appended, leave cell empty
-  if (!contentCell.hasChildNodes()) contentCell = '';
-
-  // --- Build table rows ---
+  // Header row: always use block name
   const headerRow = ['Hero (hero14)'];
-  const imageRow = [bgImg ? bgImg : ''];
-  const contentRow = [contentCell];
 
-  const rows = [headerRow, imageRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // --- Extract background image (2nd row) ---
+  // Find the image inside the parallax container
+  let backgroundImg = null;
+  const gridDivs = element.querySelectorAll(':scope > div > div'); // grid-layout > divs
+  for (const div of gridDivs) {
+    // Look for the div with class ix-parallax-scale-out-hero
+    if (div.classList.contains('ix-parallax-scale-out-hero')) {
+      backgroundImg = div.querySelector('img');
+      break;
+    }
+  }
+  // If not found, fallback to any img in the block
+  if (!backgroundImg) {
+    backgroundImg = element.querySelector('img');
+  }
+  const imageRow = [backgroundImg ? backgroundImg : ''];
 
+  // --- Extract text content (3rd row) ---
+  // Find the container with the heading and optional CTA
+  let textContent = null;
+  for (const div of gridDivs) {
+    if (div.classList.contains('container')) {
+      textContent = div;
+      break;
+    }
+  }
+  // Defensive: fallback to any container
+  if (!textContent) {
+    textContent = element.querySelector('.container');
+  }
+  const textRow = [textContent ? textContent : ''];
+
+  // Build the table
+  const cells = [
+    headerRow,
+    imageRow,
+    textRow,
+  ];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace the original element with the block table
   element.replaceWith(table);
 }

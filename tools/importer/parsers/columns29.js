@@ -1,33 +1,29 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row as required by block spec
+  // Defensive: Only proceed if element exists and has children
+  if (!element || !element.children || element.children.length === 0) return;
+
+  // Block header row
   const headerRow = ['Columns (columns29)'];
 
-  // Get all direct children of the grid (should be 2 divs, each with an image)
-  const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
+  // Get all immediate children of the grid (each is a column wrapper)
+  const columnDivs = element.querySelectorAll(':scope > div');
+  if (columnDivs.length === 0) return;
 
-  // Defensive: only proceed if we have at least one column
-  if (!columnDivs.length) return;
-
-  // For each column, extract the image (if present)
-  const columns = columnDivs.map(colDiv => {
-    // Find the first image inside this column div
+  // For this block, each immediate child div is a column cell
+  // Each column div contains an image inside .utility-aspect-1x1
+  const columns = Array.from(columnDivs).map((colDiv) => {
+    // Defensive: Find the image inside this column
     const img = colDiv.querySelector('img');
-    // If found, return the image element
-    if (img) return img;
-    // If not, return the entire column div as fallback
-    return colDiv;
+    return img ? img : '';
   });
 
-  // Build the table rows
-  const tableRows = [
-    headerRow,
-    columns
-  ];
+  // Build the table: header row, then one row with all columns
+  const rows = [headerRow, columns];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
+  // Create the table block
+  const block = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace the original element with the new block table
-  element.replaceWith(table);
+  // Replace the original element with the new block
+  element.replaceWith(block);
 }

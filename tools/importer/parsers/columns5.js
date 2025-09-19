@@ -1,32 +1,29 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: ensure element exists and has children
-  if (!element || !element.children || element.children.length === 0) return;
-
-  // Get all immediate children (should be 5 divs, each with an image)
+  // Defensive: get all immediate child divs (each contains one image)
   const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
-  if (columnDivs.length === 0) return;
 
-  // Each column cell should contain the image inside the child div
-  const columnCells = columnDivs.map((colDiv) => {
-    // Try to find the image inside the div
-    const img = colDiv.querySelector('img');
-    if (img) {
-      return img;
-    }
-    // If no image, fallback to the div itself
-    return colDiv;
-  });
+  // Each columnDiv should contain one image element
+  const images = columnDivs.map(div => {
+    const img = div.querySelector('img');
+    return img ? img : null;
+  }).filter(Boolean); // Only keep divs with images
 
-  // Build the table rows
+  // Header row for the block
   const headerRow = ['Columns (columns5)'];
-  const columnsRow = columnCells;
 
-  const table = WebImporter.DOMUtils.createTable([
+  // The second row: each image in its own column
+  const columnsRow = images;
+
+  // Table structure: header row, then one row with all images as columns
+  const tableCells = [
     headerRow,
-    columnsRow,
-  ], document);
+    columnsRow
+  ];
 
-  // Replace the original element with the new table
-  element.replaceWith(table);
+  // Create the block table
+  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
+
+  // Replace the original element with the new block table
+  element.replaceWith(blockTable);
 }

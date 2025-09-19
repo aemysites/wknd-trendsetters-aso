@@ -1,56 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
+  // Table header row as specified
   const headerRow = ['Cards (cards10)'];
   const rows = [headerRow];
 
-  // Get all direct card links (each card)
-  const cards = element.querySelectorAll(':scope > a.card-link');
+  // Defensive: get all direct card links (each card is an <a>)
+  const cardLinks = element.querySelectorAll(':scope > a');
 
-  cards.forEach((card) => {
-    // Find image (mandatory)
-    const imgContainer = card.querySelector('.utility-aspect-3x2');
-    const img = imgContainer ? imgContainer.querySelector('img') : null;
-    // Defensive: if no image, skip this card
-    if (!img) return;
+  cardLinks.forEach((card) => {
+    // Find image (first child div with img inside)
+    const imgDiv = card.querySelector(':scope > div.utility-aspect-3x2');
+    const img = imgDiv ? imgDiv.querySelector('img') : null;
 
-    // Find text content
-    const textContainer = card.querySelector('.utility-padding-all-1rem');
-    let tag = null;
-    let heading = null;
-    let desc = null;
-    let cta = null;
-
-    if (textContainer) {
+    // Find content div (second child div)
+    const contentDiv = card.querySelector(':scope > div.utility-padding-all-1rem');
+    let tag = null, heading = null, desc = null;
+    if (contentDiv) {
       // Tag (optional)
-      const tagGroup = textContainer.querySelector('.tag-group');
+      const tagGroup = contentDiv.querySelector('.tag-group');
       if (tagGroup) {
         tag = tagGroup.querySelector('.tag');
       }
       // Heading (optional)
-      heading = textContainer.querySelector('h3');
+      heading = contentDiv.querySelector('h3, .h4-heading');
       // Description (optional)
-      desc = textContainer.querySelector('p');
-      // CTA: If the card itself has an href, use its text as CTA
-      // Not present visually in this layout, so skip
+      desc = contentDiv.querySelector('p');
     }
 
-    // Compose text cell
-    const textCell = [];
-    if (tag) textCell.push(tag);
-    if (heading) textCell.push(heading);
-    if (desc) textCell.push(desc);
-    if (cta) textCell.push(cta);
+    // Compose text cell content
+    const textCellContent = [];
+    if (tag) textCellContent.push(tag);
+    if (heading) textCellContent.push(heading);
+    if (desc) textCellContent.push(desc);
 
-    // Add row: [image, text content]
+    // Defensive: if nothing found, fallback to contentDiv
+    if (textCellContent.length === 0 && contentDiv) {
+      textCellContent.push(contentDiv);
+    }
+
+    // Defensive: if no image, fallback to imgDiv
+    const imageCell = img ? img : (imgDiv ? imgDiv : '');
+
     rows.push([
-      img,
-      textCell
+      imageCell,
+      textCellContent
     ]);
   });
 
   // Create the block table
   const block = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace original element
   element.replaceWith(block);
 }

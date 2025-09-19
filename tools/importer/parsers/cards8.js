@@ -1,41 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row: must be exactly one column
+  // Cards (cards8) block: 2 columns, multiple rows
+  // Each card: [image, text]
+
+  // Header row must be exactly one column
   const headerRow = ['Cards (cards8)'];
 
-  // Get all direct child divs (each is a card container)
-  const cardDivs = element.querySelectorAll(':scope > div');
+  // Get all immediate children (each is a card wrapper)
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Prepare card rows
-  const rows = Array.from(cardDivs).map((cardDiv) => {
-    // Find the image inside the card div
+  // For each card, extract the image (first cell) and any text content (second cell)
+  const rows = cardDivs.map(cardDiv => {
     const img = cardDiv.querySelector('img');
-    if (!img) return null;
-
-    // Try to extract all text content from the cardDiv, not just the alt text
+    // Collect all text content inside cardDiv except the image
     let textContent = '';
-    Array.from(cardDiv.childNodes).forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        textContent += node.textContent.trim() + ' ';
-      } else if (node.nodeType === Node.ELEMENT_NODE && node !== img) {
-        textContent += node.textContent.trim() + ' ';
-      }
-    });
-    textContent = textContent.trim();
-    if (!textContent) {
-      textContent = img.getAttribute('alt') || '';
+    // Remove the image from cardDiv clone, then get textContent
+    const clone = cardDiv.cloneNode(true);
+    const imgInClone = clone.querySelector('img');
+    if (imgInClone) imgInClone.remove();
+    textContent = clone.textContent.trim();
+    // If no textContent, fallback to alt
+    if (!textContent && img && img.alt) {
+      textContent = img.alt.trim();
     }
-
-    // Each card row: [image, text cell]
-    return [img, textContent];
+    // If still no text, use a non-empty string to avoid empty cell
+    if (!textContent) {
+      textContent = '[No description]';
+    }
+    return img ? [img, textContent] : null;
   }).filter(Boolean);
 
-  // Compose final table data
+  // Compose the table data
   const tableData = [headerRow, ...rows];
 
   // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
+  const block = WebImporter.DOMUtils.createTable(tableData, document);
 
-  // Replace the original element
-  element.replaceWith(blockTable);
+  // Fix header row to span two columns
+  const table = block;
+  const header = table.querySelector('tr:first-child th');
+  if (header) {
+    header.setAttribute('colspan', '2');
+  }
+
+  // Replace the original element with the block
+  element.replaceWith(table);
 }

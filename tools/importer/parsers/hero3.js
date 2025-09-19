@@ -1,54 +1,52 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // --- 1. Header row ---
+  // 1. Table header row
   const headerRow = ['Hero (hero3)'];
 
-  // --- 2. Background image row ---
-  // Find the image element (background)
-  let imgEl = null;
-  const img = element.querySelector('img');
-  if (img) {
-    imgEl = img;
+  // 2. Background image row
+  // Find the background image (img tag)
+  let bgImg = element.querySelector('img.cover-image');
+  // Defensive: if not found, try any img
+  if (!bgImg) {
+    bgImg = element.querySelector('img');
   }
-  const imageRow = [imgEl ? imgEl : ''];
+  // Only include the image element itself
+  const bgImgRow = [bgImg ? bgImg : ''];
 
-  // --- 3. Content row ---
-  // Find the card with heading, subheading, buttons
-  let cardDiv = element.querySelector('.card');
-
-  // Defensive: If not found, fallback to first div with heading
-  if (!cardDiv) {
-    for (const div of element.querySelectorAll('div')) {
-      if (div.querySelector('h1')) {
-        cardDiv = div;
-        break;
+  // 3. Content row: headline, subheading, CTA(s)
+  // Find the card containing text and buttons
+  let card = element.querySelector('.card');
+  let contentCell = [];
+  if (card) {
+    // Find headline
+    const headline = card.querySelector('h1');
+    if (headline) contentCell.push(headline);
+    // Find subheading (p.subheading)
+    const subheading = card.querySelector('p.subheading');
+    if (subheading) contentCell.push(subheading);
+    // Find button group (call-to-actions)
+    const buttonGroup = card.querySelector('.button-group');
+    if (buttonGroup) {
+      // Only include the links inside button group
+      const ctas = Array.from(buttonGroup.querySelectorAll('a'));
+      if (ctas.length) {
+        // Wrap CTAs in a div for grouping
+        const ctaDiv = document.createElement('div');
+        ctaDiv.append(...ctas);
+        contentCell.push(ctaDiv);
       }
     }
   }
-
-  // Compose content cell: heading, subheading, buttons
-  const contentCell = [];
-  if (cardDiv) {
-    // Heading
-    const heading = cardDiv.querySelector('h1');
-    if (heading) contentCell.push(heading);
-    // Subheading (paragraph)
-    const subheading = cardDiv.querySelector('p');
-    if (subheading) contentCell.push(subheading);
-    // Button group
-    const buttonGroup = cardDiv.querySelector('.button-group');
-    if (buttonGroup) {
-      const buttons = Array.from(buttonGroup.querySelectorAll('a'));
-      contentCell.push(...buttons);
-    }
-  }
-  if (contentCell.length === 0) contentCell.push('');
+  // Defensive: if nothing found, use empty string
+  if (!contentCell.length) contentCell = [''];
   const contentRow = [contentCell];
 
-  // --- Compose table ---
-  const rows = [headerRow, imageRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // 4. Compose table rows
+  const rows = [headerRow, bgImgRow, contentRow];
 
-  // --- Replace original element ---
-  element.replaceWith(table);
+  // 5. Create block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // 6. Replace original element
+  element.replaceWith(block);
 }

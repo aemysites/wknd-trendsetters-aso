@@ -1,42 +1,32 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Table header row
-  const headerRow = ['Columns (columns1)'];
-
-  // 2. Find the columns in the source HTML
+  // Find the grid layout containing the columns
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get immediate children of grid (should be [img, div])
+  // Get the columns: image and content
   const columns = Array.from(grid.children);
-
-  // Defensive: Expecting at least 2 columns
   if (columns.length < 2) return;
 
-  // First column: image
+  // Identify the image column and the content column
   const imgCol = columns.find(el => el.tagName === 'IMG');
-  // Second column: content div
-  const contentCol = columns.find(el => el.tagName !== 'IMG');
+  const contentCol = columns.find(el => el !== imgCol);
 
   // Defensive: ensure both columns exist
   if (!imgCol || !contentCol) return;
 
-  // For the content column, extract all its children as a block
-  // This includes h1, p, and the button group
-  const contentChildren = Array.from(contentCol.children);
+  // Use the required block header
+  const headerRow = ['Columns (columns1)'];
 
-  // Compose the content column as an array of its children
-  const contentCell = contentChildren;
+  // Table columns row: image, then content
+  const columnsRow = [imgCol, contentCol];
 
-  // Compose the table rows
-  // Ensure each row is an array in the cells array
-  const cells = [];
-  cells.push(headerRow); // Header row: one column
-  cells.push([imgCol, contentCell]); // Second row: two columns
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace the original element with the block
-  element.replaceWith(block);
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }

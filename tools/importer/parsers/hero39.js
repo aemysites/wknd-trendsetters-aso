@@ -1,60 +1,62 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only parse if element exists
-  if (!element) return;
-
-  // Table header row
+  // 1. Header row
   const headerRow = ['Hero (hero39)'];
 
-  // --- Row 2: Background Image (optional) ---
-  // Find the image inside the first grid cell
+  // 2. Background image row (row 2)
+  // Find the image inside the first grid-layout > div
   let bgImg = null;
-  const gridDivs = element.querySelectorAll(':scope > div.w-layout-grid > div');
-  if (gridDivs.length > 0) {
-    // Look for an <img> inside the first grid cell
-    bgImg = gridDivs[0].querySelector('img');
+  const gridDivs = element.querySelectorAll(':scope > div > div');
+  // Defensive: fallback if structure changes
+  for (const div of gridDivs) {
+    const img = div.querySelector('img');
+    if (img) {
+      bgImg = img;
+      break;
+    }
   }
-  // If not found, fallback to any img inside header
-  if (!bgImg) {
-    bgImg = element.querySelector('img');
-  }
-  const imageRow = [bgImg ? bgImg : ''];
+  const bgImgRow = [bgImg ? bgImg : ''];
 
-  // --- Row 3: Text Content ---
-  // Find the text container (second grid cell)
+  // 3. Content row (row 3)
+  // Find the container with the text and button
+  let contentCell = '';
+  // Find the second grid-layout > div (the one with text)
   let textContainer = null;
-  if (gridDivs.length > 1) {
-    textContainer = gridDivs[1];
+  for (const div of gridDivs) {
+    if (div.querySelector('h1')) {
+      textContainer = div;
+      break;
+    }
   }
-  // Defensive: If not found, fallback to any container with heading
-  if (!textContainer) {
-    textContainer = element.querySelector('h1')?.parentElement;
-  }
-
-  // Extract heading, paragraph, and CTA
-  let heading = null, paragraph = null, cta = null;
   if (textContainer) {
-    heading = textContainer.querySelector('h1');
-    paragraph = textContainer.querySelector('p');
-    cta = textContainer.querySelector('a');
+    // The text content is in a nested grid-layout
+    const nestedGrid = textContainer.querySelector('.grid-layout');
+    if (nestedGrid) {
+      // h1 is the heading
+      const heading = nestedGrid.querySelector('h1');
+      // Paragraph and button are in .flex-vertical
+      const flexVertical = nestedGrid.querySelector('.flex-vertical');
+      let para = null;
+      let cta = null;
+      if (flexVertical) {
+        para = flexVertical.querySelector('p');
+        const buttonGroup = flexVertical.querySelector('.button-group');
+        if (buttonGroup) {
+          cta = buttonGroup.querySelector('a');
+        }
+      }
+      // Compose content cell
+      const cellContent = [];
+      if (heading) cellContent.push(heading);
+      if (para) cellContent.push(para);
+      if (cta) cellContent.push(cta);
+      contentCell = cellContent;
+    }
   }
+  const contentRow = [contentCell];
 
-  // Compose content cell
-  const contentCell = [];
-  if (heading) contentCell.push(heading);
-  if (paragraph) contentCell.push(paragraph);
-  if (cta) contentCell.push(cta);
-  const contentRow = [contentCell.length ? contentCell : ''];
-
-  // Compose table rows
-  const cells = [
-    headerRow,
-    imageRow,
-    contentRow
-  ];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  // Replace original element
-  element.replaceWith(block);
+  // Compose table
+  const rows = [headerRow, bgImgRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

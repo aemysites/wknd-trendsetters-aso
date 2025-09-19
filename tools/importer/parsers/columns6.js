@@ -2,20 +2,22 @@
 export default function parse(element, { document }) {
   // Get all immediate children (columns)
   const columns = Array.from(element.querySelectorAll(':scope > div'));
+  if (!columns.length) return;
 
-  // Each column is a .utility-aspect-1x1 div containing an image
-  // We want each image in its own column cell, referencing the actual <img> elements
-  const images = columns.map(col => {
+  // Block header row as required
+  const headerRow = ['Columns (columns6)'];
+
+  // Each column contains a single image (reference the existing image element)
+  const contentRow = columns.map(col => {
     const img = col.querySelector('img');
-    return img ? img : document.createTextNode('');
+    return img || '';
   });
 
-  // Table rows: header, then one row with all images as columns
-  const headerRow = ['Columns (columns6)'];
-  const contentRow = images;
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
-  const cells = [headerRow, contentRow];
-
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

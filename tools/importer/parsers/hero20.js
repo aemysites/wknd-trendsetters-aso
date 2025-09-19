@@ -1,72 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row (block name)
+  // 1. Header row
   const headerRow = ['Hero (hero20)'];
 
-  // --- 1. Extract background images (collage) ---
-  // Find the grid of images (background collage)
-  let backgroundImagesContainer = null;
-  const gridContainers = element.querySelectorAll('.grid-layout');
-  for (const grid of gridContainers) {
-    // Look for a grid with multiple image children
-    const imgs = grid.querySelectorAll('img');
-    if (imgs.length >= 3) {
-      backgroundImagesContainer = grid;
-      break;
+  // 2. Background image(s) row
+  // Find the grid with images
+  let backgroundCell = '';
+  const gridLayout = element.querySelector('.grid-layout.desktop-3-column.utility-min-height-100dvh');
+  if (gridLayout) {
+    // Collect all images inside the grid
+    const images = Array.from(gridLayout.querySelectorAll('img'));
+    if (images.length > 0) {
+      backgroundCell = images;
     }
   }
 
-  // Defensive: fallback if not found
-  let backgroundImages = [];
-  if (backgroundImagesContainer) {
-    backgroundImages = Array.from(backgroundImagesContainer.querySelectorAll('img'));
-  }
-
-  // --- 2. Extract hero content (headline, subheading, CTA) ---
+  // 3. Content row (title, subheading, CTA)
+  let contentCell = '';
   // Find the content container
-  let contentContainer = null;
-  const contentCandidates = element.querySelectorAll('.ix-hero-scale-3x-to-1x-content, .container');
-  for (const candidate of contentCandidates) {
-    // Look for a container with h1 and possibly buttons
-    if (candidate.querySelector('h1')) {
-      contentContainer = candidate;
-      break;
-    }
-  }
-
-  // Defensive: fallback if not found
-  let heroContent = [];
+  const contentContainer = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
   if (contentContainer) {
-    // Title (h1)
-    const title = contentContainer.querySelector('h1');
-    if (title) heroContent.push(title);
-    // Subheading (p)
+    // We'll collect the heading, subheading, and button group
+    const cellContent = [];
+    // Heading
+    const heading = contentContainer.querySelector('h1');
+    if (heading) cellContent.push(heading);
+    // Subheading
     const subheading = contentContainer.querySelector('p');
-    if (subheading) heroContent.push(subheading);
-    // CTA buttons (a)
+    if (subheading) cellContent.push(subheading);
+    // CTA buttons
     const buttonGroup = contentContainer.querySelector('.button-group');
-    if (buttonGroup) {
-      // Only include links (not the container)
-      const ctas = Array.from(buttonGroup.querySelectorAll('a'));
-      if (ctas.length) heroContent.push(...ctas);
+    if (buttonGroup) cellContent.push(buttonGroup);
+    if (cellContent.length > 0) {
+      contentCell = cellContent;
     }
   }
 
-  // --- 3. Build table rows ---
-  // Row 2: background images (collage)
-  const backgroundRow = [backgroundImages];
-
-  // Row 3: hero content (headline, subheading, CTA)
-  const contentRow = [heroContent];
-
-  // --- 4. Create the block table ---
-  const cells = [
+  // Compose the table rows
+  const rows = [
     headerRow,
-    backgroundRow,
-    contentRow,
+    [backgroundCell],
+    [contentCell],
   ];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // --- 5. Replace original element ---
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element
   element.replaceWith(block);
 }

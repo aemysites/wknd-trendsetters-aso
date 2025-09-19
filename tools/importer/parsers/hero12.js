@@ -1,71 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children
-  const children = Array.from(element.querySelectorAll(':scope > div'));
+  // Get direct children divs
+  const topDivs = element.querySelectorAll(':scope > div');
 
-  // Defensive: find background image (first immediate child with img)
-  let bgImgDiv = children.find(div => div.querySelector('img.cover-image.utility-position-absolute'));
-  let bgImg = bgImgDiv ? bgImgDiv.querySelector('img.cover-image.utility-position-absolute') : null;
+  // 1. Extract background image (first image in first div)
+  let backgroundImg = null;
+  if (topDivs.length > 0) {
+    const bgImgCandidate = topDivs[0].querySelector('img');
+    if (bgImgCandidate) backgroundImg = bgImgCandidate;
+  }
 
-  // Defensive: find card content (second immediate child)
-  let cardDiv = children.find(div => div.querySelector('.card'));
-  let cardBody = cardDiv ? cardDiv.querySelector('.card-body') : null;
-
-  // Defensive: find foreground image (inside card grid)
-  let fgImg = cardBody ? cardBody.querySelector('img.cover-image.utility-aspect-1x1') : null;
-
-  // Defensive: find text content (h2, paragraphs, button)
-  let h2 = cardBody ? cardBody.querySelector('h2') : null;
-  let flexVertical = cardBody ? cardBody.querySelector('.flex-vertical') : null;
-  let buttonGroup = cardBody ? cardBody.querySelector('.button-group') : null;
-  let button = buttonGroup ? buttonGroup.querySelector('a.button') : null;
-
-  // Compose text content cell
-  let textContent = [];
-  if (h2) textContent.push(h2);
-  if (flexVertical) {
-    // Each flex-horizontal is a row with icon and paragraph
-    Array.from(flexVertical.querySelectorAll('.flex-horizontal')).forEach(row => {
-      textContent.push(row);
-      // Add divider after each except last
-      const divider = row.nextElementSibling;
-      if (divider && divider.classList.contains('divider')) {
-        textContent.push(divider);
-      }
+  // 2. Extract all text content from the second main div (card)
+  let contentCell = [];
+  if (topDivs.length > 1) {
+    const cardDiv = topDivs[1];
+    // Collect all relevant content in visual order
+    // Headings
+    const headings = cardDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach(h => contentCell.push(h));
+    // Paragraphs (including feature list items)
+    const paragraphs = cardDiv.querySelectorAll('p');
+    paragraphs.forEach(p => {
+      if (!contentCell.includes(p)) contentCell.push(p);
+    });
+    // Buttons/links
+    const buttons = cardDiv.querySelectorAll('a.button, .button-group a');
+    buttons.forEach(b => {
+      if (!contentCell.includes(b)) contentCell.push(b);
     });
   }
-  if (button) textContent.push(button);
 
-  // Compose the table rows
+  // Compose table rows
   const headerRow = ['Hero (hero12)'];
-  // Row 2: background image (optional)
-  const bgRow = [bgImg ? bgImg : ''];
-  // Row 3: foreground image + text content (combine visually as screenshot shows)
-  // If fgImg exists, group it with textContent
-  let contentRow;
-  if (fgImg) {
-    // Group image and text in a div for layout fidelity
-    const groupDiv = document.createElement('div');
-    groupDiv.style.display = 'flex';
-    groupDiv.style.alignItems = 'flex-start';
-    groupDiv.appendChild(fgImg);
-    // Wrap text content in another div
-    const textDiv = document.createElement('div');
-    textContent.forEach(el => textDiv.appendChild(el));
-    groupDiv.appendChild(textDiv);
-    contentRow = [groupDiv];
-  } else {
-    contentRow = [textContent];
+  const backgroundRow = [backgroundImg ? backgroundImg : ''];
+  // Only add the third row if there is content
+  const rows = [
+    headerRow,
+    backgroundRow
+  ];
+  if (contentCell.length > 0) {
+    rows.push([contentCell]);
   }
 
-  // Build the table
-  const cells = [
-    headerRow,
-    bgRow,
-    contentRow
-  ];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace original element
-  element.replaceWith(block);
+  // Create table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }
