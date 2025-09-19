@@ -1,56 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid containing the two columns (headline+content, image)
-  const mainContainer = element.querySelector('.container');
-  let grid = null;
-  if (mainContainer) {
-    grid = mainContainer.querySelector('.grid-layout');
-  }
-  // Fallback: first .grid-layout in the element
-  if (!grid) {
-    grid = element.querySelector('.grid-layout');
-  }
-
-  // Defensive: If grid is not found, fallback to all direct children
+  // Find the main grid layout (contains left text/buttons and right image)
+  const grid = element.querySelector('.grid-layout');
   let leftCol = null;
   let rightCol = null;
+
   if (grid) {
-    // The grid should have two children: left (text/buttons), right (image)
+    // The grid has two direct children: leftCol (div), rightCol (img)
     const gridChildren = Array.from(grid.children);
-    // Find the first div (left), and the first img (right)
-    leftCol = gridChildren.find((child) => child.tagName === 'DIV');
-    rightCol = gridChildren.find((child) => child.tagName === 'IMG');
-  }
-  // Defensive: If not found, fallback to first div and first img in element
-  if (!leftCol) {
-    leftCol = element.querySelector('div');
-  }
-  if (!rightCol) {
-    rightCol = element.querySelector('img');
+    leftCol = gridChildren.find(el => el.tagName.toLowerCase() === 'div');
+    rightCol = gridChildren.find(el => el.tagName.toLowerCase() === 'img');
   }
 
-  // --- FIX: Extract all content from leftCol, not just the div itself ---
-  // This ensures all text content is included.
-  let leftColContent = [];
-  if (leftCol) {
-    leftColContent = Array.from(leftCol.childNodes).filter((node) => {
-      // Keep elements and text nodes with non-empty content
-      if (node.nodeType === Node.ELEMENT_NODE) return true;
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) return true;
-      return false;
-    });
-    // If leftColContent is empty, fallback to the leftCol itself
-    if (leftColContent.length === 0) leftColContent = [leftCol];
+  // Defensive: fallback if structure changes
+  if (!leftCol || !rightCol) {
+    const headerRow = ['Columns (columns15)'];
+    const contentRow = [element.cloneNode(true)];
+    const table = WebImporter.DOMUtils.createTable([
+      headerRow,
+      contentRow,
+    ], document);
+    element.replaceWith(table);
+    return;
   }
 
-  // The right column is just the image
-  const rightColContent = rightCol ? [rightCol] : [];
+  // Compose left cell: include ALL content (not just direct children)
+  // This ensures we capture all text, including nested elements
+  const leftCellContent = [leftCol.cloneNode(true)];
 
-  // Compose the table rows
+  // Compose right cell: image
+  const rightCellContent = [rightCol.cloneNode(true)];
+
+  // Build the table
   const headerRow = ['Columns (columns15)'];
-  const contentRow = [leftColContent, rightColContent];
+  const contentRow = [leftCellContent, rightCellContent];
 
-  // Create the table
+  // Create the block table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
     contentRow,

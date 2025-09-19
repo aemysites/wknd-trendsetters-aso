@@ -2,55 +2,58 @@
 export default function parse(element, { document }) {
   // Table header row
   const headerRow = ['Cards (cards33)'];
-  const rows = [headerRow];
 
-  // Defensive: get all immediate child <a> elements (each card)
+  // Get all direct child <a> elements (each is a card)
   const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
 
-  cardLinks.forEach((cardLink) => {
-    // Find the image (first image in the card)
+  // Build rows for each card
+  const rows = cardLinks.map((cardLink) => {
+    // Find image (mandatory)
     const img = cardLink.querySelector('img');
 
-    // Find the card content container (the div after the image)
-    const contentDiv = img ? img.nextElementSibling : null;
-    
-    // Defensive: If no contentDiv, skip this card
-    if (!contentDiv) return;
+    // Find the card content wrapper (the div after the image)
+    const contentWrapper = img && img.nextElementSibling;
 
-    // Extract tag and read time (optional, could be grouped)
-    const metaRow = contentDiv.querySelector('.flex-horizontal');
-    let metaFragment = null;
-    if (metaRow) {
-      metaFragment = document.createDocumentFragment();
-      Array.from(metaRow.children).forEach((metaChild) => {
-        metaFragment.appendChild(metaChild);
-      });
+    // Defensive: If no content wrapper, fallback to the cardLink itself
+    const contentDiv = contentWrapper || cardLink;
+
+    // Compose the right cell: Tag, read time, title, description, CTA
+    const rightCellContent = [];
+
+    // Tag and read time (horizontal flex)
+    const tagRow = contentDiv.querySelector('.flex-horizontal');
+    if (tagRow) {
+      rightCellContent.push(tagRow);
     }
 
-    // Extract heading
-    const heading = contentDiv.querySelector('h3, .h4-heading');
-    // Extract description
+    // Title (h3)
+    const title = contentDiv.querySelector('h3');
+    if (title) {
+      rightCellContent.push(title);
+    }
+
+    // Description (p)
     const desc = contentDiv.querySelector('p');
-    // Extract CTA ("Read")
-    const cta = Array.from(contentDiv.childNodes).find((node) => {
-      return node.nodeType === 1 && node.textContent.trim().toLowerCase() === 'read';
-    });
+    if (desc) {
+      rightCellContent.push(desc);
+    }
 
-    // Compose the text cell
-    const textCellContent = [];
-    if (metaFragment) textCellContent.push(metaFragment);
-    if (heading) textCellContent.push(heading);
-    if (desc) textCellContent.push(desc);
-    if (cta) textCellContent.push(cta);
+    // CTA ("Read" div)
+    const ctaDivs = Array.from(contentDiv.querySelectorAll('div'));
+    const cta = ctaDivs.find(d => d.textContent.trim().toLowerCase() === 'read');
+    if (cta) {
+      rightCellContent.push(cta);
+    }
 
-    // Each row: [image, text content]
-    rows.push([
-      img,
-      textCellContent
-    ]);
+    // Left cell: image (mandatory)
+    // Right cell: all extracted content
+    return [img, rightCellContent];
   });
 
-  // Create the table block
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(block);
+  // Compose the table
+  const tableCells = [headerRow, ...rows];
+  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
+
+  // Replace original element with the new block table
+  element.replaceWith(blockTable);
 }

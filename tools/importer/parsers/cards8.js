@@ -1,41 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row: must be exactly one column
+  // Cards (cards8) block header: exactly one column
   const headerRow = ['Cards (cards8)'];
 
-  // Get all direct child divs (each is a card container)
+  // Get all immediate child divs (each is a card wrapper)
   const cardDivs = element.querySelectorAll(':scope > div');
 
-  // Prepare card rows
+  // Prepare rows for each card
   const rows = Array.from(cardDivs).map((cardDiv) => {
     // Find the image inside the card div
     const img = cardDiv.querySelector('img');
-    if (!img) return null;
+    if (!img) return null; // Defensive: only include rows with an image
 
-    // Try to extract all text content from the cardDiv, not just the alt text
-    let textContent = '';
-    Array.from(cardDiv.childNodes).forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        textContent += node.textContent.trim() + ' ';
-      } else if (node.nodeType === Node.ELEMENT_NODE && node !== img) {
-        textContent += node.textContent.trim() + ' ';
-      }
-    });
-    textContent = textContent.trim();
-    if (!textContent) {
-      textContent = img.getAttribute('alt') || '';
-    }
+    // Cell 1: image element (reference directly)
+    // Cell 2: use img.alt as plain text (not wrapped in heading)
+    let textCellContent = img.alt && img.alt.trim() ? img.alt.trim() : '';
+    return [img, textCellContent];
+  }).filter(Boolean); // Remove any nulls
 
-    // Each card row: [image, text cell]
-    return [img, textContent];
-  }).filter(Boolean);
+  // Compose the table data
+  const cells = [headerRow, ...rows];
+  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Compose final table data
-  const tableData = [headerRow, ...rows];
-
-  // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
-
-  // Replace the original element
+  // Replace the original element with the block table
   element.replaceWith(blockTable);
 }

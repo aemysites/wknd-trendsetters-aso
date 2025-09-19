@@ -1,26 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row as required by block spec
+  // Block header row
   const headerRow = ['Cards (cardsNoImages19)'];
   const rows = [headerRow];
 
-  // Each card is a direct child div
-  const cards = element.querySelectorAll(':scope > div');
+  // Defensive: get all immediate children that are cards
+  const cardDivs = element.querySelectorAll(':scope > div');
 
-  cards.forEach((card) => {
-    // Find the paragraph (description)
-    const p = card.querySelector('p');
-    if (p) {
-      // Remove icon if present
-      const icon = card.querySelector('.icon');
-      if (icon) icon.remove();
-      // Clone paragraph
-      const para = p.cloneNode(true);
-      rows.push([para]);
+  cardDivs.forEach((cardDiv) => {
+    // Each cardDiv contains: icon div, then a <p>
+    // We want only the text content for cardsNoImages19
+    // Get the <p> (description)
+    const desc = cardDiv.querySelector('p');
+    // Defensive: fallback to textContent if <p> missing
+    let cardContent;
+    if (desc) {
+      cardContent = desc;
+    } else {
+      // fallback: use all text in cardDiv
+      cardContent = document.createElement('span');
+      cardContent.textContent = cardDiv.textContent.trim();
     }
+    rows.push([cardContent]);
   });
 
-  // Create and replace
+  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

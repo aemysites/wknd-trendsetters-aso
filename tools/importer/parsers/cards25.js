@@ -1,65 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract image and text from a card div
-  function extractCardContent(cardDiv) {
-    // Find the first image
-    const img = cardDiv.querySelector('img');
-    // Find the text container (h3 + p)
-    let textContent = null;
-    const textContainer = cardDiv.querySelector('.utility-padding-all-2rem');
-    if (textContainer) {
-      // Use the text container directly
-      textContent = textContainer;
-    } else {
-      // Defensive: If no text container, try to find h3 and p
-      const h3 = cardDiv.querySelector('h3');
-      const p = cardDiv.querySelector('p');
-      if (h3 || p) {
-        const wrapper = document.createElement('div');
-        if (h3) wrapper.appendChild(h3);
-        if (p) wrapper.appendChild(p);
-        textContent = wrapper;
-      }
+  // Helper to extract card info from a card root element
+  function extractCard(cardEl) {
+    // Find the first image in the card
+    const img = cardEl.querySelector('img');
+
+    // Find the text content (title and description)
+    let title = null;
+    let desc = null;
+    // Look for a div with class utility-padding-all-2rem (contains h3 and p)
+    const textWrap = cardEl.querySelector('.utility-padding-all-2rem');
+    if (textWrap) {
+      title = textWrap.querySelector('h3');
+      desc = textWrap.querySelector('p');
     }
-    return [img, textContent].filter(Boolean);
+
+    // If not found, fallback: look for h3 and p anywhere in card
+    if (!title) title = cardEl.querySelector('h3');
+    if (!desc) desc = cardEl.querySelector('p');
+
+    // Compose text cell
+    const textCell = [];
+    if (title) textCell.push(title);
+    if (desc) textCell.push(desc);
+
+    return [img, textCell];
   }
 
-  // Get all direct children of the grid (each card or image)
-  const cards = Array.from(element.querySelectorAll(':scope > div'));
-  const rows = [];
+  // Get all direct children that are cards (divs with images)
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+  const cards = [];
 
-  // Header row as specified
-  rows.push(['Cards (cards25)']);
-
-  // For each card/image block
-  cards.forEach((cardDiv) => {
-    // Find the image
-    const img = cardDiv.querySelector('img');
-    // Try to find text content (h3 + p)
-    let textContent = null;
-    const textContainer = cardDiv.querySelector('.utility-padding-all-2rem');
-    if (textContainer) {
-      textContent = textContainer;
-    } else {
-      // Defensive fallback: look for h3 and p
-      const h3 = cardDiv.querySelector('h3');
-      const p = cardDiv.querySelector('p');
-      if (h3 || p) {
-        const wrapper = document.createElement('div');
-        if (h3) wrapper.appendChild(h3);
-        if (p) wrapper.appendChild(p);
-        textContent = wrapper;
-      }
-    }
-    // Only push rows with an image
-    if (img) {
-      rows.push([img, textContent || '']);
+  cardDivs.forEach((div) => {
+    // Only treat as card if it has an image
+    if (div.querySelector('img')) {
+      cards.push(extractCard(div));
     }
   });
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Build the table rows
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards25)']);
+  // Card rows
+  cards.forEach(card => rows.push(card));
 
-  // Replace the original element
-  element.replaceWith(block);
+  // Create the table and replace the element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

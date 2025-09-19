@@ -1,50 +1,63 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid-layout container
-  const grid = element.querySelector('.grid-layout');
-  if (!grid) return;
-  const gridChildren = Array.from(grid.children);
-
-  // --- Extract background image ---
-  let bgImg = null;
-  if (gridChildren.length > 0) {
-    const imgWrap = gridChildren[0];
-    const img = imgWrap.querySelector('img');
-    if (img) {
-      // Reference the existing image element
-      bgImg = img;
-    }
-  }
-
-  // --- Extract content (heading, etc.) ---
-  let contentCell = document.createElement('div');
-  if (gridChildren.length > 1) {
-    const contentWrap = gridChildren[1];
-    const headingContainer = contentWrap.querySelector('.utility-margin-bottom-6rem');
-    if (headingContainer) {
-      // Find the main heading
-      const heading = headingContainer.querySelector('h1');
-      if (heading) {
-        contentCell.appendChild(heading);
-      }
-      // Find subheading, paragraph, CTA (none present in this HTML, but structure for future)
-      // Find button group (if any)
-      const buttonGroup = headingContainer.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.childNodes.length) {
-        contentCell.appendChild(buttonGroup);
-      }
-    }
-  }
-  // If nothing was appended, leave cell empty
-  if (!contentCell.hasChildNodes()) contentCell = '';
-
-  // --- Build table rows ---
+  // 1. Table header row: block name
   const headerRow = ['Hero (hero14)'];
-  const imageRow = [bgImg ? bgImg : ''];
-  const contentRow = [contentCell];
 
-  const rows = [headerRow, imageRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // 2. Background image row
+  // Find the image inside the first grid cell
+  let bgImg = null;
+  const gridDivs = element.querySelectorAll(':scope > div > div');
+  // Defensive: find the first img in the block
+  for (const div of gridDivs) {
+    const img = div.querySelector('img');
+    if (img) {
+      bgImg = img;
+      break;
+    }
+  }
+  const bgImgRow = [bgImg ? bgImg : ''];
 
+  // 3. Content row: heading, subheading, CTA (if any)
+  // Find the container with the heading and possible CTA
+  let contentContainer = null;
+  for (const div of gridDivs) {
+    if (div.querySelector('h1')) {
+      contentContainer = div;
+      break;
+    }
+  }
+
+  // Defensive: if not found, fallback to the whole element
+  if (!contentContainer) contentContainer = element;
+
+  // Gather heading, subheading, CTA
+  const content = [];
+  // Heading (h1)
+  const h1 = contentContainer.querySelector('h1');
+  if (h1) content.push(h1);
+  // Subheading (h2, h3, h4)
+  const h2 = contentContainer.querySelector('h2');
+  if (h2) content.push(h2);
+  const h3 = contentContainer.querySelector('h3');
+  if (h3) content.push(h3);
+  const h4 = contentContainer.querySelector('h4');
+  if (h4) content.push(h4);
+  // Paragraphs
+  const ps = contentContainer.querySelectorAll('p');
+  ps.forEach(p => content.push(p));
+  // CTA: find first <a> in the content container
+  const cta = contentContainer.querySelector('a');
+  if (cta) content.push(cta);
+
+  const contentRow = [content.length ? content : ''];
+
+  // Compose table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    bgImgRow,
+    contentRow,
+  ], document);
+
+  // Replace original element
   element.replaceWith(table);
 }

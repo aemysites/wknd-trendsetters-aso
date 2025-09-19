@@ -1,45 +1,39 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid container (should have two columns visually)
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  // Defensive: Get the main grid containing both columns
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Find the left column content (text + buttons)
-  // It's the first child grid inside the main grid
-  const leftGrid = grid.querySelector('.w-layout-grid.grid-layout.container');
-  let leftContent = '';
-  if (leftGrid) {
-    // The actual content is inside the first child of leftGrid
-    const leftSection = leftGrid.firstElementChild;
-    if (leftSection) {
-      // Reference the actual element, not clone
-      leftContent = leftSection;
-    }
-  }
+  // Find the left column (text + buttons)
+  let leftCol = null;
+  let rightColImg = null;
 
-  // Find the right column image (should be a direct child of main grid)
-  // Defensive: find the first img inside the main grid that's not inside leftGrid
-  let rightImage = '';
-  const imgs = Array.from(grid.querySelectorAll('img'));
-  rightImage = imgs.find(img => !leftGrid || !leftGrid.contains(img));
-  if (rightImage) {
-    // Reference the actual image element
-    rightImage = rightImage;
-  }
+  const gridChildren = Array.from(grid.children);
+  // Find the container grid (left column)
+  leftCol = gridChildren.find(child => child.classList.contains('container'));
+  // Find the image (right column)
+  rightColImg = gridChildren.find(child => child.tagName === 'IMG');
 
-  // Table header row
+  // Defensive: If either column is missing, abort
+  if (!leftCol || !rightColImg) return;
+
+  // Left column: get all content (heading, paragraph, buttons)
+  // We use the entire leftCol div for resilience
+  // But we could also extract individual elements if needed
+  // For now, reference the whole leftCol
+
+  // Right column: reference the image element directly
+
+  // Build table rows
   const headerRow = ['Columns (columns11)'];
+  const contentRow = [leftCol, rightColImg];
 
-  // Table content row: two columns, left is text/buttons, right is image
-  const contentRow = [
-    leftContent || '',
-    rightImage || ''
-  ];
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
-  // Build the table
-  const cells = [headerRow, contentRow];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace the original element with the block
-  element.replaceWith(block);
+  // Replace the original element
+  element.replaceWith(table);
 }

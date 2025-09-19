@@ -1,42 +1,23 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Table header row
-  const headerRow = ['Columns (columns1)'];
-
-  // 2. Find the columns in the source HTML
+  // Find the grid layout container
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get immediate children of grid (should be [img, div])
-  const columns = Array.from(grid.children);
+  // Get columns: image and content
+  const children = Array.from(grid.children);
+  const imgEl = children.find((el) => el.tagName === 'IMG');
+  const contentEl = children.find((el) => el !== imgEl);
 
-  // Defensive: Expecting at least 2 columns
-  if (columns.length < 2) return;
+  // Table header row must match target block name exactly
+  const headerRow = ['Columns (columns1)'];
 
-  // First column: image
-  const imgCol = columns.find(el => el.tagName === 'IMG');
-  // Second column: content div
-  const contentCol = columns.find(el => el.tagName !== 'IMG');
+  // Table second row: reference the actual DOM elements
+  const row = [imgEl, contentEl].map((el) => el ? el : document.createElement('div'));
 
-  // Defensive: ensure both columns exist
-  if (!imgCol || !contentCol) return;
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable([headerRow, row], document);
 
-  // For the content column, extract all its children as a block
-  // This includes h1, p, and the button group
-  const contentChildren = Array.from(contentCol.children);
-
-  // Compose the content column as an array of its children
-  const contentCell = contentChildren;
-
-  // Compose the table rows
-  // Ensure each row is an array in the cells array
-  const cells = [];
-  cells.push(headerRow); // Header row: one column
-  cells.push([imgCol, contentCell]); // Second row: two columns
-
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace the original element with the block
-  element.replaceWith(block);
+  // Replace the original element
+  element.replaceWith(table);
 }
