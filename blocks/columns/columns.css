@@ -34,154 +34,19 @@
 }
 
 
-.columns.columns1 {
-  background: #f7f7f3;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-.columns.columns1 > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  max-width: 860px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 18px;
-  box-sizing: border-box;
-}
-
-@media (width <= 900px) {
-  .columns.columns1 > div {
-    flex-direction: column;
-    gap: 12px;
-    padding: 0 8px;
-    max-width: 98vw;
-  }
-}
-
-.columns.columns1 .columns-img-col {
-  flex: 0 0 530px;
-  max-width: 530px;
-  min-width: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.columns.columns1 .columns-img-col img,
-.columns.columns1 .columns-img-col picture {
-  width: 100%;
-  max-width: 530px;
-  max-height: 530px;
-  aspect-ratio: 1/1;
-  border-radius: 24px;
-  object-fit: cover;
-  display: block;
-}
-
-.columns.columns1 > div > div:not(.columns-img-col) {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 6px;
-  max-width: 370px;
-  min-width: 0;
-  width: 100%;
-}
-
-@media (width <= 900px) {
-  .columns.columns1 > div > div:not(.columns-img-col) {
-    max-width: 100%;
-    gap: 6px;
-  }
-}
-
-.columns.columns1 h1 {
-  font-size: 3rem;
-  font-weight: 400;
-  line-height: 1.01;
-  letter-spacing: 0;
-  color: #191919;
-  margin: 0 0 5px;
-  text-align: left;
-}
-
-@media (width <= 900px) {
-  .columns.columns1 h1 {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-  }
-}
-
-.columns.columns1 p:not(.button-container) {
-  font-size: 1.08rem;
-  color: #535353;
-  margin: 0 0 4px;
-  line-height: 1.54;
-  max-width: 98%;
-}
-
-.columns.columns1 .button-container {
-  display: flex;
-  flex-direction: row;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-}
-
-.columns.columns1 .button-container .button {
-  display: inline-block;
-  background: #fff;
-  color: #191919;
-  border: 2px solid #191919;
-  border-radius: 48px;
-  font-size: 1.07rem;
-  font-weight: 500;
-  padding: 12px 30px;
-  text-align: center;
-  text-decoration: none;
-  box-shadow: none;
-  cursor: pointer;
-  margin: 0;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-}
-
-.columns.columns1 .button-container .button:hover,
-.columns.columns1 .button-container .button:focus {
-  background: #191919;
-  color: #fff;
-  border-color: #191919;
-}
-
-.columns.columns1 .button-container .button:last-child {
-  background: transparent;
-}
-
-
 .columns.columns4 > div {
   display: flex;
   flex-direction: row;
-  align-items: stretch; /* ensure both columns fill the block vertically */
+  align-items: stretch;
   justify-content: space-between;
   gap: 7vw;
   width: 100%;
   padding: 64px 0;
   box-sizing: border-box;
   background: #fff;
-  min-height: 270px; /* ensures a visually balanced block height */
+  min-height: 270px;
 }
 
-/* Vertically center content in both columns */
 .columns.columns4 > div > div {
   display: flex;
   flex-direction: column;
@@ -189,7 +54,6 @@
   height: 100%;
 }
 
-/* Left column: headline + text */
 .columns.columns4 > div > div:first-child {
   flex: 1 1 54vw;
   max-width: 54vw;
@@ -198,7 +62,6 @@
   padding-right: 2vw;
 }
 
-/* Headline style */
 .columns.columns4 > div > div:first-child h2 {
   margin: 0 0 12px;
   font-size: clamp(2.2rem, 5vw, 2.6rem);
@@ -208,7 +71,6 @@
   line-height: 1.07;
 }
 
-/* Supporting text style */
 .columns.columns4 > div > div:first-child p {
   font-size: 1rem;
   color: #494949;
@@ -217,7 +79,6 @@
   max-width: 45em;
 }
 
-/* Right column: buttons */
 .columns.columns4 > div > div:last-child {
   flex: 0 0 260px;
   max-width: 260px;
@@ -226,7 +87,6 @@
   padding: 0;
 }
 
-/* Stack buttons vertically, right aligned */
 .columns.columns4 > div > div:last-child p {
   display: flex;
   flex-direction: column;
@@ -237,7 +97,6 @@
   width: 100%;
 }
 
-/* Button base style */
 .columns.columns4 > div > div:last-child a {
   display: inline-block;
   width: 220px;
@@ -256,19 +115,16 @@
   transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-/* First (top) button: yellow glow outline */
 .columns.columns4 > div > div:last-child a:first-child {
   box-shadow: 0 0 0 2px #eaea7a;
 }
 
-/* Button hover effect */
 .columns.columns4 > div > div:last-child a:hover,
 .columns.columns4 > div > div:last-child a:focus {
   background: #fafafa;
   border-color: #191919;
 }
 
-/* Responsive: stack columns vertically and buttons full width on small screens */
 @media (width <= 900px) {
   .columns.columns4 > div {
     flex-direction: column;
@@ -293,5 +149,159 @@
 
   .columns.columns4 > div {
     padding: 20px 0;
+  }
+}
+
+
+.columns.columns1 {
+  background: #FAFAF6;
+  padding: 64px 0;
+  box-sizing: border-box;
+}
+
+/* Main layout: equal, centered columns */
+.columns.columns1 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 48px;
+  box-sizing: border-box;
+}
+
+/* Image column and image */
+.columns.columns1 .columns-img-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 576px;
+}
+
+.columns.columns1 .columns-img-col img,
+.columns.columns1 .columns-img-col picture {
+  width: 100%;
+  height: 638px;
+  max-width: 576px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 32px rgb(0 0 0 / 8%);
+  display: block;
+}
+
+/* Text column: vertically and horizontally balanced */
+.columns.columns1 > div > div:not(.columns-img-col) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 576px;
+  height: 638px; /* Matches image for vertical alignment */
+  gap: 0;
+  box-sizing: border-box;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Headline: generous margin for visual impact */
+.columns.columns1 h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #101010;
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  margin-bottom: 3rem;
+  text-align: left;
+}
+
+/* Subheading: airy separation, muted color */
+.columns.columns1 p:not(.button-container) {
+  font-size: 1.25rem;
+  color: #505050;
+  font-weight: 400;
+  margin-bottom: 3rem;
+  line-height: 1.54;
+  max-width: 420px;
+}
+
+/* Button group: more space, visually balanced */
+.columns.columns1 .button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 0;
+  width: auto;
+  justify-content: flex-start;
+}
+
+/* Button style: visually balanced, not too wide */
+.columns.columns1 .button-container .button {
+  border-radius: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  background: #fff;
+  color: #222;
+  border: 2px solid #222;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  margin: 0;
+  min-width: 200px;
+}
+
+.columns.columns1 .button-container .button:hover,
+.columns.columns1 .button-container .button:focus {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* Responsive stacking and centering */
+@media (width <= 900px) {
+  .columns.columns1 > div {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 0 16px;
+    max-width: 98vw;
+  }
+
+  .columns.columns1 .columns-img-col,
+  .columns.columns1 .columns-img-col img,
+  .columns.columns1 .columns-img-col picture {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .columns.columns1 > div > div:not(.columns-img-col) {
+    min-width: unset;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .columns.columns1 h1,
+  .columns.columns1 p:not(.button-container) {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .columns.columns1 .button-container {
+    justify-content: center;
+    width: 100%;
   }
 }
