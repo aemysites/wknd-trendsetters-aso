@@ -1490,7 +1490,6 @@
   padding-bottom: 0;
 }
 
-/* Taylor Brooks: reduce margin to bring pills up, aligning with headline bottom */
 .columns.columns30 > div > div:nth-child(1) {
   grid-column: 1;
   grid-row: 1;
@@ -1504,7 +1503,6 @@
   padding: 0;
 }
 
-/* Pills: left-aligned, visually by headline bottom */
 .columns.columns30 > div > div:nth-child(2) {
   grid-column: 1;
   grid-row: 2;
@@ -1530,7 +1528,6 @@
   text-align: left;
 }
 
-/* Headline flush with top, margin for visual grouping */
 .columns.columns30 > div > div:nth-child(3) {
   grid-column: 2;
   grid-row: 1;
@@ -1549,7 +1546,6 @@
   padding: 0;
 }
 
-/* Paragraphs: no extra top margin */
 .columns.columns30 > div > div:nth-child(4) {
   grid-column: 2;
   grid-row: 2;
@@ -1565,7 +1561,6 @@
   max-width: 540px;
 }
 
-/* Responsive - stack on mobile */
 @media (width <= 900px) {
   .columns.columns30 > div {
     grid-template-columns: 1fr;
@@ -1586,5 +1581,115 @@
   .columns.columns30 > div > div:nth-child(3) h2 {
     font-size: 34px;
     margin-bottom: 24px;
+  }
+}
+
+
+.columns.columns31 {
+  background: #f8f9f5;
+  padding: 0;
+}
+
+/* Layout: all columns in a row, items centered vertically */
+.columns.columns31 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+
+  /* No gap here: use margin on text columns for finer control */
+}
+
+/* Make left two columns act as a wide text group, pushing button fully right */
+.columns.columns31 > div > div:nth-child(1),
+.columns.columns31 > div > div:nth-child(2) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Slight gap between left text columns */
+.columns.columns31 > div > div:nth-child(1) {
+  margin-right: 32px;
+}
+
+.columns.columns31 > div > div:nth-child(2) {
+  margin-right: 0;
+}
+
+/* Button at far right, separated from left text group */
+.columns.columns31 > div > div:last-child {
+  flex: 0 0 auto;
+  margin-left: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* Paragraph styles for compact look and wrapping */
+.columns.columns31 > div > div > p {
+  font-size: 12px;
+  line-height: 1.3;
+  color: #232323;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+/* Remove default margin on button container */
+.columns.columns31 .button-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* Button: pill shape, thin border, dark text, yellow highlight below */
+.columns.columns31 .button-container .button {
+  background: transparent;
+  color: #232323;
+  border: 1px solid #232323;
+  border-radius: 999px;
+  padding: 6px 22px;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  box-shadow: none;
+  line-height: 1.3;
+  min-width: 0;
+  margin: 0;
+}
+
+.columns.columns31 .button-container .button::after {
+  display: block;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 4px;
+  height: 3px;
+  background: #ffffc4;
+  border-radius: 2px;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+}
+
+/* Responsive stacking on small screens */
+@media (width <= 900px) {
+  .columns.columns31 > div {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .columns.columns31 > div > div {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .columns.columns31 > div > div:last-child {
+    margin-left: 0;
+    align-self: flex-start;
+    width: auto;
   }
 }
