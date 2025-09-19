@@ -1,47 +1,38 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from a card anchor element
-  function extractCardInfo(cardAnchor) {
-    let image = cardAnchor.querySelector('img') || '';
-    // For text: get all heading and paragraph elements inside the card anchor (not just h3/.paragraph-sm)
+  // Helper to extract image and text content from a card element
+  function extractCardContent(cardEl) {
+    // Try to find an image inside the card
+    const img = cardEl.querySelector('img');
+    // Find the heading (h3)
+    const heading = cardEl.querySelector('h3');
+    // Find the description (div with class 'paragraph-sm')
+    const desc = cardEl.querySelector('.paragraph-sm');
+    // Compose the text cell
     const textCell = [];
-    // Get all heading and paragraph-like elements in order
-    cardAnchor.querySelectorAll('h1, h2, h3, h4, h5, h6, .paragraph-sm, p').forEach(el => {
-      textCell.push(el);
-    });
-    // Also include any additional text nodes that are direct children (for flexibility)
-    Array.from(cardAnchor.childNodes).forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-        textCell.push(document.createTextNode(node.textContent.trim()));
-      }
-    });
-    return [image, textCell];
+    if (heading) textCell.push(heading);
+    if (desc) textCell.push(desc);
+    return [img || '', textCell];
   }
 
-  // Find all tab panes (each tab is a set of cards)
+  // Find all tab panes (each tab contains a grid of cards)
   const tabPanes = element.querySelectorAll(':scope > div');
   const rows = [];
 
-  // Always start with header row
-  const headerRow = ['Cards (cards28)'];
-  rows.push(headerRow);
-
-  tabPanes.forEach((tabPane) => {
-    // Find the grid inside this tab
-    const grid = tabPane.querySelector('.w-layout-grid');
+  tabPanes.forEach(tabPane => {
+    // Each tab pane contains a grid-layout div
+    const grid = tabPane.querySelector('.grid-layout');
     if (!grid) return;
-    // Each card is an anchor (a)
+    // Each card is an <a> inside the grid
     const cards = grid.querySelectorAll(':scope > a');
-    cards.forEach((cardAnchor) => {
-      const [image, textCell] = extractCardInfo(cardAnchor);
-      // Only add if there is an image (mandatory for this variant)
-      if (image && textCell.length > 0) {
-        rows.push([image, textCell]);
-      }
+    cards.forEach(card => {
+      rows.push(extractCardContent(card));
     });
   });
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Build the table: header row, then one row per card
+  const headerRow = ['Cards (cards28)'];
+  const tableRows = [headerRow, ...rows];
+  const blockTable = WebImporter.DOMUtils.createTable(tableRows, document);
+  element.replaceWith(blockTable);
 }

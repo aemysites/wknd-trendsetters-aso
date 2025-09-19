@@ -4,34 +4,32 @@ export default function parse(element, { document }) {
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Each direct child of grid is a card wrapper
+  // Get all immediate children of the grid (each card)
   const cardDivs = Array.from(grid.children);
 
   // Build the table rows
   const rows = [];
-  // Header row
-  const headerRow = ['Cards (cards17)'];
-  rows.push(headerRow);
+  // Header row as specified
+  rows.push(['Cards (cards17)']);
 
-  // For each card, extract the image (first cell), and extract text content from the closest alt attribute (second cell)
-  cardDivs.forEach(cardDiv => {
-    // Find the image inside the card
-    const img = cardDiv.querySelector('img');
-    let textContent = '';
-    if (img && img.alt) {
-      textContent = img.alt;
-    } else {
-      // Try to get any text node inside the cardDiv
-      const textNodes = Array.from(cardDiv.childNodes).filter(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-      textContent = textNodes.map(node => node.textContent.trim()).join(' ');
-      if (!textContent) textContent = 'Card';
+  cardDivs.forEach((cardDiv) => {
+    // Find the image element
+    const imgWrap = cardDiv.querySelector(':scope > div');
+    let img = null;
+    if (imgWrap) {
+      img = imgWrap.querySelector('img');
     }
-    if (img) {
-      rows.push([img, textContent]);
-    }
+    // Defensive: If no image, skip this card
+    if (!img) return;
+
+    // There is no text content for these cards in the source HTML, so omit the second cell entirely
+    // Only add the image in its own cell
+    rows.push([img, '']);
   });
 
-  // Create the table and replace the original element
+  // Create the table
   const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

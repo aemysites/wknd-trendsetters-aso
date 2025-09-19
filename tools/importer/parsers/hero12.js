@@ -1,69 +1,72 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children
-  const children = Array.from(element.querySelectorAll(':scope > div'));
+  // Helper: get direct children divs of the main section
+  const sectionDivs = element.querySelectorAll(':scope > div > div');
 
-  // Defensive: find background image (first immediate child with img)
-  let bgImgDiv = children.find(div => div.querySelector('img.cover-image.utility-position-absolute'));
-  let bgImg = bgImgDiv ? bgImgDiv.querySelector('img.cover-image.utility-position-absolute') : null;
+  // Defensive: fallback if structure changes
+  let bgImg = null;
+  let contentDiv = null;
 
-  // Defensive: find card content (second immediate child)
-  let cardDiv = children.find(div => div.querySelector('.card'));
-  let cardBody = cardDiv ? cardDiv.querySelector('.card-body') : null;
+  // Find background image (first child div of grid-layout)
+  if (sectionDivs.length > 0) {
+    const bgDiv = sectionDivs[0];
+    bgImg = bgDiv.querySelector('img.cover-image');
+  }
 
-  // Defensive: find foreground image (inside card grid)
-  let fgImg = cardBody ? cardBody.querySelector('img.cover-image.utility-aspect-1x1') : null;
+  // Find content area (second child div of grid-layout)
+  if (sectionDivs.length > 1) {
+    contentDiv = sectionDivs[1];
+  }
 
-  // Defensive: find text content (h2, paragraphs, button)
-  let h2 = cardBody ? cardBody.querySelector('h2') : null;
-  let flexVertical = cardBody ? cardBody.querySelector('.flex-vertical') : null;
-  let buttonGroup = cardBody ? cardBody.querySelector('.button-group') : null;
-  let button = buttonGroup ? buttonGroup.querySelector('a.button') : null;
+  // Defensive: if contentDiv is nested, find card-body
+  let cardBody = contentDiv && contentDiv.querySelector('.card-body');
 
-  // Compose text content cell
-  let textContent = [];
-  if (h2) textContent.push(h2);
-  if (flexVertical) {
-    // Each flex-horizontal is a row with icon and paragraph
-    Array.from(flexVertical.querySelectorAll('.flex-horizontal')).forEach(row => {
-      textContent.push(row);
+  // Find headline, subpoints, CTA
+  let headline = null;
+  let subpoints = [];
+  let cta = null;
+
+  if (cardBody) {
+    // Headline
+    headline = cardBody.querySelector('h2');
+
+    // Subpoints (icon + text)
+    const subpointRows = cardBody.querySelectorAll('.flex-horizontal.flex-gap-xxs');
+    subpoints = Array.from(subpointRows).map(row => {
+      // Each row: icon + p
+      return row;
+    });
+
+    // CTA button
+    cta = cardBody.querySelector('.button-group a.button');
+  }
+
+  // Compose content cell for row 3
+  const contentCell = [];
+  if (headline) contentCell.push(headline);
+  if (subpoints.length) {
+    // Add each subpoint row and divider after each except last
+    subpoints.forEach((row, idx) => {
+      contentCell.push(row);
       // Add divider after each except last
-      const divider = row.nextElementSibling;
-      if (divider && divider.classList.contains('divider')) {
-        textContent.push(divider);
-      }
+      const divider = cardBody.querySelectorAll('.divider')[idx];
+      if (divider) contentCell.push(divider);
     });
   }
-  if (button) textContent.push(button);
+  if (cta) contentCell.push(cta);
 
-  // Compose the table rows
+  // Table rows
   const headerRow = ['Hero (hero12)'];
-  // Row 2: background image (optional)
   const bgRow = [bgImg ? bgImg : ''];
-  // Row 3: foreground image + text content (combine visually as screenshot shows)
-  // If fgImg exists, group it with textContent
-  let contentRow;
-  if (fgImg) {
-    // Group image and text in a div for layout fidelity
-    const groupDiv = document.createElement('div');
-    groupDiv.style.display = 'flex';
-    groupDiv.style.alignItems = 'flex-start';
-    groupDiv.appendChild(fgImg);
-    // Wrap text content in another div
-    const textDiv = document.createElement('div');
-    textContent.forEach(el => textDiv.appendChild(el));
-    groupDiv.appendChild(textDiv);
-    contentRow = [groupDiv];
-  } else {
-    contentRow = [textContent];
-  }
+  const contentRow = [contentCell.length ? contentCell : ''];
 
-  // Build the table
   const cells = [
     headerRow,
     bgRow,
-    contentRow
+    contentRow,
   ];
+
+  // Create block table
   const block = WebImporter.DOMUtils.createTable(cells, document);
 
   // Replace original element

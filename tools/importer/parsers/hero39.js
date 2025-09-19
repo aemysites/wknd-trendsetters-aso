@@ -1,60 +1,63 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only parse if element exists
-  if (!element) return;
+  // Helper: Get immediate children of a node
+  function getDirectChildrenByTag(parent, tag) {
+    return Array.from(parent.children).filter(child => child.tagName.toLowerCase() === tag);
+  }
 
-  // Table header row
+  // 1. Header row
   const headerRow = ['Hero (hero39)'];
 
-  // --- Row 2: Background Image (optional) ---
-  // Find the image inside the first grid cell
+  // 2. Background image row
+  // Find the prominent image (background)
   let bgImg = null;
-  const gridDivs = element.querySelectorAll(':scope > div.w-layout-grid > div');
-  if (gridDivs.length > 0) {
-    // Look for an <img> inside the first grid cell
-    bgImg = gridDivs[0].querySelector('img');
+  // The image is inside the first grid-layout div
+  const gridDivs = element.querySelectorAll(':scope > div > div');
+  for (const div of gridDivs) {
+    const img = div.querySelector('img');
+    if (img) {
+      bgImg = img;
+      break;
+    }
   }
-  // If not found, fallback to any img inside header
+  // Defensive: If not found, try fallback
   if (!bgImg) {
     bgImg = element.querySelector('img');
   }
   const imageRow = [bgImg ? bgImg : ''];
 
-  // --- Row 3: Text Content ---
-  // Find the text container (second grid cell)
-  let textContainer = null;
-  if (gridDivs.length > 1) {
-    textContainer = gridDivs[1];
+  // 3. Content row
+  // Find headline, paragraph, and button
+  let title = null, subheading = null, cta = null;
+  // The second grid-layout div contains the text and CTA
+  let contentDiv = null;
+  for (const div of gridDivs) {
+    if (div.querySelector('h1')) {
+      contentDiv = div;
+      break;
+    }
   }
-  // Defensive: If not found, fallback to any container with heading
-  if (!textContainer) {
-    textContainer = element.querySelector('h1')?.parentElement;
+  if (contentDiv) {
+    // Headline
+    title = contentDiv.querySelector('h1');
+    // Paragraph (subheading)
+    subheading = contentDiv.querySelector('p');
+    // CTA (button link)
+    cta = contentDiv.querySelector('a');
   }
-
-  // Extract heading, paragraph, and CTA
-  let heading = null, paragraph = null, cta = null;
-  if (textContainer) {
-    heading = textContainer.querySelector('h1');
-    paragraph = textContainer.querySelector('p');
-    cta = textContainer.querySelector('a');
-  }
-
   // Compose content cell
   const contentCell = [];
-  if (heading) contentCell.push(heading);
-  if (paragraph) contentCell.push(paragraph);
+  if (title) contentCell.push(title);
+  if (subheading) contentCell.push(subheading);
   if (cta) contentCell.push(cta);
   const contentRow = [contentCell.length ? contentCell : ''];
 
-  // Compose table rows
+  // Compose table
   const cells = [
     headerRow,
     imageRow,
     contentRow
   ];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  // Replace original element
-  element.replaceWith(block);
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(table);
 }

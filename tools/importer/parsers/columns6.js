@@ -1,21 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate children (columns)
+  // Get all direct children (should be 3 columns)
   const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Each column is a .utility-aspect-1x1 div containing an image
-  // We want each image in its own column cell, referencing the actual <img> elements
-  const images = columns.map(col => {
+  // Defensive: Only proceed if we have at least one column
+  if (!columns.length) return;
+
+  // Table header row as required
+  const headerRow = ['Columns (columns6)'];
+
+  // Second row: each cell is the content of a column
+  // In this case, each column contains a single image inside a div
+  const contentRow = columns.map(col => {
+    // Try to find the image inside the column
     const img = col.querySelector('img');
-    return img ? img : document.createTextNode('');
+    if (img) return img;
+    // If no image, return the column itself (fallback)
+    return col;
   });
 
-  // Table rows: header, then one row with all images as columns
-  const headerRow = ['Columns (columns6)'];
-  const contentRow = images;
+  // Compose the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
-  const cells = [headerRow, contentRow];
-
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }

@@ -1,56 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
+  // Table header row as required
   const headerRow = ['Cards (cards10)'];
-  const rows = [headerRow];
+  const cells = [headerRow];
 
   // Get all direct card links (each card)
-  const cards = element.querySelectorAll(':scope > a.card-link');
+  const cardLinks = element.querySelectorAll(':scope > a.card-link');
 
-  cards.forEach((card) => {
-    // Find image (mandatory)
-    const imgContainer = card.querySelector('.utility-aspect-3x2');
-    const img = imgContainer ? imgContainer.querySelector('img') : null;
-    // Defensive: if no image, skip this card
-    if (!img) return;
+  cardLinks.forEach((card) => {
+    // Image: always present as first child div > img
+    const imageContainer = card.querySelector(':scope > div.utility-aspect-3x2');
+    const img = imageContainer ? imageContainer.querySelector('img') : null;
 
-    // Find text content
-    const textContainer = card.querySelector('.utility-padding-all-1rem');
-    let tag = null;
-    let heading = null;
-    let desc = null;
-    let cta = null;
+    // Text content: second child div
+    const contentContainer = card.querySelector(':scope > div.utility-padding-all-1rem');
 
-    if (textContainer) {
-      // Tag (optional)
-      const tagGroup = textContainer.querySelector('.tag-group');
-      if (tagGroup) {
-        tag = tagGroup.querySelector('.tag');
-      }
-      // Heading (optional)
-      heading = textContainer.querySelector('h3');
-      // Description (optional)
-      desc = textContainer.querySelector('p');
-      // CTA: If the card itself has an href, use its text as CTA
-      // Not present visually in this layout, so skip
+    // Tag (optional)
+    const tagGroup = contentContainer ? contentContainer.querySelector('.tag-group') : null;
+    const tag = tagGroup ? tagGroup.querySelector('.tag') : null;
+
+    // Title (h3)
+    const title = contentContainer ? contentContainer.querySelector('h3') : null;
+    // Description (p)
+    const description = contentContainer ? contentContainer.querySelector('p') : null;
+
+    // Compose text cell content
+    const textCellContent = [];
+    if (tag) textCellContent.push(tag);
+    if (title) textCellContent.push(title);
+    if (description) textCellContent.push(description);
+
+    // If the card link has an href and it's not just '/', add as CTA at the end
+    if (card.href && card.getAttribute('href') && card.getAttribute('href') !== '/') {
+      const cta = document.createElement('a');
+      cta.href = card.getAttribute('href');
+      cta.textContent = 'Learn more';
+      textCellContent.push(cta);
     }
 
-    // Compose text cell
-    const textCell = [];
-    if (tag) textCell.push(tag);
-    if (heading) textCell.push(heading);
-    if (desc) textCell.push(desc);
-    if (cta) textCell.push(cta);
-
     // Add row: [image, text content]
-    rows.push([
-      img,
-      textCell
+    cells.push([
+      img ? img : '',
+      textCellContent
     ]);
   });
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace original element
+  // Create block table and replace element
+  const block = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(block);
 }

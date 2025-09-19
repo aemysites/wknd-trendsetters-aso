@@ -1,45 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from each <a>
-  function extractCard(a) {
-    // Find image (first .utility-aspect-2x3 img)
-    const imgWrapper = a.querySelector('.utility-aspect-2x3');
-    let img = imgWrapper ? imgWrapper.querySelector('img') : null;
-    // Defensive: if no img, skip card
-    if (!img) return null;
+  // Get all direct child <a> elements (each is a card)
+  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
 
-    // Find tag/date row (second child div)
-    const infoRow = a.querySelector('.flex-horizontal');
-    let tag = null, date = null;
-    if (infoRow) {
-      const infoDivs = infoRow.querySelectorAll('div');
-      tag = infoDivs[0] || null;
-      date = infoDivs[1] || null;
-    }
-
-    // Find heading (h3)
-    const heading = a.querySelector('h3');
-
-    // Compose text cell: tag/date row, then heading
-    const textCellContent = [];
-    if (infoRow) textCellContent.push(infoRow);
-    if (heading) textCellContent.push(heading);
-
-    return [img, textCellContent];
-  }
-
-  // Get all cards (direct children <a> of the grid)
-  const cards = Array.from(element.querySelectorAll(':scope > a'));
-
-  // Build table rows
+  // Table header as required by spec
   const headerRow = ['Cards (cards24)'];
   const rows = [headerRow];
-  cards.forEach((a) => {
-    const cardCells = extractCard(a);
-    if (cardCells) rows.push(cardCells);
+
+  cardLinks.forEach((card) => {
+    // Image: first child div > img
+    const imgDiv = card.querySelector(':scope > div');
+    const img = imgDiv ? imgDiv.querySelector('img') : null;
+
+    // Meta (tag and date): second child div
+    const metaDiv = card.querySelectorAll(':scope > div')[1];
+    let metaContent = [];
+    if (metaDiv) {
+      // Tag
+      const tag = metaDiv.querySelector('.tag');
+      if (tag) metaContent.push(tag);
+      // Date
+      const date = metaDiv.querySelector('.paragraph-sm');
+      if (date) metaContent.push(date);
+    }
+
+    // Heading (title)
+    const heading = card.querySelector('h3');
+
+    // Compose text cell: meta row (if present) + heading
+    const textCell = [];
+    if (metaContent.length) {
+      const metaWrap = document.createElement('div');
+      metaWrap.style.display = 'flex';
+      metaWrap.style.gap = '0.5em';
+      metaWrap.append(...metaContent);
+      textCell.push(metaWrap);
+    }
+    if (heading) textCell.push(heading);
+
+    // Add row: [image, text cell]
+    rows.push([
+      img ? img : '',
+      textCell.length ? textCell : ''
+    ]);
   });
 
-  // Create table and replace element
+  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

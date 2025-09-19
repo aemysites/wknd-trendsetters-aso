@@ -1,48 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the main grid container
+  // Find the grid-layout container
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid
-  const gridChildren = Array.from(grid.children);
+  // Get all immediate children of the grid
+  const gridChildren = Array.from(grid.querySelectorAll(':scope > *'));
 
-  // Find the left column (text block)
-  let contactList = null;
-  let textBlock = null;
-  let mainImage = null;
+  // Find the intro block (headings and paragraph)
+  const introBlock = gridChildren.find(
+    (child) => child.querySelector('h2') && child.querySelector('h3')
+  );
 
-  gridChildren.forEach((child) => {
-    if (child.tagName === 'UL') {
-      contactList = child;
-    } else if (child.querySelector('h2, h3, p')) {
-      textBlock = child;
-    } else if (child.tagName === 'IMG') {
-      mainImage = child;
-    }
-  });
+  // Find the contact methods list
+  const contactList = gridChildren.find(
+    (child) => child.tagName === 'UL'
+  );
 
-  // Build left column: text block
-  const leftColumnEls = [];
-  if (textBlock) leftColumnEls.push(textBlock);
+  // Find the image
+  const image = gridChildren.find(
+    (child) => child.tagName === 'IMG'
+  );
 
-  // Build right column: contact list
-  const rightColumnEls = [];
-  if (contactList) rightColumnEls.push(contactList);
-
-  // Table header
+  // Table header row
   const headerRow = ['Columns (columns18)'];
 
-  // Table second row: left and right columns
-  const secondRow = [leftColumnEls, rightColumnEls];
+  // First content row: left = intro, right = contact methods
+  const firstRow = [introBlock, contactList];
 
-  // Table third row: image only in left column (remove empty column)
-  const thirdRow = mainImage ? [[mainImage]] : null;
+  // Second content row: image in first cell, and null in second cell (no unnecessary empty column)
+  const secondRow = [image, null];
 
-  // Build the table
-  const cells = thirdRow ? [headerRow, secondRow, thirdRow] : [headerRow, secondRow];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Build table
+  const cells = [
+    headerRow,
+    firstRow,
+    secondRow
+  ];
+
+  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
 
   // Replace the original element
-  element.replaceWith(table);
+  element.replaceWith(blockTable);
 }
