@@ -1,59 +1,39 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
-  const headerRow = ['Cards (cards33)'];
+  // Helper to extract card content
+  function extractCardContent(cardAnchor) {
+    // Image: always present, first img
+    const img = cardAnchor.querySelector('img');
 
-  // Get all direct child <a> elements (each is a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
-
-  // Build rows for each card
-  const rows = cardLinks.map((cardLink) => {
-    // Find image (mandatory)
-    const img = cardLink.querySelector('img');
-
-    // Find the card content wrapper (the div after the image)
-    const contentWrapper = img && img.nextElementSibling;
-
-    // Defensive: If no content wrapper, fallback to the cardLink itself
-    const contentDiv = contentWrapper || cardLink;
-
-    // Compose the right cell: Tag, read time, title, description, CTA
-    const rightCellContent = [];
-
-    // Tag and read time (horizontal flex)
-    const tagRow = contentDiv.querySelector('.flex-horizontal');
-    if (tagRow) {
-      rightCellContent.push(tagRow);
+    // Content container (second child div)
+    const contentDiv = cardAnchor.querySelector('div:not(.w-layout-grid)') || cardAnchor.querySelector('div');
+    const cellContent = [];
+    if (contentDiv) {
+      // Tag + read time (meta row)
+      const metaRow = contentDiv.querySelector('.flex-horizontal');
+      if (metaRow) cellContent.push(metaRow);
+      // Title (h3 or .h4-heading)
+      const heading = contentDiv.querySelector('h3, .h4-heading, h4');
+      if (heading) cellContent.push(heading);
+      // Description (p)
+      const desc = contentDiv.querySelector('p');
+      if (desc) cellContent.push(desc);
+      // CTA (div with 'Read')
+      const cta = Array.from(contentDiv.querySelectorAll('div')).find(div => div.textContent.trim().toLowerCase() === 'read');
+      if (cta) cellContent.push(cta);
     }
+    return [img, cellContent];
+  }
 
-    // Title (h3)
-    const title = contentDiv.querySelector('h3');
-    if (title) {
-      rightCellContent.push(title);
-    }
-
-    // Description (p)
-    const desc = contentDiv.querySelector('p');
-    if (desc) {
-      rightCellContent.push(desc);
-    }
-
-    // CTA ("Read" div)
-    const ctaDivs = Array.from(contentDiv.querySelectorAll('div'));
-    const cta = ctaDivs.find(d => d.textContent.trim().toLowerCase() === 'read');
-    if (cta) {
-      rightCellContent.push(cta);
-    }
-
-    // Left cell: image (mandatory)
-    // Right cell: all extracted content
-    return [img, rightCellContent];
+  // Get all card anchors
+  const cardAnchors = Array.from(element.querySelectorAll(':scope > a'));
+  const rows = [];
+  rows.push(['Cards (cards33)']);
+  cardAnchors.forEach(cardAnchor => {
+    const [img, cellContent] = extractCardContent(cardAnchor);
+    if (!img || cellContent.length === 0) return;
+    rows.push([img, cellContent]);
   });
-
-  // Compose the table
-  const tableCells = [headerRow, ...rows];
-  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
-
-  // Replace original element with the new block table
-  element.replaceWith(blockTable);
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

@@ -1,51 +1,46 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all direct child <a> elements (each is a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
-
-  // Table header as required by spec
-  const headerRow = ['Cards (cards24)'];
-  const rows = [headerRow];
-
-  cardLinks.forEach((card) => {
-    // Image: first child div > img
-    const imgDiv = card.querySelector(':scope > div');
-    const img = imgDiv ? imgDiv.querySelector('img') : null;
-
-    // Meta (tag and date): second child div
-    const metaDiv = card.querySelectorAll(':scope > div')[1];
-    let metaContent = [];
-    if (metaDiv) {
-      // Tag
-      const tag = metaDiv.querySelector('.tag');
-      if (tag) metaContent.push(tag);
-      // Date
-      const date = metaDiv.querySelector('.paragraph-sm');
-      if (date) metaContent.push(date);
+  // Helper to build the text cell for each card
+  function buildTextCell(cardLink) {
+    const textCell = document.createElement('div');
+    // Tag/date row (optional)
+    const tagRow = cardLink.querySelector('.flex-horizontal');
+    if (tagRow) {
+      textCell.appendChild(tagRow);
     }
-
-    // Heading (title)
-    const heading = card.querySelector('h3');
-
-    // Compose text cell: meta row (if present) + heading
-    const textCell = [];
-    if (metaContent.length) {
-      const metaWrap = document.createElement('div');
-      metaWrap.style.display = 'flex';
-      metaWrap.style.gap = '0.5em';
-      metaWrap.append(...metaContent);
-      textCell.push(metaWrap);
+    // Heading (mandatory)
+    const heading = cardLink.querySelector('h3, .h4-heading');
+    if (heading) {
+      textCell.appendChild(heading);
     }
-    if (heading) textCell.push(heading);
+    return textCell;
+  }
 
-    // Add row: [image, text cell]
+  // Get all card links (each card is an <a>)
+  const cards = Array.from(element.querySelectorAll(':scope > a'));
+  const rows = [
+    ['Cards (cards24)'],
+  ];
+
+  cards.forEach((cardLink) => {
+    // Image cell (mandatory)
+    const imageWrapper = cardLink.querySelector('div.utility-aspect-2x3');
+    let imageCell = null;
+    if (imageWrapper) {
+      imageCell = imageWrapper;
+    } else {
+      // fallback: just use the first img
+      const img = cardLink.querySelector('img');
+      if (img) imageCell = img;
+    }
+    // Text cell (mandatory)
+    const textCell = buildTextCell(cardLink);
     rows.push([
-      img ? img : '',
-      textCell.length ? textCell : ''
+      imageCell,
+      textCell,
     ]);
   });
 
-  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

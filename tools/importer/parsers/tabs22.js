@@ -1,41 +1,52 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get tab labels and tab panes
-  const tabMenu = element.querySelector('.w-tab-menu');
-  const tabLinks = tabMenu ? Array.from(tabMenu.querySelectorAll('a.w-tab-link')) : [];
-  const tabContent = element.querySelector('.w-tab-content');
-  const tabPanes = tabContent ? Array.from(tabContent.querySelectorAll('.w-tab-pane')) : [];
+  // Helper: Get direct children by tag/class
+  function getDirectChildrenByClass(parent, className) {
+    return Array.from(parent.children).filter(child => child.classList.contains(className));
+  }
 
-  // Defensive: ensure we have matching tabs and panes
-  const numTabs = Math.min(tabLinks.length, tabPanes.length);
-
-  // Header row
+  // 1. Header row
   const headerRow = ['Tabs (tabs22)'];
+
+  // 2. Find tab menu and content panes
+  const tabMenu = element.querySelector('.w-tab-menu');
+  const tabLinks = tabMenu ? Array.from(tabMenu.children) : [];
+  const tabContent = element.querySelector('.w-tab-content');
+  const tabPanes = tabContent ? Array.from(tabContent.children) : [];
+
+  // Defensive: Only proceed if tabLinks and tabPanes lengths match
+  const numTabs = Math.min(tabLinks.length, tabPanes.length);
   const rows = [headerRow];
 
   for (let i = 0; i < numTabs; i++) {
-    // Tab label: get text from the inner div of the tab link
-    let tabLabel = '';
-    const labelDiv = tabLinks[i].querySelector('div');
+    // Get tab label (text inside .paragraph-lg or fallback to link text)
+    let label = '';
+    const link = tabLinks[i];
+    const labelDiv = link.querySelector('.paragraph-lg');
     if (labelDiv) {
-      tabLabel = labelDiv.textContent.trim();
+      label = labelDiv.textContent.trim();
     } else {
-      tabLabel = tabLinks[i].textContent.trim();
+      label = link.textContent.trim();
     }
-
-    // Tab content: use the grid inside the pane if present, else the whole pane
-    let tabContentElem = null;
-    const grid = tabPanes[i].querySelector('.w-layout-grid');
-    if (grid) {
-      tabContentElem = grid;
-    } else {
-      tabContentElem = tabPanes[i];
+    // Get tab content (the .w-tab-pane's first child, which is the content grid)
+    const pane = tabPanes[i];
+    // Defensive: find the grid inside the pane
+    let contentElem = null;
+    if (pane) {
+      // Try to find the grid-layout inside the pane
+      contentElem = pane.querySelector('.grid-layout');
+      if (!contentElem) {
+        // Fallback: use the pane itself
+        contentElem = pane;
+      }
     }
-
-    rows.push([tabLabel, tabContentElem]);
+    rows.push([
+      label,
+      contentElem ? contentElem : document.createTextNode('')
+    ]);
   }
 
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(block);
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

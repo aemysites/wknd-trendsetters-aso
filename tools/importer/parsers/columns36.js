@@ -1,48 +1,39 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get direct child by selector
-  function getDirectChild(parent, selector) {
-    return Array.from(parent.children).find(el => el.matches(selector));
-  }
-
-  // 1. Header row
-  const headerRow = ['Columns (columns36)'];
-
-  // 2. Find the two main columns from the grid
+  // Step 1: Find the main container and grid
   const container = element.querySelector('.container');
   if (!container) return;
-  const grid = getDirectChild(container, '.grid-layout');
+  const grid = container.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
-  const gridChildren = Array.from(grid.children);
-  if (gridChildren.length < 2) return;
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Left column: heading, subheading, buttons
-  const leftCol = gridChildren[0];
-  const leftColContent = [];
+  // Step 2: LEFT COLUMN (text)
+  const leftCol = columns[0];
+  const leftContent = [];
   const heading = leftCol.querySelector('h1');
-  if (heading) leftColContent.push(heading);
+  if (heading) leftContent.push(heading);
   const subheading = leftCol.querySelector('p');
-  if (subheading) leftColContent.push(subheading);
+  if (subheading) leftContent.push(subheading);
   const buttonGroup = leftCol.querySelector('.button-group');
-  if (buttonGroup) leftColContent.push(buttonGroup);
+  if (buttonGroup) leftContent.push(buttonGroup);
 
-  // Right column: grid of images
-  const rightCol = gridChildren[1];
-  let rightColContent = [];
-  const imagesGrid = rightCol.querySelector('.grid-layout');
-  if (imagesGrid) {
-    const imgs = Array.from(imagesGrid.querySelectorAll('img'));
-    if (imgs.length) rightColContent = imgs;
+  // Step 3: RIGHT COLUMN (images)
+  const rightCol = columns[1];
+  let images = [];
+  const imageGrid = rightCol.querySelector('.w-layout-grid');
+  if (imageGrid) {
+    images = Array.from(imageGrid.querySelectorAll('img'));
   }
 
-  // 2nd row: two columns
-  const row2 = [leftColContent, rightColContent];
-
-  // Build table
+  // Step 4: Build the Columns block table
+  const headerRow = ['Columns (columns36)'];
+  const contentRow = [leftContent, images];
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    row2
+    contentRow
   ], document);
 
+  // Step 5: Replace the element
   element.replaceWith(table);
 }

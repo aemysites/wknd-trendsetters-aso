@@ -1,23 +1,25 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (the direct child of the main container)
-  const grid = element.querySelector(':scope > .grid-layout');
+  // Defensive: Find the grid-layout container (the columns block)
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (these are the columns)
-  const columns = Array.from(grid.children);
-  if (columns.length === 0) return;
+  // Get all immediate children of the grid (these are the columns)
+  const columns = Array.from(grid.querySelectorAll(':scope > div'));
 
-  // Build the table rows
+  // Prepare the header row
   const headerRow = ['Columns (columns31)'];
-  const contentRow = columns.map(col => col);
 
-  // Create the table
+  // Prepare the columns row: each cell is the content of one column
+  // For resilience, include the whole column element in each cell
+  const columnsRow = columns.map((col) => col);
+
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow,
+    columnsRow,
   ], document);
 
-  // Replace the original element with the new table
+  // Replace the original element with the new block table
   element.replaceWith(table);
 }

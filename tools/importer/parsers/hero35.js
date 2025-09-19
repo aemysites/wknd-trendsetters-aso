@@ -1,49 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
+  // Helper: get direct children by tag name
+  function getDirectChild(parent, tag) {
+    return Array.from(parent.children).find((el) => el.tagName.toLowerCase() === tag);
+  }
+
   // 1. Header row
   const headerRow = ['Hero (hero35)'];
 
-  // 2. Background image row (none in this HTML)
+  // 2. Background image row (none in this source)
   const bgImageRow = [''];
 
   // 3. Content row: Title, Subheading, CTA
-  // Find the grid container
+  // Find the main grid
   const grid = element.querySelector('.w-layout-grid');
   let contentCell = [];
   if (grid) {
-    // Get all direct children of the grid
+    // The first grid child contains headings and subheading
     const gridChildren = Array.from(grid.children);
-    // Find the div with the heading and subheading
-    const contentDiv = gridChildren.find((child) => child.querySelector('h2'));
-    // Find the CTA (button link)
-    const ctaLink = gridChildren.find((child) => child.tagName === 'A');
+    const textDiv = gridChildren[0];
+    const ctaEl = gridChildren.find((el) => el.tagName.toLowerCase() === 'a');
 
-    // Compose content cell
-    if (contentDiv) {
-      // Get heading and subheading
-      const heading = contentDiv.querySelector('h2');
-      const subheading = contentDiv.querySelector('p');
-      if (heading) contentCell.push(heading);
-      if (subheading) contentCell.push(subheading);
-    }
-    if (ctaLink) {
-      contentCell.push(ctaLink);
-    }
+    // Title (h2)
+    const h2 = textDiv && getDirectChild(textDiv, 'h2');
+    if (h2) contentCell.push(h2);
+    // Subheading (p)
+    const subheading = textDiv && getDirectChild(textDiv, 'p');
+    if (subheading) contentCell.push(subheading);
+    // CTA button (a)
+    if (ctaEl) contentCell.push(ctaEl);
   }
-  // Defensive: if nothing found, just use the whole element
+  // Defensive: if nothing found, fallback to all text content
   if (contentCell.length === 0) {
-    contentCell = [element];
+    contentCell = [element.textContent.trim()];
   }
 
   const contentRow = [contentCell];
 
-  // Build table
+  // Assemble table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
     bgImageRow,
     contentRow,
   ], document);
 
-  // Replace original element
   element.replaceWith(table);
 }
