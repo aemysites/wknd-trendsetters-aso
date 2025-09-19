@@ -363,7 +363,7 @@
   background: var(--background-color);
   min-width: 0;
   box-sizing: border-box;
-  height: 320px; /* Set a reasonable block height matching the original */
+  height: 320px;
 }
 
 .columns.columns6 .columns-img-col img {
@@ -388,4 +388,96 @@
   .columns.columns6 .columns-img-col img {
     border-radius: 14px;
   }
+}
+
+
+.columns.columns7 > div {
+  display: flex;
+  flex-direction: row;
+  gap: 26px; /* reduced gap to bring columns closer, matching original */
+  align-items: flex-start;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (width <= 899px) {
+  .columns.columns7 > div {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.columns.columns7 > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Heading styling: unchanged, matches original */
+.columns.columns7 > div > div:first-child h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #181818;
+  font-size: var(--heading-font-size-xl);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+}
+
+/* Right column: no extra margin/padding, very compact */
+.columns.columns7 > div > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: 320px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Paragraph: tight wrap, subtle gap below */
+.columns.columns7 > div > div:last-child p:not(.button-container) {
+  margin: 0 0 2px;
+  padding: 0;
+  font-size: 14px;
+  color: #181818;
+  line-height: 1.33;
+  font-weight: 400;
+  max-width: 320px;
+}
+
+/* Button container: left-aligned, no width expansion */
+.columns.columns7 .button-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+/* Button: compact, matches paragraph start */
+.columns.columns7 .button-container .button {
+  background: #fff;
+  color: #181818;
+  border: 2px solid #181818;
+  border-radius: 2em;
+  padding: 2px 18px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.25;
+  text-align: center;
+  max-width: unset;
+  min-width: unset;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Button hover effect: invert colors */
+.columns.columns7 .button-container .button:hover,
+.columns.columns7 .button-container .button:focus {
+  background: #181818;
+  color: #fff;
+  border-color: #181818;
+  text-decoration: none;
 }
