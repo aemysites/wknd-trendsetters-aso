@@ -27,79 +27,6 @@
 }
 
 
-.cards.cards8 {
-  background: #fff;
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.cards.cards8 > ul {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 16px;
-  place-items: stretch stretch;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.cards.cards8 > ul > li {
-  background: #fff;
-  border: none;
-  border-radius: 16px;
-  overflow: hidden;
-  padding: 0;
-  min-width: 0;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-  box-sizing: border-box;
-}
-
-.cards.cards8 .cards-card-image {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  flex: 1 1 0%;
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-}
-
-.cards.cards8 .cards-card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  display: block;
-}
-
-.cards.cards8 .cards-card-body {
-  display: none;
-}
-
-@media (width <= 900px) {
-  .cards.cards8 > ul {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-}
-
-@media (width <= 600px) {
-  .cards.cards8 > ul {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-}
-
-
 .cards.cards10 {
   max-width: 1200px;
   margin: 0 auto;
@@ -1110,8 +1037,6 @@
   padding: 0;
   margin: 0;
 }
-
-/* Main card (left column) */
 .cards.cards2 > ul > li:first-child {
   grid-column: 1 / 2;
   grid-row: 1 / span 8;
@@ -1125,8 +1050,6 @@
   align-self: start;
   min-width: 0;
 }
-
-/* More balanced spacing above image and between blocks in main card */
 .cards.cards2 > ul > li:first-child .cards-card-image {
   padding: 0 24px;
   margin-top: 22px;
@@ -1138,15 +1061,11 @@
   object-fit: cover;
   display: block;
 }
-
-/* Headline, label, and description padding */
 .cards.cards2 > ul > li:first-child .cards-card-body {
   padding: 0 24px;
   margin: 0;
   margin-top: 22px;
 }
-
-/* Main card label styling */
 .cards.cards2 > ul > li:first-child .cards-card-body > p:first-child {
   display: inline-block;
   background: #eeeeee;
@@ -1160,8 +1079,6 @@
   font-weight: 600;
   line-height: 1.1;
 }
-
-/* Headline styling */
 .cards.cards2 > ul > li:first-child .cards-card-body h3 {
   font-size: 2.2rem;
   font-weight: 700;
@@ -1172,8 +1089,6 @@
   text-transform: uppercase;
   word-break: break-word;
 }
-
-/* Main card description */
 .cards.cards2 > ul > li:first-child .cards-card-body p:not(:first-child) {
   font-size: 1rem;
   color: #424242;
@@ -1181,8 +1096,6 @@
   line-height: 1.56;
   font-weight: 400;
 }
-
-/* Secondary card (top right) */
 .cards.cards2 > ul > li:nth-child(2) {
   grid-column: 2 / 3;
   background: #fff;
@@ -1195,7 +1108,7 @@
   padding: 0;
   overflow: hidden;
   min-width: 0;
-  margin-top: 0; /* remove top margin for top alignment */
+  margin-top: 0;
 }
 
 .cards.cards2 > ul > li:nth-child(2) .cards-card-image {
@@ -1209,14 +1122,10 @@
   border-radius: 14px 14px 0 0;
   display: block;
 }
-
-/* Body padding for secondary card */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body {
   padding: 12px 15px 7px 15px;
   margin: 0;
 }
-
-/* Label for secondary card */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body > p:first-child {
   display: inline-block;
   background: #eeeeee;
@@ -1229,8 +1138,6 @@
   font-weight: 600;
   letter-spacing: 0.08em;
 }
-
-/* Title in secondary card */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body h3 {
   font-size: 1rem;
   font-weight: 700;
@@ -1241,16 +1148,12 @@
   line-height: 1.13;
   word-break: break-word;
 }
-
-/* Description in secondary card */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body p:not(:first-child) {
   font-size: 0.97rem;
   color: #424242;
   margin: 0;
   line-height: 1.54;
 }
-
-/* Right column: vertical list items */
 .cards.cards2 > ul > li:nth-child(n+3) {
   grid-column: 2 / 3;
   background: none;
@@ -1273,8 +1176,6 @@
   padding: 0 7px;
   margin: 0;
 }
-
-/* Title in right column list */
 .cards.cards2 > ul > li:nth-child(n+3) .cards-card-body h3 {
   font-size: 0.91rem;
   font-weight: 700;
@@ -1285,8 +1186,6 @@
   line-height: 1.15;
   word-break: break-word;
 }
-
-/* Description in right column list */
 .cards.cards2 > ul > li:nth-child(n+3) .cards-card-body p {
   font-size: 0.93rem;
   color: #424242;
@@ -1294,8 +1193,6 @@
   font-weight: 400;
   line-height: 1.45;
 }
-
-/* Responsive layout: stack columns on small screens */
 @media (max-width: 900px) {
   .cards.cards2 {
     padding: 14px 0 0 0;
@@ -1331,5 +1228,98 @@
   }
   .cards.cards2 > ul > li:nth-child(n+3) .cards-card-body {
     padding: 0 3px;
+  }
+}
+
+
+.cards.cards8 {
+  background: #fff;
+  margin: 0 auto;
+  padding: 32px 0;
+  width: 100%;
+  max-width: 1080px; /* Tighter block width for balanced centering */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.cards.cards8 > ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 26px; /* More compact, matching original spacing */
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 870px; /* Ensures cards don't stretch too wide */
+  box-sizing: border-box;
+}
+
+.cards.cards8 > ul > li {
+  background: #fff;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.cards.cards8 .cards-card-image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-radius: 16px;
+}
+
+.cards.cards8 .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+.cards.cards8 .cards-card-body {
+  display: none;
+}
+
+/* Responsive grid: 2 columns on medium screens, 1 column on small screens */
+@media (max-width: 900px) {
+  .cards.cards8 > ul {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 580px;
+  }
+  .cards.cards8 {
+    padding: 24px 0;
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cards.cards8 > ul {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 8px;
+    max-width: 320px;
+  }
+  .cards.cards8 {
+    padding: 8px 0;
+    max-width: 340px;
   }
 }
