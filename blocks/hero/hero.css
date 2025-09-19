@@ -590,15 +590,14 @@
 }
 
 .hero.hero14 > div:last-child {
-  /* Use flexbox for precise vertical and horizontal centering of content */
   position: absolute;
   inset: 0;
   z-index: 2;
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;    /* vertical centering */
-  justify-content: center;/* horizontal centering */
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
 }
 
@@ -630,5 +629,211 @@
 @media (width <= 700px) {
   .hero.hero14 h1 {
     font-size: clamp(2.5rem, 12vw, 5.8rem);
+  }
+}
+
+
+.hero.hero20 {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  min-height: 600px;
+  background: #000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Collage: left side, edge to edge */
+.hero.hero20 > div:first-child {
+  flex: 1 1 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  height: 100%;
+  width: 50vw;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.hero.hero20 > div:first-child > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  gap: 0;
+  box-sizing: border-box;
+}
+
+/* Make sure images fill the grid cells perfectly */
+.hero.hero20 > div:first-child > div > p {
+  display: contents;
+}
+
+.hero.hero20 > div:first-child picture,
+.hero.hero20 > div:first-child img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: block;
+  border: none;
+  border-radius: 0;
+}
+
+/* Overlay for collage */
+.hero.hero20 > div:first-child::after {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 45%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero.hero20 > div:first-child > div,
+.hero.hero20 > div:first-child picture,
+.hero.hero20 > div:first-child img {
+  z-index: 2;
+  position: relative;
+}
+
+/* Text block on right, perfectly centered vertically/horizontally */
+.hero.hero20 > div:nth-child(2) {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  width: 50vw;
+  padding: 0;
+  margin: 0;
+}
+
+.hero.hero20 > div:nth-child(2) > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem; /* tighter vertical rhythm */
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  height: auto;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.hero.hero20 > div:nth-child(2) > div > * {
+  margin: 0;
+  padding: 0;
+}
+
+/* Headline styles */
+.hero.hero20 h1 {
+  color: #fff;
+  font-size: 4rem;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+/* Subheading styles */
+.hero.hero20 > div:nth-child(2) p {
+  font-size: 1.15rem;
+  color: #fff;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 600px;
+}
+
+/* Buttons row, tight below subheading */
+.hero.hero20 > div:nth-child(2) p:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.1rem;
+  margin-bottom: 0;
+  margin-top: 0.3rem;
+  padding: 0;
+}
+
+.hero.hero20 > div:nth-child(2) p:last-child a {
+  display: inline-block;
+  border: 1.5px solid #fff;
+  background: transparent;
+  color: #fff;
+  border-radius: 2rem;
+  padding: 0.75em 2.1em;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: background 0.2s, color 0.2s;
+  margin: 0;
+}
+
+.hero.hero20 > div:nth-child(2) p:last-child a:hover,
+.hero.hero20 > div:nth-child(2) p:last-child a:focus {
+  background: #fff;
+  color: #222;
+}
+
+/* Responsive stacking */
+@media (width <= 900px) {
+  .hero.hero20 {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+
+  .hero.hero20 > div:first-child,
+  .hero.hero20 > div:nth-child(2) {
+    width: 100vw;
+    min-width: 0;
+    height: auto;
+    min-height: 220px;
+    padding: 0;
+  }
+
+  .hero.hero20 > div:first-child > div {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    min-height: 220px;
+  }
+
+  .hero.hero20 > div:nth-child(2) > div {
+    max-width: 98vw;
+    gap: 0.7rem;
+    padding: 1rem 0.3rem 0.7rem;
+  }
+
+  .hero.hero20 h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero.hero20 > div:nth-child(2) p {
+    font-size: 1rem;
+  }
+
+  .hero.hero20 > div:nth-child(2) p:last-child {
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.3rem;
   }
 }
