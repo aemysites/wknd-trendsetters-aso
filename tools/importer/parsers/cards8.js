@@ -1,49 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate card divs
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+  // Block header row: must be exactly one column
+  const headerRow = ['Cards (cards8)'];
 
-  // Table header row (single cell, exactly one column)
-  const rows = [
-    ['Cards (cards8)'],
-  ];
+  // Get all direct child divs (each is a card container)
+  const cardDivs = element.querySelectorAll(':scope > div');
 
-  // For each card, create a row: [image, text content]
-  cardDivs.forEach((cardDiv) => {
-    // Find the image inside the card
+  // Prepare card rows
+  const rows = Array.from(cardDivs).map((cardDiv) => {
+    // Find the image inside the card div
     const img = cardDiv.querySelector('img');
-    if (!img) return; // Defensive: skip if no image
-    // Remove empty width/height attributes for cleanliness
-    if (img.hasAttribute('width') && img.getAttribute('width') === '') img.removeAttribute('width');
-    if (img.hasAttribute('height') && img.getAttribute('height') === '') img.removeAttribute('height');
-    // Reference the existing image element
-    const imgCell = img;
-    // Use all available text content in the card, but do not wrap in extra divs
-    let textCell = '';
-    // Gather all text nodes in the card except inside the image
-    const textParts = [];
-    cardDiv.childNodes.forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-        textParts.push(node.textContent.trim());
+    if (!img) return null;
+
+    // Try to extract all text content from the cardDiv, not just the alt text
+    let textContent = '';
+    Array.from(cardDiv.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        textContent += node.textContent.trim() + ' ';
       } else if (node.nodeType === Node.ELEMENT_NODE && node !== img) {
-        // If it's not the image, get its text
-        const txt = node.textContent.trim();
-        if (txt) textParts.push(txt);
+        textContent += node.textContent.trim() + ' ';
       }
     });
-    // If no text found, fallback to alt text
-    if (textParts.length === 0 && img.alt && img.alt.trim()) {
-      textParts.push(img.alt.trim());
+    textContent = textContent.trim();
+    if (!textContent) {
+      textContent = img.getAttribute('alt') || '';
     }
-    // Compose text cell as plain string (no div wrapper)
-    if (textParts.length > 0) {
-      textCell = textParts.join(' ');
-    }
-    rows.push([imgCell, textCell]);
-  });
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+    // Each card row: [image, text cell]
+    return [img, textContent];
+  }).filter(Boolean);
+
+  // Compose final table data
+  const tableData = [headerRow, ...rows];
+
+  // Create the block table
+  const blockTable = WebImporter.DOMUtils.createTable(tableData, document);
+
   // Replace the original element
-  element.replaceWith(table);
+  element.replaceWith(blockTable);
 }

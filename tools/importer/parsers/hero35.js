@@ -1,49 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
-  const headerRow = ['Hero (hero35)'];
-
-  // --- Row 2: Background image (optional) ---
-  // No image found in the provided HTML, so leave cell empty
-  const imageRow = [''];
-
-  // --- Row 3: Content (title, subheading, CTA) ---
-  // Find the grid container
-  const grid = element.querySelector('.grid-layout');
-  let contentCell = '';
+  // Helper: Get direct children divs for main content
+  const mainContainer = element.querySelector(':scope > div.container');
+  let grid;
+  if (mainContainer) {
+    grid = mainContainer.querySelector(':scope > div');
+  }
+  // Defensive: fallback to first div if structure changes
+  if (!grid) {
+    grid = element.querySelector(':scope > div');
+  }
+  // Get grid children (content and CTA)
+  let gridChildren = [];
   if (grid) {
-    // Get all direct children of the grid
-    const gridChildren = grid.querySelectorAll(':scope > *');
-    // The first child contains heading and subheading
-    const textBlock = gridChildren[0];
-    // The second child is the CTA button
-    const ctaBlock = gridChildren[1];
-    // Compose content cell
-    const cellContent = [];
-    if (textBlock) {
-      // Heading
-      const heading = textBlock.querySelector('h2');
-      if (heading) cellContent.push(heading);
-      // Subheading
-      const subheading = textBlock.querySelector('p');
-      if (subheading) cellContent.push(subheading);
-    }
-    if (ctaBlock) {
-      cellContent.push(ctaBlock);
-    }
-    contentCell = cellContent;
+    gridChildren = Array.from(grid.children);
   }
 
-  // Build table rows
-  const rows = [
-    headerRow,
-    imageRow,
-    [contentCell]
-  ];
+  // Find heading/subheading container
+  let headingBlock = null;
+  let cta = null;
+  gridChildren.forEach((child) => {
+    // Heuristic: If contains h2, it's heading block
+    if (child.querySelector('h1, h2, h3, h4, h5, h6')) {
+      headingBlock = child;
+    } else if (child.tagName === 'A' || child.querySelector('a')) {
+      cta = child;
+    }
+  });
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Compose content cell for row 3
+  const contentCell = [];
+  if (headingBlock) {
+    // Grab heading
+    const heading = headingBlock.querySelector('h1, h2, h3, h4, h5, h6');
+    if (heading) contentCell.push(heading);
+    // Grab subheading/paragraph
+    const subheading = headingBlock.querySelector('p, .subheading');
+    if (subheading) contentCell.push(subheading);
+  }
+  if (cta) {
+    // Use the CTA link directly
+    contentCell.push(cta);
+  }
 
-  // Replace the original element
-  element.replaceWith(block);
+  // Table rows
+  const headerRow = ['Hero (hero35)'];
+  // No image in source, so row 2 is empty
+  const imageRow = [''];
+  // Row 3: content
+  const contentRow = [contentCell];
+
+  const cells = [headerRow, imageRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(table);
 }

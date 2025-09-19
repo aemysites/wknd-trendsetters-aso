@@ -1,22 +1,26 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always use the required block name as header
+  // Header row as required by block spec
   const headerRow = ['Cards (cardsNoImages19)'];
   const rows = [headerRow];
 
-  // Get all immediate child divs (each card)
-  const cardDivs = element.querySelectorAll(':scope > div');
+  // Each card is a direct child div
+  const cards = element.querySelectorAll(':scope > div');
 
-  cardDivs.forEach(cardDiv => {
-    // Find the text content (the p tag)
-    const p = cardDiv.querySelector('p');
+  cards.forEach((card) => {
+    // Find the paragraph (description)
+    const p = card.querySelector('p');
     if (p) {
-      // Add only the paragraph (description) as the card content
-      rows.push([p]);
+      // Remove icon if present
+      const icon = card.querySelector('.icon');
+      if (icon) icon.remove();
+      // Clone paragraph
+      const para = p.cloneNode(true);
+      rows.push([para]);
     }
   });
 
-  // Create the table and replace the original element
+  // Create and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

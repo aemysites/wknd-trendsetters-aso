@@ -1,6 +1,6 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get immediate children by selector
+  // Helper to get direct children by selector
   function getDirectChildren(parent, selector) {
     return Array.from(parent.querySelectorAll(':scope > ' + selector));
   }
@@ -8,51 +8,48 @@ export default function parse(element, { document }) {
   // 1. Header row
   const headerRow = ['Tabs (tabs22)'];
 
-  // 2. Get tab menu and tab panes
-  const tabMenu = element.querySelector('.w-tab-menu');
+  // 2. Find tab labels and tab contents
+  // The first child div is the tab menu, the second is the tab contents
+  const children = getDirectChildren(element, 'div');
+  if (children.length < 2) return;
+
+  const tabMenu = children[0];
+  const tabContent = children[1];
+
+  // Get tab labels
   const tabLinks = getDirectChildren(tabMenu, 'a');
-
-  const tabContent = element.querySelector('.w-tab-content');
-  const tabPanes = getDirectChildren(tabContent, 'div.w-tab-pane');
-
-  // Defensive: Only proceed if tabLinks and tabPanes exist and match
-  if (!tabLinks.length || !tabPanes.length || tabLinks.length !== tabPanes.length) {
-    // Replace with header only, if structure is broken
-    const block = WebImporter.DOMUtils.createTable([headerRow], document);
-    element.replaceWith(block);
-    return;
-  }
-
-  // 3. Build rows: [tab label, tab content]
-  const rows = tabLinks.map((tabLink, idx) => {
-    // Tab label: get text content from the inner div (if present)
-    let tabLabel;
-    const labelDiv = tabLink.querySelector('div');
-    if (labelDiv) {
-      tabLabel = labelDiv.textContent.trim();
-    } else {
-      tabLabel = tabLink.textContent.trim();
-    }
-
-    // Tab content: use the entire tab pane's main content
-    // Defensive: find the grid inside each pane
-    const pane = tabPanes[idx];
-    let tabPaneContent;
-    const grid = pane.querySelector('.w-layout-grid');
-    if (grid) {
-      tabPaneContent = grid;
-    } else {
-      // Fallback: use pane itself
-      tabPaneContent = pane;
-    }
-
-    return [tabLabel, tabPaneContent];
+  const labels = tabLinks.map(link => {
+    // The label is the text inside the inner div
+    const labelDiv = link.querySelector('div');
+    // Defensive: fallback to link text if no inner div
+    return labelDiv ? labelDiv.textContent.trim() : link.textContent.trim();
   });
 
-  // 4. Assemble table
-  const cells = [headerRow, ...rows];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Get tab panes (each tab's content)
+  const tabPanes = getDirectChildren(tabContent, 'div');
 
-  // 5. Replace original element
-  element.replaceWith(block);
+  // Defensive: Only process as many tabs as both labels and panes exist
+  const tabCount = Math.min(labels.length, tabPanes.length);
+
+  // 3. Build rows: each row is [label, content]
+  const rows = [];
+  for (let i = 0; i < tabCount; i++) {
+    const label = labels[i];
+    const pane = tabPanes[i];
+    // The actual content is inside a grid div within pane
+    // We'll grab the first child div inside pane
+    const gridDiv = pane.querySelector('div');
+    // Defensive: fallback to pane itself if gridDiv missing
+    rows.push([
+      label,
+      gridDiv ? gridDiv : pane
+    ]);
+  }
+
+  // 4. Compose table data
+  const cells = [headerRow, ...rows];
+
+  // 5. Create table and replace
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(table);
 }

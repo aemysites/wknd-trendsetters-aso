@@ -1,98 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from each <a> card element
-  function extractCardInfo(cardEl) {
-    // Find the image (mandatory)
-    const img = cardEl.querySelector('img');
+  // Table header row
+  const headerRow = ['Cards (cards33)'];
+  const rows = [headerRow];
 
-    // Find the card content container (the inner div after the image)
-    const contentDiv = img.nextElementSibling;
-    if (!contentDiv) return [img, document.createElement('div')]; // Defensive fallback
+  // Defensive: get all immediate child <a> elements (each card)
+  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
 
-    // Tag and read time row
-    const tagRow = contentDiv.querySelector('.flex-horizontal');
+  cardLinks.forEach((cardLink) => {
+    // Find the image (first image in the card)
+    const img = cardLink.querySelector('img');
 
-    // Tag (optional)
-    let tagText = '';
-    const tagDiv = tagRow && tagRow.querySelector('.tag');
-    if (tagDiv) {
-      const tagInner = tagDiv.querySelector('div');
-      if (tagInner) tagText = tagInner.textContent.trim();
+    // Find the card content container (the div after the image)
+    const contentDiv = img ? img.nextElementSibling : null;
+    
+    // Defensive: If no contentDiv, skip this card
+    if (!contentDiv) return;
+
+    // Extract tag and read time (optional, could be grouped)
+    const metaRow = contentDiv.querySelector('.flex-horizontal');
+    let metaFragment = null;
+    if (metaRow) {
+      metaFragment = document.createDocumentFragment();
+      Array.from(metaRow.children).forEach((metaChild) => {
+        metaFragment.appendChild(metaChild);
+      });
     }
-    // Read time (optional)
-    let readTime = '';
-    const readTimeDiv = tagRow && tagRow.querySelector('.paragraph-sm');
-    if (readTimeDiv) readTimeDiv.textContent && (readTime = readTimeDiv.textContent.trim());
 
-    // Title (mandatory, h3)
-    const titleEl = contentDiv.querySelector('h3');
-    // Description (mandatory, p)
-    const descEl = contentDiv.querySelector('p');
-    // CTA (optional, last div)
-    // Find the last div inside contentDiv that is not the tagRow
-    let ctaEl = null;
-    const divs = Array.from(contentDiv.querySelectorAll('div'));
-    if (divs.length > 1) {
-      ctaEl = divs[divs.length - 1];
-      // Defensive: if ctaEl contains the tagRow, skip
-      if (ctaEl === tagRow) ctaEl = null;
-    }
+    // Extract heading
+    const heading = contentDiv.querySelector('h3, .h4-heading');
+    // Extract description
+    const desc = contentDiv.querySelector('p');
+    // Extract CTA ("Read")
+    const cta = Array.from(contentDiv.childNodes).find((node) => {
+      return node.nodeType === 1 && node.textContent.trim().toLowerCase() === 'read';
+    });
 
     // Compose the text cell
-    const textCell = document.createElement('div');
-    // Tag and read time row (if present)
-    if (tagText || readTime) {
-      const tagWrap = document.createElement('div');
-      tagWrap.style.display = 'flex';
-      tagWrap.style.gap = '0.5em';
-      if (tagText) {
-        const tagSpan = document.createElement('span');
-        tagSpan.textContent = tagText;
-        tagSpan.className = 'card-tag';
-        tagWrap.appendChild(tagSpan);
-      }
-      if (readTime) {
-        const readSpan = document.createElement('span');
-        readSpan.textContent = readTime;
-        readSpan.className = 'card-readtime';
-        tagWrap.appendChild(readSpan);
-      }
-      textCell.appendChild(tagWrap);
-    }
-    // Title
-    if (titleEl) {
-      textCell.appendChild(titleEl);
-    }
-    // Description
-    if (descEl) {
-      textCell.appendChild(descEl);
-    }
-    // CTA (if present)
-    if (ctaEl && ctaEl.textContent.trim().toLowerCase() === 'read') {
-      // Wrap CTA in a link
-      const link = document.createElement('a');
-      link.textContent = ctaEl.textContent.trim();
-      link.href = cardEl.href;
-      link.className = 'card-cta';
-      textCell.appendChild(link);
-    }
+    const textCellContent = [];
+    if (metaFragment) textCellContent.push(metaFragment);
+    if (heading) textCellContent.push(heading);
+    if (desc) textCellContent.push(desc);
+    if (cta) textCellContent.push(cta);
 
-    return [img, textCell];
-  }
-
-  // Build the table rows
-  const rows = [];
-  // Header row
-  rows.push(['Cards (cards33)']);
-
-  // Get all direct child <a> elements (each is a card)
-  const cardEls = Array.from(element.querySelectorAll(':scope > a'));
-  cardEls.forEach(cardEl => {
-    rows.push(extractCardInfo(cardEl));
+    // Each row: [image, text content]
+    rows.push([
+      img,
+      textCellContent
+    ]);
   });
 
-  // Create the block table
+  // Create the table block
   const block = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the original element
   element.replaceWith(block);
 }

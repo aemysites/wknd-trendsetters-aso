@@ -1,60 +1,61 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get direct children by tag name
-  function getDirectChildByTag(parent, tagName) {
-    return Array.from(parent.children).find(child => child.tagName.toLowerCase() === tagName.toLowerCase());
+  // Find the main grid containing the two columns (headline+content, image)
+  const mainContainer = element.querySelector('.container');
+  let grid = null;
+  if (mainContainer) {
+    grid = mainContainer.querySelector('.grid-layout');
+  }
+  // Fallback: first .grid-layout in the element
+  if (!grid) {
+    grid = element.querySelector('.grid-layout');
   }
 
-  // 1. Header row
+  // Defensive: If grid is not found, fallback to all direct children
+  let leftCol = null;
+  let rightCol = null;
+  if (grid) {
+    // The grid should have two children: left (text/buttons), right (image)
+    const gridChildren = Array.from(grid.children);
+    // Find the first div (left), and the first img (right)
+    leftCol = gridChildren.find((child) => child.tagName === 'DIV');
+    rightCol = gridChildren.find((child) => child.tagName === 'IMG');
+  }
+  // Defensive: If not found, fallback to first div and first img in element
+  if (!leftCol) {
+    leftCol = element.querySelector('div');
+  }
+  if (!rightCol) {
+    rightCol = element.querySelector('img');
+  }
+
+  // --- FIX: Extract all content from leftCol, not just the div itself ---
+  // This ensures all text content is included.
+  let leftColContent = [];
+  if (leftCol) {
+    leftColContent = Array.from(leftCol.childNodes).filter((node) => {
+      // Keep elements and text nodes with non-empty content
+      if (node.nodeType === Node.ELEMENT_NODE) return true;
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) return true;
+      return false;
+    });
+    // If leftColContent is empty, fallback to the leftCol itself
+    if (leftColContent.length === 0) leftColContent = [leftCol];
+  }
+
+  // The right column is just the image
+  const rightColContent = rightCol ? [rightCol] : [];
+
+  // Compose the table rows
   const headerRow = ['Columns (columns15)'];
+  const contentRow = [leftColContent, rightColContent];
 
-  // 2. Find the main grid layout (2 columns)
-  // The grid is: [left column: text/buttons] [right column: image]
-  const container = getDirectChildByTag(element, 'DIV');
-  if (!container) return;
-  const grid = getDirectChildByTag(container, 'DIV');
-  if (!grid) return;
-
-  // Find left column (text/buttons) and right column (image)
-  // The grid's children: [0]=text column, [1]=image
-  const gridChildren = Array.from(grid.children);
-  if (gridChildren.length < 2) return;
-  const leftCol = gridChildren[0];
-  const rightCol = gridChildren[1];
-
-  // 2nd row: left column (all text/buttons), right column (image)
-  const row2 = [leftCol, rightCol];
-
-  // 3. Find navigation bar (bottom row)
-  // The nav is the next direct child after the grid
-  const nav = Array.from(container.parentElement.children).find(
-    el => el.classList && el.classList.contains('nav')
-  );
-  // Defensive: if not found, fallback to searching in element
-  const navEl = nav || Array.from(element.children).find(el => el.classList && el.classList.contains('nav'));
-  if (!navEl) return;
-
-  // 3rd row: nav bar spanning both columns
-  // To match the visual balance, split nav into left and right sections
-  // nav-left (logo/menu), nav-right (subscribe button)
-  const navContainer = getDirectChildByTag(navEl, 'DIV');
-  if (!navContainer) return;
-  const navLeft = navContainer.querySelector('.nav-left');
-  const navRight = navContainer.querySelector('.nav-right');
-  // Defensive: if not found, fallback to navContainer's children
-  const navLeftCell = navLeft || navContainer.children[0];
-  const navRightCell = navRight || navContainer.children[navContainer.children.length - 2];
-
-  const row3 = [navLeftCell, navRightCell];
-
-  // Build the table
-  const cells = [
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    row2,
-    row3
-  ];
+    contentRow,
+  ], document);
 
-  // Create and replace
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Replace the original element
   element.replaceWith(table);
 }

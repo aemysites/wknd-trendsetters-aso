@@ -1,56 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get all immediate child divs
-  const topDivs = element.querySelectorAll(':scope > div');
+  // Helper: find first direct child with a class
+  function findDirectChildByClass(parent, className) {
+    return Array.from(parent.children).find(child => child.classList.contains(className));
+  }
 
-  // Header row for the block
+  // Table header row (must match block name exactly)
   const headerRow = ['Carousel (carousel21)'];
 
-  // Slides rows
-  const rows = [];
-
-  // Defensive: Find the card container
-  let cardBody;
-  let imgEl;
-  let headingEl;
-
-  // Find the card-body div (contains heading and image)
-  for (const div of topDivs) {
-    // Look for nested card-body
-    cardBody = div.querySelector('.card-body');
-    if (cardBody) break;
+  // Defensive: Find the card-body containing the image and heading
+  let cardBody = element.querySelector('.card-body');
+  if (!cardBody) {
+    cardBody = element.querySelector('div.card-body');
   }
 
-  if (cardBody) {
-    // Find the image element
-    imgEl = cardBody.querySelector('img');
-    // Find the heading element (optional)
-    headingEl = cardBody.querySelector('.h4-heading');
+  // Find image element (mandatory)
+  let image = cardBody ? cardBody.querySelector('img') : null;
+  if (!image) {
+    image = element.querySelector('img');
   }
 
-  // First cell: image only
-  let imageCell = imgEl ? imgEl : '';
+  // Reference the existing image element (do not clone or create new)
+  let imageCell = image || '';
 
-  // Second cell: text content (heading if present)
+  // Find heading (optional)
+  let heading = cardBody ? cardBody.querySelector('.h4-heading') : null;
+  if (!heading) {
+    heading = element.querySelector('h4, .h4-heading, h3, h2, h1');
+  }
+
+  // Build text cell (only if heading exists)
   let textCell = '';
-  if (headingEl) {
-    // Create a heading element (use <h3> for semantic heading)
-    const h3 = document.createElement('h3');
-    h3.textContent = headingEl.textContent;
-    textCell = h3;
+  if (heading) {
+    // Reference the existing heading element (do not clone)
+    textCell = document.createElement('div');
+    textCell.appendChild(heading);
   }
 
-  // Only add slide row if image is present
-  if (imageCell) {
-    rows.push([imageCell, textCell]);
-  }
-
-  // Compose table cells
-  const cells = [headerRow, ...rows];
+  // Compose table rows
+  const rows = [
+    headerRow,
+    [imageCell, textCell]
+  ];
 
   // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  const block = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace the original element with the block table
+  // Replace the original element with the block
   element.replaceWith(block);
 }

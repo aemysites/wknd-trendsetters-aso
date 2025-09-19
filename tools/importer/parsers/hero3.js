@@ -1,60 +1,54 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get immediate child divs
-  const topDivs = Array.from(element.querySelectorAll(':scope > div'));
-
-  // --- HEADER ROW ---
+  // --- 1. Header row ---
   const headerRow = ['Hero (hero3)'];
 
-  // --- BACKGROUND IMAGE ROW ---
-  // Find image element (background)
-  let bgImg = null;
-  for (const div of topDivs) {
-    const img = div.querySelector('img');
-    if (img) {
-      bgImg = img;
-      break;
-    }
+  // --- 2. Background image row ---
+  // Find the image element (background)
+  let imgEl = null;
+  const img = element.querySelector('img');
+  if (img) {
+    imgEl = img;
   }
-  // Defensive: If not found, leave cell empty
-  const bgImgRow = [bgImg ? bgImg : ''];
+  const imageRow = [imgEl ? imgEl : ''];
 
-  // --- CONTENT ROW ---
-  // Find the card containing heading, subheading, and buttons
-  let contentCell = '';
-  for (const div of topDivs) {
-    // Find nested card
-    const card = div.querySelector('.card');
-    if (card) {
-      // Build content fragment
-      const frag = document.createDocumentFragment();
-      // Heading
-      const h1 = card.querySelector('h1');
-      if (h1) frag.appendChild(h1);
-      // Subheading (paragraph)
-      const sub = card.querySelector('p');
-      if (sub) frag.appendChild(sub);
-      // Button group
-      const btnGroup = card.querySelector('.button-group');
-      if (btnGroup) {
-        // Only include links (not the group container)
-        const btns = Array.from(btnGroup.querySelectorAll('a'));
-        if (btns.length) {
-          const btnWrap = document.createElement('div');
-          btns.forEach(btn => btnWrap.appendChild(btn));
-          frag.appendChild(btnWrap);
-        }
+  // --- 3. Content row ---
+  // Find the card with heading, subheading, buttons
+  let cardDiv = element.querySelector('.card');
+
+  // Defensive: If not found, fallback to first div with heading
+  if (!cardDiv) {
+    for (const div of element.querySelectorAll('div')) {
+      if (div.querySelector('h1')) {
+        cardDiv = div;
+        break;
       }
-      contentCell = frag;
-      break;
     }
   }
+
+  // Compose content cell: heading, subheading, buttons
+  const contentCell = [];
+  if (cardDiv) {
+    // Heading
+    const heading = cardDiv.querySelector('h1');
+    if (heading) contentCell.push(heading);
+    // Subheading (paragraph)
+    const subheading = cardDiv.querySelector('p');
+    if (subheading) contentCell.push(subheading);
+    // Button group
+    const buttonGroup = cardDiv.querySelector('.button-group');
+    if (buttonGroup) {
+      const buttons = Array.from(buttonGroup.querySelectorAll('a'));
+      contentCell.push(...buttons);
+    }
+  }
+  if (contentCell.length === 0) contentCell.push('');
   const contentRow = [contentCell];
 
-  // --- BUILD TABLE ---
-  const cells = [headerRow, bgImgRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // --- Compose table ---
+  const rows = [headerRow, imageRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace original element
+  // --- Replace original element ---
   element.replaceWith(table);
 }
