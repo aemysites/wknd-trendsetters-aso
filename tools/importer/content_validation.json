@@ -724,11 +724,11 @@
               "element_id": "html__body__section_4",
               "differences": [
                 {
-                  "change_type": "deletion",
+                  "change_type": "equal",
                   "text": "Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
                 }
               ],
-              "dissimilarity_score": 1.0
+              "dissimilarity_score": 0.0
             }
           ],
           "similarity_score": 0.0
@@ -1057,61 +1057,13 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "Casual "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "Cool May"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "CoolMay"
-                },
-                {
-                  "change_type": "equal",
-                  "text": " 12 Tennis style, redefined Beach "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "Vibes May"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "VibesMay"
-                },
-                {
-                  "change_type": "equal",
-                  "text": " 10 Sunkissed and effortless Night "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "Out May"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "OutMay"
-                },
-                {
-                  "change_type": "equal",
-                  "text": " 8 Party fits that pop Sport "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "Mode May"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "ModeMay"
-                },
-                {
-                  "change_type": "equal",
-                  "text": " 5 Game on, style up"
+                  "text": "Casual Cool May 12 Tennis style, redefined Beach Vibes May 10 Sunkissed and effortless Night Out May 8 Party fits that pop Sport Mode May 5 Game on, style up"
                 }
               ],
-              "dissimilarity_score": 0.49
+              "dissimilarity_score": -0.0
             }
           ],
-          "similarity_score": 0.51
+          "similarity_score": 0.0
         },
         {
           "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
@@ -1124,26 +1076,18 @@
               "element_id": "html__body__section_2__div__div_2",
               "differences": [
                 {
-                  "change_type": "deletion",
-                  "text": "Casual May"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "CasualMay"
-                },
-                {
                   "change_type": "equal",
-                  "text": " 12 Tennis looks that serve"
+                  "text": "Casual May 12 Tennis looks that serve"
                 },
                 {
                   "change_type": "deletion",
                   "text": " Sporty May 10 Streetwear on the move Beach May 8 Sunkissed & styled Party May 5 Night out, bold fits"
                 }
               ],
-              "dissimilarity_score": 0.77
+              "dissimilarity_score": 0.46
             }
           ],
-          "similarity_score": 0.22999999999999998
+          "similarity_score": 0.54
         }
       ]
     },
@@ -1377,14 +1321,58 @@
               "element_id": "html__body__section_2__div__div_2",
               "differences": [
                 {
+                  "change_type": "deletion",
+                  "text": "Chill 3"
+                },
+                {
+                  "change_type": "insertion",
+                  "text": "Chill3"
+                },
+                {
                   "change_type": "equal",
-                  "text": "Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read"
+                  "text": " min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Sunny 4"
+                },
+                {
+                  "change_type": "insertion",
+                  "text": "Sunny4"
+                },
+                {
+                  "change_type": "equal",
+                  "text": " min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Night 2"
+                },
+                {
+                  "change_type": "insertion",
+                  "text": "Night2"
+                },
+                {
+                  "change_type": "equal",
+                  "text": " min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Active 5"
+                },
+                {
+                  "change_type": "insertion",
+                  "text": "Active5"
+                },
+                {
+                  "change_type": "equal",
+                  "text": " min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read"
                 }
               ],
-              "dissimilarity_score": -0.0
+              "dissimilarity_score": 0.04
             }
           ],
-          "similarity_score": 0.0
+          "similarity_score": 0.96
         }
       ]
     },
@@ -1773,7 +1761,55 @@
         },
         {
           "change_type": "equal",
-          "text": "Trends made for your lifestyle Fresh drops for every mood\u2014tennis whites, beach brights, party fits. Your next look starts here. Game on! Sporty vibes meet street style. Sneakers, sets, and all the cool you need. Chill never looked this good. Easy layers, bold extras\u2014fun, effortless, always you. Ready to shine? Statement looks and playful details for nights you\u2019ll never forget. Remix your style. Layer, clash, repeat\u2014make every outfit your own. Hot new labels. Discover the brands everyone\u2019s buzzing about\u2014before they go big. Real people, real style. See how trendsetters own the scene, one outfit at a time. Season\u2019s essentials. Stay ahead with our top picks\u2014what\u2019s trending right now. Browse Join Hot right now Style that never sleeps Get inspired by real looks, real stories, and the freshest trends in youth fashion. See how today\u2019s style stars own every moment. Browse Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read Trends Sporty Nightlife Fresh fits, bold moves Game on, style up Party looks, all night Style Qs, real quick answers Fresh tips for your everyday look. Sneakers for night\u2014yes or no? "
+          "text": "Trends made for your lifestyle Fresh drops for every mood\u2014tennis whites, beach brights, party fits. Your next look starts here. Game on! Sporty vibes meet street style. Sneakers, sets, and all the cool you need. Chill never looked this good. Easy layers, bold extras\u2014fun, effortless, always you. Ready to shine? Statement looks and playful details for nights you\u2019ll never forget. Remix your style. Layer, clash, repeat\u2014make every outfit your own. Hot new labels. Discover the brands everyone\u2019s buzzing about\u2014before they go big. Real people, real style. See how trendsetters own the scene, one outfit at a time. Season\u2019s essentials. Stay ahead with our top picks\u2014what\u2019s trending right now. Browse Join Hot right now Style that never sleeps Get inspired by real looks, real stories, and the freshest trends in youth fashion. See how today\u2019s style stars own every moment. Browse "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Chill 3"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Chill3"
+        },
+        {
+          "change_type": "equal",
+          "text": " min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Sunny 4"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Sunny4"
+        },
+        {
+          "change_type": "equal",
+          "text": " min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Night 2"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Night2"
+        },
+        {
+          "change_type": "equal",
+          "text": " min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Active 5"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Active5"
+        },
+        {
+          "change_type": "equal",
+          "text": " min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read Trends Sporty Nightlife Fresh fits, bold moves Game on, style up Party looks, all night Style Qs, real quick answers Fresh tips for your everyday look. Sneakers for night\u2014yes or no? "
         },
         {
           "change_type": "insertion",
@@ -1808,7 +1844,7 @@
           "text": "Join the style revolution Get trend alerts, style inspo, and exclusive tips. Fresh looks, fun vibes\u2014straight to your inbox. Don\u2019t miss out! Sign up Connect"
         }
       ],
-      "similarity_score": 0.9424486484403526
+      "similarity_score": 0.9374134914896697
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
@@ -1853,7 +1889,15 @@
         },
         {
           "change_type": "equal",
-          "text": "Taylor Brooks Casual Vibes Sporty Looks Party Ready Trends made for living bold From tennis courts to city streets, we\u2019re spotting the freshest looks on the coolest crowds. Dive into the latest styles that make every day feel like a runway. Whether you\u2019re beach-bound or headed out for a night of fun, these outfits are all about comfort, confidence, and a splash of attitude. We\u2019re here for the bold and the playful. Get inspired by real stories and real people rocking new brands in their element. Your next favorite look is just a scroll away\u2014let\u2019s make every moment a style moment. Fresh fits, bold stories All Trends Casual Sporty Tennis whites, city nights Alex serves up style on the court "
+          "text": "Taylor Brooks Casual Vibes Sporty Looks Party Ready Trends made for living bold From tennis courts to city streets, we\u2019re spotting the freshest looks on the coolest crowds. Dive into the latest styles that make every day feel like a runway. Whether you\u2019re beach-bound or headed out for a night of fun, these outfits are all about comfort, confidence, and a splash of attitude. We\u2019re here for the bold and the playful. Get inspired by real stories and real people rocking new brands in their element. Your next favorite look is just a scroll away\u2014let\u2019s make every moment a style moment. Fresh fits, bold stories All Trends Casual Sporty Tennis whites, city nights "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Beach days, bold ways Party looks that pop Street style, all smiles Chill vibes, fresh kicks "
+        },
+        {
+          "change_type": "equal",
+          "text": "Alex serves up style on the court "
         },
         {
           "change_type": "deletion",
@@ -1861,15 +1905,15 @@
         },
         {
           "change_type": "equal",
-          "text": "Taylor rocks neon at sunset "
+          "text": "Taylor rocks neon at sunset"
         },
         {
           "change_type": "deletion",
-          "text": "Party looks that pop "
+          "text": " Party looks that pop"
         },
         {
           "change_type": "equal",
-          "text": "Morgan lights up the dance floor "
+          "text": " Morgan lights up the dance floor "
         },
         {
           "change_type": "deletion",
@@ -1885,7 +1929,23 @@
         },
         {
           "change_type": "equal",
-          "text": "Riley\u2019s sneaker game is strong Layer up, stand out Casey mixes prints for fall "
+          "text": "Riley\u2019s sneaker game is strong "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Beach days, bold waysTaylor rocks neon at sunsetBeach days, bold waysTaylor rocks neon at sunsetParty looks that popMorgan lights up the dance floorParty looks that popMorgan lights up the dance floor "
+        },
+        {
+          "change_type": "equal",
+          "text": "Layer up, stand out "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Denim dreams Sporty chic, always unique Retro remix Color splash "
+        },
+        {
+          "change_type": "equal",
+          "text": "Casey mixes prints for fall "
         },
         {
           "change_type": "deletion",
@@ -1909,15 +1969,31 @@
         },
         {
           "change_type": "equal",
-          "text": "Drew brings back the classics"
+          "text": "Drew brings back the classics "
         },
         {
           "change_type": "deletion",
-          "text": " Color splash"
+          "text": "Color splash "
         },
         {
           "change_type": "equal",
-          "text": " Quinn\u2019s outfit is pure fun Night out, lights on Harper\u2019s sequins steal the show "
+          "text": "Quinn\u2019s outfit is pure fun "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Denim dreamsSkylar\u2019s go-to for every dayDenim dreamsSkylar\u2019s go-to for every daySporty chic, always uniquePeyton\u2019s look is all about comfortSporty chic, always uniquePeyton\u2019s look is all about comfort "
+        },
+        {
+          "change_type": "equal",
+          "text": "Night out, lights on "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Easy layers, big energy Fresh brands, fearless moves Weekend wanderer Bold basics "
+        },
+        {
+          "change_type": "equal",
+          "text": "Harper\u2019s sequins steal the show "
         },
         {
           "change_type": "deletion",
@@ -1949,19 +2025,179 @@
         },
         {
           "change_type": "equal",
-          "text": "Dakota keeps it simple, sharp Poolside cool Emerson\u2019s shades are on point "
+          "text": "Dakota keeps it simple, sharp "
         },
         {
           "change_type": "deletion",
-          "text": "Game, set, match "
+          "text": "Poolside"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Easy"
         },
         {
           "change_type": "equal",
-          "text": "Finley\u2019s tennis look wins "
+          "text": " "
         },
         {
           "change_type": "deletion",
-          "text": "Glow up after dark "
+          "text": "cool"
+        },
+        {
+          "change_type": "insertion",
+          "text": "layers, big"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Emerson"
+        },
+        {
+          "change_type": "insertion",
+          "text": "energyJamie"
+        },
+        {
+          "change_type": "equal",
+          "text": "\u2019s "
+        },
+        {
+          "change_type": "deletion",
+          "text": "shades"
+        },
+        {
+          "change_type": "insertion",
+          "text": "look"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "are"
+        },
+        {
+          "change_type": "insertion",
+          "text": "is"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "effortless"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "point"
+        },
+        {
+          "change_type": "insertion",
+          "text": "coolEasy"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Game"
+        },
+        {
+          "change_type": "insertion",
+          "text": "layers"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "set"
+        },
+        {
+          "change_type": "insertion",
+          "text": "big energyJamie\u2019s look is effortless coolFresh brands"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "match"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fearless"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Finley"
+        },
+        {
+          "change_type": "insertion",
+          "text": "movesAvery"
+        },
+        {
+          "change_type": "equal",
+          "text": "\u2019s "
+        },
+        {
+          "change_type": "deletion",
+          "text": "tennis"
+        },
+        {
+          "change_type": "insertion",
+          "text": "style is"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "look"
+        },
+        {
+          "change_type": "insertion",
+          "text": "all"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "wins"
+        },
+        {
+          "change_type": "insertion",
+          "text": "actionFresh brands, fearless movesAvery\u2019s style is all action Poolside cool Game, set, match"
+        },
+        {
+          "change_type": "equal",
+          "text": " Glow up after dark "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Fresh faces, fresh fits Everyday icons Emerson\u2019s shades are on point Finley\u2019s tennis look wins "
         },
         {
           "change_type": "equal",
@@ -1973,18 +2209,26 @@
         },
         {
           "change_type": "equal",
-          "text": "Rowan\u2019s look is all smiles"
+          "text": "Rowan\u2019s look is all smiles "
         },
         {
           "change_type": "deletion",
-          "text": " Everyday icons"
+          "text": "Everyday icons "
         },
         {
           "change_type": "equal",
-          "text": " Blake\u2019s style is always trending Style in every snapshot Fresh looks, bold moves, real moments. Tennis court cool Game, set, match\u2014serve up sporty style with every swing. Effortless, energetic, and always on trend. Beach day vibes Sun, sand, and statement shades. Catch the latest swimwear and carefree energy in every shot. Night out energy Lights, music, and unforgettable outfits. Party looks that turn heads and keep the fun going all night. Style that speaks volumes \u201cI love how every trend here feels fresh, fun, and totally wearable. From tennis courts to late-night parties, these looks always keep me inspired and ready to try something new.\u201d Taylor Brooks Fashion Enthusiast Trends that turn heads Fresh looks, bold moves, good vibes. Join in"
+          "text": "Blake\u2019s style is always trending"
+        },
+        {
+          "change_type": "insertion",
+          "text": " Game, set, matchFinley\u2019s tennis look winsGame, set, matchFinley\u2019s tennis look winsGlow up after darkSage\u2019s party fit shines brightGlow up after darkSage\u2019s party fit shines bright"
+        },
+        {
+          "change_type": "equal",
+          "text": " Style in every snapshot Fresh looks, bold moves, real moments. Tennis court cool Game, set, match\u2014serve up sporty style with every swing. Effortless, energetic, and always on trend. Beach day vibes Sun, sand, and statement shades. Catch the latest swimwear and carefree energy in every shot. Night out energy Lights, music, and unforgettable outfits. Party looks that turn heads and keep the fun going all night. Style that speaks volumes \u201cI love how every trend here feels fresh, fun, and totally wearable. From tennis courts to late-night parties, these looks always keep me inspired and ready to try something new.\u201d Taylor Brooks Fashion Enthusiast Trends that turn heads Fresh looks, bold moves, good vibes. Join in"
         }
       ],
-      "similarity_score": 0.9603133470546896
+      "similarity_score": 0.9517700464048535
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
@@ -2039,55 +2283,7 @@
         },
         {
           "change_type": "equal",
-          "text": "Fresh looks, bold moves Latest Articles Casual "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Cool May"
-        },
-        {
-          "change_type": "insertion",
-          "text": "CoolMay"
-        },
-        {
-          "change_type": "equal",
-          "text": " 12 Tennis style, redefined Beach "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Vibes May"
-        },
-        {
-          "change_type": "insertion",
-          "text": "VibesMay"
-        },
-        {
-          "change_type": "equal",
-          "text": " 10 Sunkissed and effortless Night "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Out May"
-        },
-        {
-          "change_type": "insertion",
-          "text": "OutMay"
-        },
-        {
-          "change_type": "equal",
-          "text": " 8 Party fits that pop Sport "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Mode May"
-        },
-        {
-          "change_type": "insertion",
-          "text": "ModeMay"
-        },
-        {
-          "change_type": "equal",
-          "text": " 5 Game on, style up Style in every snapshot Fresh looks, bold vibes, endless inspo"
+          "text": "Fresh looks, bold moves Latest Articles Casual Cool May 12 Tennis style, redefined Beach Vibes May 10 Sunkissed and effortless Night Out May 8 Party fits that pop Sport Mode May 5 Game on, style up Style in every snapshot Fresh looks, bold vibes, endless inspo"
         },
         {
           "change_type": "insertion",
@@ -2106,7 +2302,7 @@
           "text": "Fresh fits, bold moves, all day From tennis courts to neon nights, discover the latest trends, style inspo, and stories from the coolest scenes. Dive into a world where fashion meets fun\u2014your next look starts here. Read more"
         }
       ],
-      "similarity_score": 0.5317789078439032
+      "similarity_score": 0.6526857140265531
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
@@ -2147,19 +2343,7 @@
         },
         {
           "change_type": "equal",
-          "text": "Trending now Fresh fits, bold moves Young style, real stories Follow on Facebook Connect on LinkedIn Read on Medium Chat on X Dive into the latest looks, street style inspo, and stories from the coolest scenes. From tennis courts to neon-lit nights, see how new brands are making waves in everyday adventures. Get ready for a style ride that\u2019s anything but ordinary. Fresh finds & style inspo Trends for every vibe "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Casual May"
-        },
-        {
-          "change_type": "insertion",
-          "text": "CasualMay"
-        },
-        {
-          "change_type": "equal",
-          "text": " 12 Tennis looks that serve"
+          "text": "Trending now Fresh fits, bold moves Young style, real stories Follow on Facebook Connect on LinkedIn Read on Medium Chat on X Dive into the latest looks, street style inspo, and stories from the coolest scenes. From tennis courts to neon-lit nights, see how new brands are making waves in everyday adventures. Get ready for a style ride that\u2019s anything but ordinary. Fresh finds & style inspo Trends for every vibe Casual May 12 Tennis looks that serve"
         },
         {
           "change_type": "deletion",
@@ -2170,7 +2354,7 @@
           "text": " Style in every snapshot Trendy looks, real moments Fresh fits, bold moves Read more"
         }
       ],
-      "similarity_score": 0.810053633488206
+      "similarity_score": 0.857784763165846
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
@@ -2181,44 +2365,1684 @@
         },
         {
           "change_type": "equal",
-          "text": "Trend alert Fresh fits, bold moves Dive into the latest street style, sporty looks, and party-ready outfits. See how young trendsetters rock new brands from courtside to the dance floor. Taylor Brooks June 7, 2024 \u2022 4 min read Read more Fresh finds & style inspo Trends for every vibe Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh"
-        },
-        {
-          "change_type": "insertion",
-          "text": ". Unmatched speed Helix is the fastest way to publish, create, and serve websites Content at scale Helix allows you to publish more content in shorter time with smaller teams Uncertainty eliminated Preview content at 100% fidelity, get predictable content velocity, and shorten project durations Widen the talent pool Authors on Helix use Microsoft Word, Excel or Google Docs and need no training The low-code way to developer productivity Say goodbye to complex APIs spanning multiple languages. Anyone with a little bit of HTML, CSS, and JS can build a site on Project Helix. Headless is here Go directly from Microsoft Excel or Google Sheets to the web in mere seconds. Sanitize and collect form data at extreme scale with Project Helix Forms"
-        },
-        {
-          "change_type": "equal",
-          "text": "."
+          "text": "Trend alert Fresh fits, bold moves Dive into the latest street style, sporty looks, and party-ready outfits. See how young trendsetters rock new brands from courtside to the dance floor. Taylor Brooks June 7, 2024 \u2022 4 min read Read more Fresh finds & style inspo Trends for every vibe Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh."
         }
       ],
-      "similarity_score": 0.8148077000447806
+      "similarity_score": 0.947536373989405
     },
     {
       "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
       "differences": [
         {
+          "change_type": "deletion",
+          "text": "Home Trendy Looks "
+        },
+        {
+          "change_type": "equal",
+          "text": "Fresh "
+        },
+        {
+          "change_type": "deletion",
+          "text": "fits"
+        },
+        {
           "change_type": "insertion",
-          "text": "Fresh looks, bold moves, all you Dive into the latest street styles, sporty vibes, and party-ready fits. See how real trendsetters wear it\u2014on the court, at the beach, and everywhere in between. Read nowSee trends "
+          "text": "looks"
         },
         {
           "change_type": "equal",
-          "text": "Home Trendy Looks Fresh fits, bold moves Taylor Kim June 7, 2024 \u2022 4 min read Share on Facebook Share on LinkedIn Share on Medium Share on X Fresh looks, daily inspo Trends, stories, style\u2014on repeat Street Style Tennis whites, city nights Alex serves up sporty chic with a twist\u2014effortless layers, bold sneakers, and a racket in hand. Game, set, match your vibe. "
+          "text": ", bold moves"
         },
         {
           "change_type": "deletion",
-          "text": "Beach Day Sunkissed and carefree Taylor rocks breezy linen and neon shades, catching waves and good times. Sand between toes, style on point. Night Out Glow up after dark Jordan lights up the party in metallics and mesh. Dance floor ready, confidence on full display. Casual Cool Denim days, endless ways Morgan keeps it classic with vintage jeans and a graphic tee. Effortless, timeless, always in. Sporty Vibes Run, jump, repeat Casey mixes track pants with a cropped hoodie\u2014athletic energy meets street swagger. Ready for anything. Festival Fun Color, music, movement Riley\u2019s look pops with tie-dye and chunky boots. Dancing from day to night, style never stops. Coffee Break Chill, sip, snap Jamie pairs oversized knits with statement sunnies. Cozy corners, cool conversations, always camera-ready. Weekend Escape Adventure in every step Skylar explores in cargo shorts and bucket hats. Urban hikes, spontaneous plans, fresh fits all day. "
+          "text": " Taylor Kim June 7"
         },
         {
           "change_type": "equal",
-          "text": "Style in every snapshot From courtside cool to beachside vibes, see how young trendsetters rock fresh looks wherever the day takes them. Get inspired by real moments, real style, and real fun\u2014fashion that moves with you. View more"
+          "text": ", "
         },
         {
           "change_type": "deletion",
-          "text": " Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
+          "text": "2024 \u2022 4"
+        },
+        {
+          "change_type": "insertion",
+          "text": "all"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "min"
+        },
+        {
+          "change_type": "insertion",
+          "text": "you"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "read"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Dive"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Share"
+        },
+        {
+          "change_type": "insertion",
+          "text": "into"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "the"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Facebook"
+        },
+        {
+          "change_type": "insertion",
+          "text": "latest"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Share"
+        },
+        {
+          "change_type": "insertion",
+          "text": "street"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "styles, sporty"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "LinkedIn"
+        },
+        {
+          "change_type": "insertion",
+          "text": "vibes, and"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Share"
+        },
+        {
+          "change_type": "insertion",
+          "text": "party-ready"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fits. See"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Medium"
+        },
+        {
+          "change_type": "insertion",
+          "text": "how"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Share"
+        },
+        {
+          "change_type": "insertion",
+          "text": "real"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "trendsetters"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "X"
+        },
+        {
+          "change_type": "insertion",
+          "text": "wear"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Fresh looks, daily inspo Trends, stories, style"
+        },
+        {
+          "change_type": "insertion",
+          "text": "it"
+        },
+        {
+          "change_type": "equal",
+          "text": "\u2014on "
+        },
+        {
+          "change_type": "deletion",
+          "text": "repeat"
+        },
+        {
+          "change_type": "insertion",
+          "text": "the"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Street Style Tennis whites"
+        },
+        {
+          "change_type": "insertion",
+          "text": "court"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "city"
+        },
+        {
+          "change_type": "insertion",
+          "text": "at"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "nights"
+        },
+        {
+          "change_type": "insertion",
+          "text": "the"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Alex serves up sporty chic with a twist\u2014effortless layers, bold sneakers"
+        },
+        {
+          "change_type": "insertion",
+          "text": "beach"
+        },
+        {
+          "change_type": "equal",
+          "text": ", and "
+        },
+        {
+          "change_type": "deletion",
+          "text": "a racket"
+        },
+        {
+          "change_type": "insertion",
+          "text": "everywhere"
+        },
+        {
+          "change_type": "equal",
+          "text": " in "
+        },
+        {
+          "change_type": "deletion",
+          "text": "hand. Game, set, match your vibe"
+        },
+        {
+          "change_type": "insertion",
+          "text": "between"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Beach"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Read"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Day"
+        },
+        {
+          "change_type": "insertion",
+          "text": "nowSee"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Sunkissed"
+        },
+        {
+          "change_type": "insertion",
+          "text": "trends"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "and carefree Taylor rocks"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Trends"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "breezy"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Casual"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "linen and"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Streetwear"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "neon"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Everyday"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "shades"
+        },
+        {
+          "change_type": "insertion",
+          "text": "looks"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "catching"
+        },
+        {
+          "change_type": "insertion",
+          "text": "always"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "waves and good times"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fresh"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Sand"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Sporty"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "between"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Move"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "toes"
+        },
+        {
+          "change_type": "insertion",
+          "text": "easy"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "style on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "look"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "point"
+        },
+        {
+          "change_type": "insertion",
+          "text": "sharp"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Night"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Party"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Out"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Turn"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Glow up"
+        },
+        {
+          "change_type": "insertion",
+          "text": "heads"
+        },
+        {
+          "change_type": "equal",
+          "text": " after dark"
+        },
+        {
+          "change_type": "insertion",
+          "text": ". Now"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Jordan"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Trending"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "lights"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Tennis Serve"
+        },
+        {
+          "change_type": "equal",
+          "text": " up "
+        },
+        {
+          "change_type": "deletion",
+          "text": "the"
+        },
+        {
+          "change_type": "insertion",
+          "text": "cool"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "party"
+        },
+        {
+          "change_type": "insertion",
+          "text": "style. Beach"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "in"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Chill"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "metallics"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fits, sun"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "and"
+        },
+        {
+          "change_type": "insertion",
+          "text": "vibes. Festival"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "mesh"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Dance, play, repeat"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Dance"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Inspo"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "floor"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Style"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "ready, confidence"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Files"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "on"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Real"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "full"
+        },
+        {
+          "change_type": "insertion",
+          "text": "looks, real"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "display"
+        },
+        {
+          "change_type": "insertion",
+          "text": "people"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Casual"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Blog"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Cool"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Watch"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Denim"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Fresh"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "days"
+        },
+        {
+          "change_type": "insertion",
+          "text": "brands"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "endless"
+        },
+        {
+          "change_type": "insertion",
+          "text": "hot"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "ways"
+        },
+        {
+          "change_type": "insertion",
+          "text": "takes. How"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Morgan"
+        },
+        {
+          "change_type": "insertion",
+          "text": "To"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "keeps"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Trend"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "it"
+        },
+        {
+          "change_type": "insertion",
+          "text": "tips, made"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "classic"
+        },
+        {
+          "change_type": "insertion",
+          "text": "easy. Fresh"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "with"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fits, bold"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "vintage"
+        },
+        {
+          "change_type": "insertion",
+          "text": "moves"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "jeans"
+        },
+        {
+          "change_type": "insertion",
+          "text": "See"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "and"
+        },
+        {
+          "change_type": "insertion",
+          "text": "how"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "a"
+        },
+        {
+          "change_type": "insertion",
+          "text": "trendsetters"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "graphic"
+        },
+        {
+          "change_type": "insertion",
+          "text": "own"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "tee. Effortless, timeless, always"
+        },
+        {
+          "change_type": "insertion",
+          "text": "every"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "in"
+        },
+        {
+          "change_type": "insertion",
+          "text": "moment"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Sporty"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Discover"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Vibes"
+        },
+        {
+          "change_type": "insertion",
+          "text": "About"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Run, jump, repeat"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Blog"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Casey"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Support"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "mixes"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Contact"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "track"
+        },
+        {
+          "change_type": "insertion",
+          "text": "FAQ"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "pants"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Subscribe"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "with"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Home"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "a"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Trendy"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "cropped"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Looks"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "hoodie\u2014athletic"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Fresh"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "energy"
+        },
+        {
+          "change_type": "insertion",
+          "text": "fits, bold"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "meets"
+        },
+        {
+          "change_type": "insertion",
+          "text": "moves"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "street"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Taylor"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "swagger. Ready"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Kim"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "for"
+        },
+        {
+          "change_type": "insertion",
+          "text": "June"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "anything. Festival Fun Color"
+        },
+        {
+          "change_type": "insertion",
+          "text": "7"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "music, movement"
+        },
+        {
+          "change_type": "insertion",
+          "text": "2024 \u2022 4"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Riley\u2019s"
+        },
+        {
+          "change_type": "insertion",
+          "text": "min"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "look"
+        },
+        {
+          "change_type": "insertion",
+          "text": "read"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "pops"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Share"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "with"
+        },
+        {
+          "change_type": "insertion",
+          "text": "on"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "tie-dye"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Facebook"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "and"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Share"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "chunky"
+        },
+        {
+          "change_type": "insertion",
+          "text": "on"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "boots. Dancing"
+        },
+        {
+          "change_type": "insertion",
+          "text": "LinkedIn"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "from"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Share"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "day"
+        },
+        {
+          "change_type": "insertion",
+          "text": "on"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "to"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Medium"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "night, style"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Share"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "never"
+        },
+        {
+          "change_type": "insertion",
+          "text": "on"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "stops. Coffee"
+        },
+        {
+          "change_type": "insertion",
+          "text": "X"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Break"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Fresh"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Chill, sip"
+        },
+        {
+          "change_type": "insertion",
+          "text": "looks"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "snap"
+        },
+        {
+          "change_type": "insertion",
+          "text": "daily"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Jamie"
+        },
+        {
+          "change_type": "insertion",
+          "text": "inspo"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "pairs"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Trends, stories, style\u2014on"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "oversized"
+        },
+        {
+          "change_type": "insertion",
+          "text": "repeat"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "knits"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Street"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "with"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Style"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "statement sunnies. Cozy"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Tennis"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "corners"
+        },
+        {
+          "change_type": "insertion",
+          "text": "whites"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "cool"
+        },
+        {
+          "change_type": "insertion",
+          "text": "city"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "conversations, always"
+        },
+        {
+          "change_type": "insertion",
+          "text": "nights"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "camera-ready. Weekend"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Alex"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Escape"
+        },
+        {
+          "change_type": "insertion",
+          "text": "serves"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Adventure"
+        },
+        {
+          "change_type": "insertion",
+          "text": "up"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "in"
+        },
+        {
+          "change_type": "insertion",
+          "text": "sporty"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "every"
+        },
+        {
+          "change_type": "insertion",
+          "text": "chic"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "step"
+        },
+        {
+          "change_type": "insertion",
+          "text": "with"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Skylar"
+        },
+        {
+          "change_type": "insertion",
+          "text": "a"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "explores"
+        },
+        {
+          "change_type": "insertion",
+          "text": "twist\u2014effortless"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "in"
+        },
+        {
+          "change_type": "insertion",
+          "text": "layers, bold"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "cargo"
+        },
+        {
+          "change_type": "insertion",
+          "text": "sneakers, and"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "shorts"
+        },
+        {
+          "change_type": "insertion",
+          "text": "a"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "and"
+        },
+        {
+          "change_type": "insertion",
+          "text": "racket"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "bucket"
+        },
+        {
+          "change_type": "insertion",
+          "text": "in"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "hats"
+        },
+        {
+          "change_type": "insertion",
+          "text": "hand"
+        },
+        {
+          "change_type": "equal",
+          "text": ". "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Urban hikes"
+        },
+        {
+          "change_type": "insertion",
+          "text": "Game"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "spontaneous plans"
+        },
+        {
+          "change_type": "insertion",
+          "text": "set"
+        },
+        {
+          "change_type": "equal",
+          "text": ", "
+        },
+        {
+          "change_type": "deletion",
+          "text": "fresh"
+        },
+        {
+          "change_type": "insertion",
+          "text": "match"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "fits"
+        },
+        {
+          "change_type": "insertion",
+          "text": "your"
+        },
+        {
+          "change_type": "equal",
+          "text": " "
+        },
+        {
+          "change_type": "deletion",
+          "text": "all day"
+        },
+        {
+          "change_type": "insertion",
+          "text": "vibe"
+        },
+        {
+          "change_type": "equal",
+          "text": ". Style in every snapshot From courtside cool to beachside vibes, see how young trendsetters rock fresh looks wherever the day takes them. Get inspired by real moments, real style, and real fun\u2014fashion that moves with you. View more Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
         }
       ],
-      "similarity_score": 0.7337614159548655
+      "similarity_score": 0.7044223154402836
     }
   ]
 }
