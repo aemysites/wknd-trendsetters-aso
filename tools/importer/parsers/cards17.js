@@ -1,35 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the cards
+  // Table header row as required
+  const headerRow = ['Cards (cards17)'];
+
+  // Defensive: find the grid container
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Get all immediate children of the grid (each card)
-  const cardDivs = Array.from(grid.children);
+  // Get all direct child divs of the grid (each is a card)
+  const cardDivs = Array.from(grid.querySelectorAll(':scope > div'));
 
-  // Build the table rows
-  const rows = [];
-  // Header row as specified
-  rows.push(['Cards (cards17)']);
+  // For each card, grab the image and ensure two columns (image, text)
+  const rows = cardDivs.map(cardDiv => {
+    const img = cardDiv.querySelector('img');
+    if (!img) return null;
+    // The second cell must be present and must contain a non-empty string (even if just a space)
+    return [img, ' '];
+  }).filter(Boolean);
 
-  cardDivs.forEach((cardDiv) => {
-    // Find the image element
-    const imgWrap = cardDiv.querySelector(':scope > div');
-    let img = null;
-    if (imgWrap) {
-      img = imgWrap.querySelector('img');
-    }
-    // Defensive: If no image, skip this card
-    if (!img) return;
+  // Compose the table: header row, then image+space text rows
+  const tableCells = [headerRow, ...rows];
+  const table = WebImporter.DOMUtils.createTable(tableCells, document);
 
-    // There is no text content for these cards in the source HTML, so omit the second cell entirely
-    // Only add the image in its own cell
-    rows.push([img, '']);
-  });
-
-  // Create the table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace the original element
+  // Replace the original element with the table
   element.replaceWith(table);
 }

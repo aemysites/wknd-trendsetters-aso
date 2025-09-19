@@ -1,53 +1,81 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Compose text cell for a card
-  function buildTextCell(card) {
-    const frag = document.createElement('div');
+  // Helper to extract image from a card anchor
+  function getCardImage(cardAnchor) {
+    return cardAnchor.querySelector('img');
+  }
+  // Helper to extract text content from a card anchor
+  function getCardText(cardAnchor) {
+    const textParts = [];
     // Tag (optional)
-    const tag = card.querySelector('.tag');
-    if (tag) frag.appendChild(tag.cloneNode(true));
-    // Title (h2, h3, or h4)
-    const title = card.querySelector('h2, h3, h4');
-    if (title) frag.appendChild(title.cloneNode(true));
-    // Description (first p)
-    const desc = card.querySelector('p');
-    if (desc) frag.appendChild(desc.cloneNode(true));
-    return frag;
+    const tagGroup = cardAnchor.querySelector('.tag-group');
+    if (tagGroup) {
+      textParts.push(tagGroup);
+    }
+    // Heading (h3 or h4)
+    const heading = cardAnchor.querySelector('h3, h4');
+    if (heading) {
+      textParts.push(heading);
+    }
+    // Description (p)
+    const desc = cardAnchor.querySelector('p');
+    if (desc) {
+      textParts.push(desc);
+    }
+    return textParts;
   }
+  // --- Main parsing ---
+  const headerRow = ['Cards (cards2)'];
+  const rows = [headerRow];
 
-  // Find all cards in visual order
-  const cards = [];
-  // 1. Main card (large left)
-  const mainCard = element.querySelector('.w-layout-grid > a.utility-link-content-block');
-  if (mainCard) cards.push(mainCard);
-  // 2. Two image cards (top right)
-  const flexRows = element.querySelectorAll('.w-layout-grid > .flex-horizontal');
-  if (flexRows[0]) {
-    flexRows[0].querySelectorAll('a.utility-link-content-block').forEach(a => cards.push(a));
-  }
-  // 3. Text-only cards (bottom right)
-  if (flexRows[1]) {
-    flexRows[1].querySelectorAll('a.utility-link-content-block').forEach(a => cards.push(a));
-  }
+  // Get the grid-layout container
+  const grid = element.querySelector('.grid-layout');
+  if (!grid) return;
 
-  // Build table rows
-  const rows = [];
-  rows.push(['Cards (cards2)']);
-  cards.forEach(card => {
-    // Image (if present)
-    let img = null;
-    // Only image cards have an image container
-    const imgDiv = card.querySelector('div[class*="utility-aspect"]');
-    if (imgDiv) img = imgDiv.querySelector('img');
-    // Text cell (tag, title, desc)
-    const textCell = buildTextCell(card);
+  // Get all top-level children of grid
+  const gridChildren = Array.from(grid.children);
+
+  // First card: large feature card (left side)
+  const firstCardAnchor = gridChildren.find((el) => el.tagName === 'A');
+  if (firstCardAnchor) {
+    const img = getCardImage(firstCardAnchor);
+    const textContent = getCardText(firstCardAnchor);
     rows.push([
-      img ? img : '',
-      textCell
+      img,
+      textContent,
     ]);
-  });
+  }
 
-  // Create and replace with table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Second column: vertical stack of cards with images (right side, top)
+  const verticalCardsContainer = gridChildren.find((el) => el.classList.contains('flex-horizontal'));
+  if (verticalCardsContainer) {
+    const cardAnchors = Array.from(verticalCardsContainer.querySelectorAll(':scope > a'));
+    cardAnchors.forEach((cardAnchor) => {
+      const img = getCardImage(cardAnchor);
+      const textContent = getCardText(cardAnchor);
+      rows.push([
+        img,
+        textContent,
+      ]);
+    });
+  }
+
+  // Third column: vertical stack of cards with only text (right side, bottom)
+  const textCardsContainer = gridChildren.find((el) => el.classList.contains('flex-horizontal') && el !== verticalCardsContainer);
+  if (textCardsContainer) {
+    // Each card is an anchor, separated by dividers
+    const cardAnchors = Array.from(textCardsContainer.querySelectorAll(':scope > a'));
+    cardAnchors.forEach((cardAnchor) => {
+      // No image for these cards
+      const textContent = getCardText(cardAnchor);
+      rows.push([
+        '',
+        textContent,
+      ]);
+    });
+  }
+
+  // Create and replace block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(block);
 }

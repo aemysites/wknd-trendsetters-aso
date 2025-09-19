@@ -1,39 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Get the main grid containing both columns
-  const grid = element.querySelector('.grid-layout');
+  // Find the main grid container (the one with two children: left content, right image)
+  const grid = element.querySelector('.w-layout-grid.grid-layout.container');
   if (!grid) return;
 
-  // Find the left column (text + buttons)
-  let leftCol = null;
-  let rightColImg = null;
+  // The left column: content
+  const leftCol = grid.children[0];
+  // The right column: image
+  // The image is outside the inner grid, as the second child of the outer grid
+  const rightCol = grid.nextElementSibling;
 
-  const gridChildren = Array.from(grid.children);
-  // Find the container grid (left column)
-  leftCol = gridChildren.find(child => child.classList.contains('container'));
-  // Find the image (right column)
-  rightColImg = gridChildren.find(child => child.tagName === 'IMG');
+  // Defensive: ensure we have both columns
+  if (!leftCol || !rightCol) return;
 
-  // Defensive: If either column is missing, abort
-  if (!leftCol || !rightColImg) return;
+  // Prepare left column content: heading, paragraph, buttons
+  const heading = leftCol.querySelector('h2');
+  const paragraph = leftCol.querySelector('.rich-text, .w-richtext');
+  const buttonGroup = leftCol.querySelector('.button-group');
 
-  // Left column: get all content (heading, paragraph, buttons)
-  // We use the entire leftCol div for resilience
-  // But we could also extract individual elements if needed
-  // For now, reference the whole leftCol
+  // Compose left cell content
+  const leftCellContent = [];
+  if (heading) leftCellContent.push(heading);
+  if (paragraph) leftCellContent.push(paragraph);
+  if (buttonGroup) leftCellContent.push(buttonGroup);
 
-  // Right column: reference the image element directly
+  // Compose right cell content (the image element)
+  const rightCellContent = rightCol;
 
-  // Build table rows
+  // Build the table rows
   const headerRow = ['Columns (columns11)'];
-  const contentRow = [leftCol, rightColImg];
+  const contentRow = [leftCellContent, rightCellContent];
 
   // Create the block table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    contentRow,
   ], document);
 
-  // Replace the original element
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

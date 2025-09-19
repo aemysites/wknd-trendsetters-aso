@@ -1,42 +1,35 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header as required
+  // Helper to get all immediate accordion items
+  const accordionItems = Array.from(element.querySelectorAll(':scope > .accordion'));
+
+  // Table header row
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  // Get all immediate children that are accordions
-  const accordionDivs = Array.from(element.querySelectorAll(':scope > div.accordion'));
-
-  accordionDivs.forEach((accordion) => {
-    // Title: find the .w-dropdown-toggle, then the .paragraph-lg inside it
-    const toggle = accordion.querySelector('.w-dropdown-toggle');
-    let title = '';
+  accordionItems.forEach((item) => {
+    // Title cell: find the toggle, then the text
+    const toggle = item.querySelector('.w-dropdown-toggle');
+    let titleEl = null;
     if (toggle) {
-      const titleDiv = toggle.querySelector('.paragraph-lg');
-      if (titleDiv) {
-        title = titleDiv;
-      } else {
-        // fallback: use toggle textContent
-        title = document.createElement('span');
-        title.textContent = toggle.textContent.trim();
-      }
+      // The actual title is inside .paragraph-lg, but fallback to toggle if needed
+      titleEl = toggle.querySelector('.paragraph-lg') || toggle;
     }
 
-    // Content: find nav.accordion-content .rich-text or the first .w-richtext inside
-    let content = '';
-    const nav = accordion.querySelector('nav.accordion-content');
-    if (nav) {
-      const richText = nav.querySelector('.w-richtext');
-      if (richText) {
-        content = richText;
-      } else {
-        // fallback: use nav innerHTML
-        content = document.createElement('div');
-        content.innerHTML = nav.innerHTML;
-      }
+    // Content cell: find the dropdown list, then the rich text
+    const contentNav = item.querySelector('.accordion-content');
+    let contentEl = null;
+    if (contentNav) {
+      // The actual content is inside .rich-text or direct child
+      const richText = contentNav.querySelector('.rich-text') || contentNav;
+      contentEl = richText;
     }
 
-    rows.push([title, content]);
+    // Defensive: fallback to empty div if missing
+    if (!titleEl) titleEl = document.createElement('div');
+    if (!contentEl) contentEl = document.createElement('div');
+
+    rows.push([titleEl, contentEl]);
   });
 
   const table = WebImporter.DOMUtils.createTable(rows, document);

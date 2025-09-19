@@ -1,63 +1,52 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get immediate children of a node
-  function getDirectChildrenByTag(parent, tag) {
-    return Array.from(parent.children).filter(child => child.tagName.toLowerCase() === tag);
-  }
-
-  // 1. Header row
+  // 1. Table header row
   const headerRow = ['Hero (hero39)'];
 
-  // 2. Background image row
-  // Find the prominent image (background)
-  let bgImg = null;
-  // The image is inside the first grid-layout div
+  // 2. Background image row (single cell)
+  // Find the image inside the first grid cell
+  let backgroundImg = null;
   const gridDivs = element.querySelectorAll(':scope > div > div');
-  for (const div of gridDivs) {
-    const img = div.querySelector('img');
-    if (img) {
-      bgImg = img;
-      break;
+  if (gridDivs.length > 0) {
+    // The first grid cell contains the background image
+    backgroundImg = gridDivs[0].querySelector('img');
+  }
+
+  // 3. Content row (single cell)
+  // Find the heading, subheading/paragraph, and CTA button
+  let contentCell = [];
+  if (gridDivs.length > 1) {
+    // The second grid cell contains the text and CTA
+    const contentGrid = gridDivs[1].querySelector('.w-layout-grid');
+    if (contentGrid) {
+      // Heading (h1)
+      const heading = contentGrid.querySelector('h1');
+      if (heading) contentCell.push(heading);
+      // Paragraph and button group
+      const flexVertical = contentGrid.querySelector('.flex-vertical');
+      if (flexVertical) {
+        // Paragraph (subheading)
+        const paragraph = flexVertical.querySelector('p');
+        if (paragraph) contentCell.push(paragraph);
+        // CTA (button)
+        const buttonGroup = flexVertical.querySelector('.button-group');
+        if (buttonGroup) {
+          // Only include the button(s) (usually <a>)
+          const cta = buttonGroup.querySelector('a');
+          if (cta) contentCell.push(cta);
+        }
+      }
     }
   }
-  // Defensive: If not found, try fallback
-  if (!bgImg) {
-    bgImg = element.querySelector('img');
-  }
-  const imageRow = [bgImg ? bgImg : ''];
 
-  // 3. Content row
-  // Find headline, paragraph, and button
-  let title = null, subheading = null, cta = null;
-  // The second grid-layout div contains the text and CTA
-  let contentDiv = null;
-  for (const div of gridDivs) {
-    if (div.querySelector('h1')) {
-      contentDiv = div;
-      break;
-    }
-  }
-  if (contentDiv) {
-    // Headline
-    title = contentDiv.querySelector('h1');
-    // Paragraph (subheading)
-    subheading = contentDiv.querySelector('p');
-    // CTA (button link)
-    cta = contentDiv.querySelector('a');
-  }
-  // Compose content cell
-  const contentCell = [];
-  if (title) contentCell.push(title);
-  if (subheading) contentCell.push(subheading);
-  if (cta) contentCell.push(cta);
-  const contentRow = [contentCell.length ? contentCell : ''];
-
-  // Compose table
-  const cells = [
+  // Compose the table rows
+  const rows = [
     headerRow,
-    imageRow,
-    contentRow
+    [backgroundImg ? backgroundImg : ''],
+    [contentCell.length ? contentCell : ''],
   ];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Create the table and replace the original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }
