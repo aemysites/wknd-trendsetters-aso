@@ -34,217 +34,6 @@
 }
 
 
-.cards.cards37 {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 56px 20px;
-  background: var(--background-color);
-  display: block;
-}
-
-.cards.cards37 > ul {
-  display: flex;
-  flex-direction: row;
-  gap: 56px;
-  align-items: flex-start;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cards.cards37 > ul > li {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 1 1 0;
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-image img {
-  width: 100%;
-  aspect-ratio: 4/5;
-  object-fit: cover;
-  border-radius: 28px;
-  box-shadow: 0 4px 32px rgb(30 34 31 / 13%);
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-body {
-  margin: 32px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-body h3 {
-  margin: 0 0 12px;
-  font-size: 2.0rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #18191B;
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-body p:not(:last-child) {
-  font-size: 1.05rem;
-  color: #18191B;
-  margin-bottom: 2px;
-  line-height: 1.6;
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-body p:last-child {
-  display: inline-block;
-  border: 2px solid #7E9E6C;
-  border-radius: 999px;
-  padding: 0.48em 2.1em;
-  color: #7E9E6C;
-  background: #fff;
-  font-weight: 600;
-  margin-top: 20px;
-  font-size: 1.10rem;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: 0 2px 12px rgb(30 34 31 / 7%);
-}
-
-.cards.cards37 > ul > li:first-child .cards-card-body p:last-child:hover {
-  background: #7E9E6C;
-  color: #fff;
-}
-
-.cards.cards37 > ul > li:last-child .cards-card-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(2, auto);
-  gap: 32px 24px;
-  margin: 0;
-  padding: 0;
-}
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(1) {
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(1) {
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(1) {
-  grid-column: 1;
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(2) {
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(2) {
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(2) {
-  grid-column: 2;
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(3) {
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(3) {
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(3) {
-  grid-column: 1;
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(4) {
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(4) {
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(4) {
-  grid-column: 2;
-  grid-row: 2;
-  margin-top: 260px;
-}
-  grid-row: 2;
-  margin-top: 220px;
-}
-  grid-row: 2;
-}
-  margin-top: 260px;
-}
-  grid-row: 2;
-  margin-top: 220px;
-}
-  grid-row: 2;
-}
-  margin-top: 260px;
-}
-  grid-row: 1;
-  margin-top: 220px;
-}
-  grid-row: 1;
-}
-  margin-top: 260px;
-}
-  grid-row: 1;
-  margin-top: 220px;
-}
-  grid-row: 1;
-}
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(1) { grid-column: 1; grid-row: 1; margin-top: 220px; }
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(1) { grid-column: 1; grid-row: 1; margin-top: 260px; }
-
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(2) { grid-column: 2; grid-row: 1; }
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(2) { grid-column: 2; grid-row: 1; margin-top: 220px; }
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(2) { grid-column: 2; grid-row: 1; margin-top: 260px; }
-
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(3) { grid-column: 1; grid-row: 2; }
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(3) { grid-column: 1; grid-row: 2; margin-top: 220px; }
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(3) { grid-column: 1; grid-row: 2; margin-top: 260px; }
-
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:nth-of-type(4) { grid-column: 2; grid-row: 2; }
-.cards.cards37 > ul > li:last-child .cards-card-body > h3:nth-of-type(4) { grid-column: 2; grid-row: 2; margin-top: 220px; }
-.cards.cards37 > ul > li:last-child .cards-card-body > p:nth-of-type(4) { grid-column: 2; grid-row: 2; margin-top: 260px; }
-
-.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 18px 18px 0 0;
-  box-shadow: 0 2px 16px rgb(30 34 31 / 8%);
-  display: block;
-}
-
-.cards.cards37 > ul > li:last-child .cards-card-body > h3,
-.cards.cards37 > ul > li:last-child .cards-card-body > p {
-  background: #fff;
-  box-shadow: 0 2px 16px rgb(30 34 31 / 8%);
-  border-radius: 0 0 18px 18px;
-  padding: 12px 18px 8px;
-  font-size: 1.05rem;
-  color: #18191B;
-}
-
-.cards.cards37 > ul > li:last-child .cards-card-body > h3 {
-  font-weight: 600;
-  font-size: 1.12rem;
-  text-transform: uppercase;
-  margin-bottom: 3px;
-  letter-spacing: 0.3px;
-  margin-top: 0;
-}
-
-.cards.cards37 > ul > li:last-child .cards-card-body > p {
-  margin-top: 0;
-}
-
-.cards.cards37 > ul > li:last-child {
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-@media (width <= 900px) {
-  .cards.cards37 {
-    padding: 32px 6px;
-    max-width: 100%;
-  }
-
-  .cards.cards37 > ul {
-    flex-direction: column;
-    gap: 32px;
-  }
-
-  .cards.cards37 > ul > li {
-    width: 100%;
-  }
-
-  .cards.cards37 > ul > li:last-child .cards-card-body {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, auto);
-    gap: 24px 0;
-  }
-}
-
-
 .cards.cards2 {
   box-sizing: border-box;
   background: #f7f8f5;
@@ -1329,8 +1118,6 @@
     gap: 6px 0;
   }
 }
-
-/* Card styles */
 .cards.cards33 > ul > li {
   display: flex;
   flex-direction: row;
@@ -1354,8 +1141,6 @@
     padding: 5px 2px;
   }
 }
-
-/* Image styles */
 .cards.cards33 .cards-card-image {
   flex: 0 0 46%;
   min-width: 120px;
@@ -1383,8 +1168,6 @@
     max-width: 100%;
   }
 }
-
-/* Body/text styles */
 .cards.cards33 .cards-card-body {
   flex: 1 1 54%;
   display: flex;
@@ -1396,8 +1179,6 @@
   padding: 0;
   position: relative;
 }
-
-/* Pill and min read: flex row for compact alignment */
 .cards.cards33 .cards-card-body .cards-label-row {
   display: flex;
   flex-direction: row;
@@ -1433,8 +1214,6 @@
   margin-bottom: 0;
   line-height: 1.15;
 }
-
-/* Headline and tight text spacing */
 .cards.cards33 .cards-card-body h3 {
   font-size: 1.10rem;
   font-weight: 700;
@@ -1467,8 +1246,6 @@
   line-height: 1.16;
   padding-top: 0;
 }
-
-/* Remove bottom margin from all inner elements for compact vertical stack */
 .cards.cards33 .cards-card-body > * {
   margin-bottom: 0;
 }
@@ -1478,8 +1255,6 @@
 .cards.cards33 .cards-card-body h3 + p {
   margin-bottom: 2px;
 }
-
-/* Make pill and min read appear as a flex row at the top of the card body */
 .cards.cards33 .cards-card-body {
   position: relative;
 }
@@ -1488,4 +1263,221 @@
   position: relative;
   top: 0;
   left: 0;
+}
+
+
+.cards.cards37 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.cards.cards37 > ul {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: flex-start;
+}
+
+/* --- LEFT COLUMN --- */
+.cards.cards37 > ul > li:first-child {
+  flex: 0 1 59%;
+  max-width: 59%;
+  display: flex;
+  flex-direction: column;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cards.cards37 > ul > li:first-child .cards-card-image {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.cards.cards37 > ul > li:first-child .cards-card-image img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(30,34,31,0.13);
+  display: block;
+}
+
+.cards.cards37 > ul > li:first-child .cards-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  margin: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.cards.cards37 > ul > li:first-child h3 {
+  font-size: 2.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #181818;
+  line-height: 1.1;
+  margin: 0 0 0.7rem 0;
+}
+
+.cards.cards37 > ul > li:first-child p:not(:last-child) {
+  font-size: 1.07rem;
+  color: #444444;
+  margin: 0 0 1.2rem 0;
+  line-height: 1.6;
+}
+
+.cards.cards37 > ul > li:first-child p:last-child {
+  display: inline-block;
+  padding: 0.48em 2.1em;
+  border: 1.5px solid #292929;
+  border-radius: 24px;
+  font-size: 1rem;
+  color: #181818;
+  background: #fff;
+  cursor: pointer;
+  margin: 0.5rem 0 0 0;
+  font-weight: 600;
+  box-shadow: 0 1px 6px rgba(30,34,31,0.07);
+  transition: background 0.2s, color 0.2s;
+}
+.cards.cards37 > ul > li:first-child p:last-child:hover {
+  background: #181818;
+  color: #fff;
+}
+
+/* --- RIGHT COLUMN --- */
+.cards.cards37 > ul > li:last-child {
+  flex: 0 1 41%;
+  max-width: 41%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Grid setup for scalability (1 column for now, 2 columns if more cards exist) */
+.cards.cards37 > ul > li:last-child .cards-card-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: min-content;
+  row-gap: 32px;
+  column-gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Unified Card Container for Right Cards --- */
+/* Stack: image -> h3 -> p as one card */
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image img {
+  width: 100%;
+  aspect-ratio: 1.15 / 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 18px 18px 0 0;
+  box-shadow: none;
+  margin: 0;
+}
+
+/* Visually group image, h3, and p as a single card "box" */
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image,
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3,
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3 + p {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Actual "card box": wrap h3 and p with background and shadow */
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3,
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3 + p {
+  background: #fff;
+}
+
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3 {
+  box-shadow: 0 2px 16px rgba(30,34,31,0.08);
+  border-radius: 0 0 18px 18px;
+  padding: 18px 22px 0 22px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #181818;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.12rem;
+}
+
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3 + p {
+  box-shadow: 0 2px 16px rgba(30,34,31,0.08);
+  border-radius: 0 0 18px 18px;
+  font-size: 0.97rem;
+  color: #666666;
+  line-height: 1.5;
+  padding: 2px 22px 18px 22px;
+  margin-bottom: 0;
+}
+
+/* Make the card visually unified for a single card: fix overlap between h3 and p backgrounds */
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image + h3 + p {
+  margin-top: -2px;
+}
+
+/* For future scalability, ensure each (image+h3+p) triplet is visually grouped */
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:only-child,
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:only-child + h3:only-child,
+.cards.cards37 > ul > li:last-child .cards-card-body > .cards-card-image:only-child + h3:only-child + p:only-child {
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(30,34,31,0.08);
+  margin: 0;
+}
+
+/* --- Alignment tweaks --- */
+.cards.cards37 > ul > li:last-child {
+  align-self: flex-start;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .cards.cards37 {
+    padding: 24px 4px;
+    max-width: 100%;
+  }
+  .cards.cards37 > ul {
+    flex-direction: column;
+    gap: 36px;
+  }
+  .cards.cards37 > ul > li {
+    max-width: 100%;
+  }
+  .cards.cards37 > ul > li:last-child .cards-card-body {
+    grid-template-columns: 1fr;
+    row-gap: 20px;
+  }
 }
