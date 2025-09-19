@@ -171,17 +171,16 @@
 .columns.columns4 > div {
   display: flex;
   flex-direction: row;
-  align-items: stretch; /* ensure both columns fill the block vertically */
+  align-items: stretch;
   justify-content: space-between;
   gap: 7vw;
   width: 100%;
   padding: 64px 0;
   box-sizing: border-box;
   background: #fff;
-  min-height: 270px; /* ensures a visually balanced block height */
+  min-height: 270px;
 }
 
-/* Vertically center content in both columns */
 .columns.columns4 > div > div {
   display: flex;
   flex-direction: column;
@@ -189,7 +188,6 @@
   height: 100%;
 }
 
-/* Left column: headline + text */
 .columns.columns4 > div > div:first-child {
   flex: 1 1 54vw;
   max-width: 54vw;
@@ -198,7 +196,6 @@
   padding-right: 2vw;
 }
 
-/* Headline style */
 .columns.columns4 > div > div:first-child h2 {
   margin: 0 0 12px;
   font-size: clamp(2.2rem, 5vw, 2.6rem);
@@ -208,7 +205,6 @@
   line-height: 1.07;
 }
 
-/* Supporting text style */
 .columns.columns4 > div > div:first-child p {
   font-size: 1rem;
   color: #494949;
@@ -217,7 +213,6 @@
   max-width: 45em;
 }
 
-/* Right column: buttons */
 .columns.columns4 > div > div:last-child {
   flex: 0 0 260px;
   max-width: 260px;
@@ -226,7 +221,6 @@
   padding: 0;
 }
 
-/* Stack buttons vertically, right aligned */
 .columns.columns4 > div > div:last-child p {
   display: flex;
   flex-direction: column;
@@ -237,7 +231,6 @@
   width: 100%;
 }
 
-/* Button base style */
 .columns.columns4 > div > div:last-child a {
   display: inline-block;
   width: 220px;
@@ -256,19 +249,16 @@
   transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-/* First (top) button: yellow glow outline */
 .columns.columns4 > div > div:last-child a:first-child {
   box-shadow: 0 0 0 2px #eaea7a;
 }
 
-/* Button hover effect */
 .columns.columns4 > div > div:last-child a:hover,
 .columns.columns4 > div > div:last-child a:focus {
   background: #fafafa;
   border-color: #191919;
 }
 
-/* Responsive: stack columns vertically and buttons full width on small screens */
 @media (width <= 900px) {
   .columns.columns4 > div {
     flex-direction: column;
@@ -293,5 +283,64 @@
 
   .columns.columns4 > div {
     padding: 20px 0;
+  }
+}
+
+
+.columns.columns5 {
+  background: #F7F7F3;
+  padding-top: 32px;
+  padding-bottom: 48px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+
+.columns.columns5 > div {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: stretch;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.columns.columns5 .columns-img-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+.columns.columns5 .columns-img-col picture,
+.columns.columns5 .columns-img-col img {
+  width: 100%;
+  height: auto;
+  display: block;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+/* Remove extra default spacing around the block at wider screen sizes */
+@media (width >= 900px) {
+  .columns.columns5 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Responsive: stack columns vertically on smaller screens */
+@media (width <= 900px) {
+  .columns.columns5 > div {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .columns.columns5 .columns-img-col {
+    width: 100%;
   }
 }
