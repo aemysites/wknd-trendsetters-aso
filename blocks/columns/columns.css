@@ -888,7 +888,6 @@
   display: contents;
 }
 
-/* LEFT COLUMN: headline and label */
 .columns.columns16 > div > div:first-child {
   display: flex;
   flex-direction: column;
@@ -905,7 +904,6 @@
   }
 }
 
-/* Label styling (first p before h1) */
 .columns.columns16 > div > div:first-child > p:first-child {
   text-transform: uppercase;
   color: #a1a1a1;
@@ -916,7 +914,6 @@
   line-height: 1.13;
 }
 
-/* Headline styling */
 .columns.columns16 > div > div:first-child h1 {
   font-size: clamp(2.3rem, 6vw, 5.2rem);
   font-weight: 700;
@@ -927,7 +924,6 @@
   word-wrap: break-word;
 }
 
-/* RIGHT COLUMN: supporting content, grouped tightly */
 .columns.columns16 > div > div:last-child {
   display: flex;
   flex-direction: column;
@@ -950,7 +946,6 @@
   }
 }
 
-/* Supporting description text */
 .columns.columns16 > div > div:last-child > p:first-child {
   color: #181818;
   font-size: 1.07rem;
@@ -960,7 +955,6 @@
   max-width: 46em;
 }
 
-/* Author and metadata styling */
 .columns.columns16 > div > div:last-child > p:not(:first-child, .button-container) {
   font-size: 0.97rem;
   color: #999;
@@ -969,14 +963,12 @@
   display: block;
 }
 
-/* Author name slightly bolder and darker */
 .columns.columns16 > div > div:last-child > p:nth-child(3) {
   color: #181818;
   font-weight: 500;
   margin-bottom: 0.07em;
 }
 
-/* Profile image styling */
 .columns.columns16 > div > div:last-child picture img {
   width: 32px;
   height: 32px;
@@ -987,7 +979,6 @@
   display: inline-block;
 }
 
-/* Button styles: outlined, rounded, tightly grouped */
 .columns.columns16 .button-container .button {
   display: inline-block;
   border: 2px solid #181818;
@@ -1010,7 +1001,6 @@
   border-color: #181818;
 }
 
-/* Consistent, tight spacing between right column elements */
 .columns.columns16 > div > div:last-child > p,
 .columns.columns16 > div > div:last-child > .button-container {
   margin-bottom: 0.04rem;
@@ -1020,7 +1010,6 @@
   margin-bottom: 0;
 }
 
-/* Remove extra margin-top from first heading and first paragraph for tight block */
 .columns.columns16 > div > div:first-child > h1,
 .columns.columns16 > div > div:first-child > p:first-child {
   margin-top: 0;
@@ -1036,3 +1025,188 @@
     padding: 1rem 0;
   }
 }
+
+
+.columns.columns18 {
+  background: var(--background-color);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 64px 32px;
+  box-sizing: border-box;
+}
+
+/* Layout: two columns side by side (top), image spans both columns (bottom) */
+.columns.columns18 > .columns-2-cols {
+  display: grid;
+  grid-template: "main contacts" auto "image image" auto / 1fr 320px;
+  gap: 40px 64px;
+  width: 100%;
+  align-items: start;
+}
+
+/* Responsive: stack columns, image full width on small screens */
+@media (width <= 900px) {
+  .columns.columns18 {
+    padding: 32px 8px;
+  }
+
+  .columns.columns18 > .columns-2-cols {
+    grid-template: "main" auto "contacts" auto "image" auto / 1fr;
+    gap: 32px 0;
+  }
+}
+
+/* Left column (main content), assigned to 'main' area */
+.columns.columns18 > .columns-2-cols > div:first-child {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+/* Right column (contacts), assigned to 'contacts' area */
+.columns.columns18 > .columns-2-cols > div:nth-child(2) {
+  grid-area: contacts;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+
+/* Each contact item: icon, label, and info horizontally grouped */
+.columns.columns18 > .columns-2-cols > div:nth-child(2) > div > ul {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 2px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Contact icon styling */
+.columns.columns18 ul picture img {
+  background: #f5f5f5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  object-fit: contain;
+  box-sizing: content-box;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 4%);
+}
+
+/* Contact label (h4): muted, uppercase, tight spacing */
+.columns.columns18 h4 {
+  text-transform: uppercase;
+  font-size: var(--body-font-size-xs);
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 2px;
+  margin-top: 0;
+  letter-spacing: 1px;
+}
+
+/* Contact details */
+.columns.columns18 ul li:not(:first-child) {
+  color: #222;
+  font-size: var(--body-font-size-s);
+  font-weight: 400;
+}
+
+/* Email link styling */
+.columns.columns18 a {
+  color: #222;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: var(--body-font-size-s);
+}
+
+/* Headings and intro styles */
+.columns.columns18 h2 {
+  color: #333;
+  font-size: var(--body-font-size-s);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.columns.columns18 h3 {
+  font-size: 2.2rem;
+  color: #222;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.columns.columns18 p {
+  color: #666;
+  font-size: var(--body-font-size-s);
+  font-weight: 400;
+  margin-bottom: 0;
+  margin-top: 0;
+  line-height: 1.6;
+}
+
+/* Image row: span both columns, centered, bottom margin tight */
+.columns.columns18 .columns-img-col {
+  grid-area: image;
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.columns.columns18 .columns-img-col picture img {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 24px;
+  display: block;
+  box-shadow: 0 2px 16px rgb(0 0 0 / 6%);
+}
+
+/* Responsive: image full width, columns stacked */
+@media (width <= 900px) {
+  .columns.columns18 .columns-img-col picture img {
+    border-radius: 18px;
+    max-width: 100%;
+  }
+}
+
+/* Hide 'null' or any stray last div/p in contacts column */
+.columns.columns18 > .columns-2-cols > div:nth-child(2) > div:last-child,
+.columns.columns18 > .columns-2-cols > div:nth-child(2) > p:last-child {
+  display: none;
+}
+
+/* Remove bullets from all lists */
+.columns.columns18 ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Ensure headings never overflow */
+.columns.columns18 h2, 
+.columns.columns18 h3 {
+  word-break: break-word; /* Updated to valid and modern alternative */
+}
+
+/* Ensure both columns align to start vertically */
+.columns.columns18 > .columns-2-cols > div {
+  align-self: flex-start;
+}
+
+/* Remove any extra margin below contacts column (prevents block imbalance) */
