@@ -1,81 +1,84 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract the text content for the text cell
-  function extractTextContent(cardContentDiv) {
+  // Helper to extract text content from a card
+  function extractCardText(cardContentDiv) {
     const fragments = [];
-    // Tag and read time row
+    // Tag and read time (optional)
     const tagRow = cardContentDiv.querySelector('.flex-horizontal');
     if (tagRow) {
       // Tag
       const tag = tagRow.querySelector('.tag');
       if (tag) {
-        fragments.push(tag.cloneNode(true));
+        fragments.push(tag.textContent.trim());
       }
       // Read time
       const readTime = tagRow.querySelector('.paragraph-sm');
       if (readTime) {
-        fragments.push(readTime.cloneNode(true));
+        fragments.push(readTime.textContent.trim());
       }
     }
     // Title (h3)
-    const heading = cardContentDiv.querySelector('h3');
-    if (heading) {
-      fragments.push(heading.cloneNode(true));
+    const title = cardContentDiv.querySelector('h3');
+    if (title) {
+      const h = document.createElement('h3');
+      h.textContent = title.textContent.trim();
+      fragments.push(h);
     }
     // Description (p)
     const desc = cardContentDiv.querySelector('p');
     if (desc) {
-      fragments.push(desc.cloneNode(true));
+      fragments.push(desc);
     }
     // CTA ("Read")
-    // Find the last div inside cardContentDiv (should be the CTA)
-    const divs = cardContentDiv.querySelectorAll(':scope > div');
-    if (divs.length > 1) {
-      const cta = divs[divs.length - 1];
-      if (cta && cta.textContent.trim().toLowerCase() === 'read') {
-        // Wrap CTA in a link if possible
-        const parentLink = cardContentDiv.closest('a');
-        if (parentLink && parentLink.href) {
-          const ctaLink = document.createElement('a');
-          ctaLink.href = parentLink.href;
-          ctaLink.textContent = cta.textContent;
-          fragments.push(ctaLink);
-        } else {
-          fragments.push(cta.cloneNode(true));
+    // Find a direct child div with text 'Read'
+    const ctaDivs = Array.from(cardContentDiv.querySelectorAll('div'));
+    const ctaDiv = ctaDivs.find(div => div.textContent.trim().toLowerCase() === 'read');
+    if (ctaDiv) {
+      // If the card is wrapped in a link, use its href
+      let linkHref = null;
+      let parent = cardContentDiv.parentElement;
+      while (parent && parent !== element) {
+        if (parent.tagName === 'A' && parent.href) {
+          linkHref = parent.getAttribute('href');
+          break;
         }
+        parent = parent.parentElement;
+      }
+      if (linkHref) {
+        const link = document.createElement('a');
+        link.href = linkHref;
+        link.textContent = ctaDiv.textContent.trim();
+        fragments.push(link);
+      } else {
+        fragments.push(ctaDiv);
       }
     }
     return fragments;
   }
 
-  // Get all direct child <a> elements (each is a card)
+  // Get all cards (direct children that are <a> elements)
   const cards = Array.from(element.querySelectorAll(':scope > a'));
 
-  // Table header
-  const rows = [
-    ['Cards (cards33)']
-  ];
+  // Compose table rows
+  const rows = [];
+  // Header row
+  rows.push(['Cards (cards33)']);
 
-  // For each card, extract image and text content
-  cards.forEach((card) => {
-    // Find image (first img inside the card)
+  // Each card
+  cards.forEach(card => {
+    // Find image (first img inside card)
     const img = card.querySelector('img');
-    // Find the text content container (the inner grid div)
-    const gridDivs = card.querySelectorAll(':scope > div');
-    let cardContentDiv = null;
-    if (gridDivs.length > 0) {
-      // The inner grid div contains the text and meta
-      cardContentDiv = gridDivs[0];
+    // Find card content (the div after the image)
+    const cardContentDiv = img ? img.nextElementSibling : null;
+    if (img && cardContentDiv) {
+      // Compose text cell
+      const textCell = extractCardText(cardContentDiv);
+      rows.push([img, textCell]);
     }
-    // Defensive: fallback to card if no gridDiv
-    const textContent = cardContentDiv ? extractTextContent(cardContentDiv) : [];
-    rows.push([
-      img ? img : '',
-      textContent.length ? textContent : ''
-    ]);
   });
 
-  // Create the table and replace the original element
+  // Create table
   const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace original element
   element.replaceWith(table);
 }

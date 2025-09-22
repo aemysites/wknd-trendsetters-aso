@@ -1,50 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
-  const headerRow = ['Cards (cards28)'];
-  const rows = [headerRow];
+  // Helper to extract card info from an anchor element
+  function extractCardInfo(cardAnchor) {
+    // Try to find an image (mandatory for first cell)
+    let img = cardAnchor.querySelector('img');
+    // If not found directly, look for it in a nested div
+    if (!img) {
+      const imgDiv = cardAnchor.querySelector('div');
+      if (imgDiv) img = imgDiv.querySelector('img');
+    }
+    // For the text cell: find heading and description
+    let heading = cardAnchor.querySelector('h3, h2, h4, h5, h6');
+    let desc = cardAnchor.querySelector('div.paragraph-sm, p, span');
+    // Compose the text cell content
+    const textContent = [];
+    if (heading) textContent.push(heading);
+    if (desc) textContent.push(desc);
+    // If there are other links (CTA), add them at the end
+    // (not present in this HTML, but for resilience)
+    const ctas = Array.from(cardAnchor.querySelectorAll('a')).filter(a => a !== cardAnchor);
+    if (ctas.length) textContent.push(...ctas);
+    return [img, textContent];
+  }
 
-  // Find all tab panes (each tab contains a grid of cards)
+  // Find all tab panes (each tab is a set of cards)
   const tabPanes = element.querySelectorAll(':scope > div');
+  const rows = [];
+  // Always start with the block name header
+  rows.push(['Cards (cards28)']);
 
-  tabPanes.forEach((tabPane) => {
-    // Find the grid inside each tab pane
+  // For each tab pane, process its cards
+  tabPanes.forEach(tabPane => {
+    // Find the grid container inside the tab
     const grid = tabPane.querySelector('.w-layout-grid');
     if (!grid) return;
-    // Get all cards (each card is an <a> inside the grid)
+    // Each card is an anchor
     const cards = grid.querySelectorAll(':scope > a');
-    cards.forEach((card) => {
-      // Find image (mandatory)
-      let image = card.querySelector('img');
-      if (!image) return; // Skip cards without images
-      // Text content: gather all heading and paragraph elements
-      const textCell = [];
-      // Get all h3 and .paragraph-sm inside card
-      const headings = card.querySelectorAll('h3');
-      headings.forEach(h => textCell.push(h));
-      const paragraphs = card.querySelectorAll('.paragraph-sm');
-      paragraphs.forEach(p => textCell.push(p));
-      // Fallback: if no .paragraph-sm, get all direct text nodes and divs without images
-      if (textCell.length === 0) {
-        // Get all divs that do not contain images
-        const divs = Array.from(card.querySelectorAll('div')).filter(div => !div.querySelector('img'));
-        divs.forEach(div => textCell.push(div));
-        // Also get direct text nodes
-        Array.from(card.childNodes).forEach(node => {
-          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-            textCell.push(node.textContent.trim());
-          }
-        });
+    cards.forEach(cardAnchor => {
+      const [img, textContent] = extractCardInfo(cardAnchor);
+      if (img || (textContent && textContent.length)) {
+        rows.push([
+          img ? img : '',
+          textContent.length ? textContent : ''
+        ]);
       }
-      // Compose row: [image, text]
-      rows.push([
-        image,
-        textCell.length ? textCell : ''
-      ]);
     });
   });
 
-  // Create and replace
+  // Build the table and replace the element
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

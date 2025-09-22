@@ -1,29 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header as required
+  // Table header as per block requirements
   const headerRow = ['Carousel (carousel21)'];
+  const rows = [headerRow];
 
-  // Defensive: find the image and heading/title
-  let img = element.querySelector('img');
-  let title = element.querySelector('.h4-heading');
+  // Defensive: find the image and text content for the slide
+  // The structure is: element > div > div.card > div.card-body > .h4-heading + img
+  let imageEl = null;
+  let titleEl = null;
 
-  // First cell: image only
-  const imgCell = img;
-
-  // Second cell: text content (title if present)
-  let textCell = null;
-  if (title) {
-    // Wrap title in a div for structure (optional)
-    textCell = document.createElement('div');
-    textCell.appendChild(title);
+  // Find the deepest card-body div
+  const cardBody = element.querySelector('.card-body');
+  if (cardBody) {
+    // Find the image
+    imageEl = cardBody.querySelector('img');
+    // Find the title (optional)
+    titleEl = cardBody.querySelector('.h4-heading');
   }
 
-  // Compose the table rows
-  const rows = [headerRow];
-  // Always two columns: image, text (text may be empty)
-  rows.push([imgCell, textCell]);
+  // Prepare the text cell content
+  let textCell = '';
+  if (titleEl) {
+    // Use a heading element for the title
+    const heading = document.createElement('h2');
+    heading.textContent = titleEl.textContent;
+    textCell = heading;
+  }
 
-  // Create and replace
+  // Only add row if image exists (image is mandatory)
+  if (imageEl) {
+    rows.push([
+      imageEl,
+      textCell ? textCell : ''
+    ]);
+  }
+
+  // Create the table and replace the original element
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

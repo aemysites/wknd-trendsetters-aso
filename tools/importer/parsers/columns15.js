@@ -1,50 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid container
+  // Find the main grid layout (the two-column hero)
   const container = element.querySelector('.container');
-  let leftColContent = null;
-  let rightColContent = null;
-
+  let grid = null;
   if (container) {
-    const grid = container.querySelector('.grid-layout');
-    if (grid) {
-      // The grid should have two children: left (text) and right (image)
-      const gridChildren = Array.from(grid.children);
-      // Find the DIV (text) and IMG (image)
-      const leftCol = gridChildren.find((el) => el.tagName === 'DIV');
-      const rightCol = gridChildren.find((el) => el.tagName === 'IMG');
-      // For leftCol, collect all its children (h1, p, .button-group)
-      if (leftCol) {
-        leftColContent = document.createElement('div');
-        Array.from(leftCol.children).forEach(child => {
-          leftColContent.appendChild(child.cloneNode(true));
-        });
-      }
-      // For rightCol, just use the image
-      if (rightCol) {
-        rightColContent = rightCol.cloneNode(true);
-      }
-    }
+    grid = container.querySelector('.grid-layout');
+  }
+  if (!grid) grid = container || element;
+
+  // The grid has two direct children: a div (left) and an img (right)
+  let leftCol = null;
+  let rightCol = null;
+  const gridChildren = Array.from(grid.children);
+  if (gridChildren.length >= 2) {
+    leftCol = gridChildren[0];
+    rightCol = gridChildren[1];
   }
 
-  // Defensive fallback: if missing, create empty cells
-  if (!leftColContent) {
-    leftColContent = document.createElement('div');
-  }
-  if (!rightColContent) {
-    rightColContent = document.createElement('div');
+  // Instead of just grabbing the leftCol and rightCol elements, extract their full content blocks
+  function extractContent(node) {
+    // If node is null, return empty string
+    if (!node) return '';
+    // If node is an image, return the image element
+    if (node.tagName === 'IMG') return node;
+    // Otherwise, collect all children as a fragment
+    const frag = document.createDocumentFragment();
+    Array.from(node.childNodes).forEach(child => {
+      frag.appendChild(child.cloneNode(true));
+    });
+    return frag;
   }
 
-  // Table header row as required
+  // Compose the table rows
   const headerRow = ['Columns (columns15)'];
-  // Table second row: left and right columns
-  const secondRow = [leftColContent, rightColContent];
+  const secondRow = [extractContent(leftCol), extractContent(rightCol)];
+  const rows = [headerRow, secondRow];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    secondRow,
-  ], document);
-
+  // Build the table and replace
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

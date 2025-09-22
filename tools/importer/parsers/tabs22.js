@@ -1,52 +1,65 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: Get all immediate children of a given parent
-  function getImmediateChildrenByClass(parent, className) {
-    return Array.from(parent.children).filter((el) => el.classList.contains(className));
+  // Helper: get direct children by selector
+  function getDirectChildren(parent, selector) {
+    return Array.from(parent.children).filter(child => child.matches(selector));
   }
 
-  // Table header row
+  // 1. Header row
   const headerRow = ['Tabs (tabs22)'];
-  const rows = [headerRow];
 
-  // Defensive: Find tab menu and tab content containers
+  // 2. Get tab labels
+  // Tab menu is the first child div with class w-tab-menu
   const tabMenu = element.querySelector('.w-tab-menu');
+  const tabLinks = tabMenu ? tabMenu.querySelectorAll('a[role="tab"]') : [];
+
+  // 3. Get tab content panes
+  // Tab content is the second child div with class w-tab-content
   const tabContent = element.querySelector('.w-tab-content');
+  const tabPanes = tabContent ? tabContent.querySelectorAll('.w-tab-pane') : [];
 
-  if (!tabMenu || !tabContent) {
-    // If structure is unexpected, do nothing
-    return;
-  }
-
-  // Get all tab labels (menu links)
-  const tabLinks = tabMenu.querySelectorAll('a.w-tab-link');
-  // Get all tab panes (content)
-  const tabPanes = tabContent.querySelectorAll('.w-tab-pane');
-
-  // Defensive: Only process as many tabs as there are panes
-  const tabCount = Math.min(tabLinks.length, tabPanes.length);
-
-  for (let i = 0; i < tabCount; i++) {
-    const tabLink = tabLinks[i];
-    // Tab label: Use the inner text of the tab link (or its child div)
-    let tabLabel = '';
+  // Defensive: match tabs and panes by data-w-tab
+  // Build a map of tab value to label and content
+  const tabs = [];
+  tabLinks.forEach((tabLink) => {
+    const tabValue = tabLink.getAttribute('data-w-tab');
+    // Label: use the inner text of the first div inside the link, or fallback to textContent
+    let label = '';
     const labelDiv = tabLink.querySelector('div');
     if (labelDiv) {
-      tabLabel = labelDiv.textContent.trim();
+      label = labelDiv.textContent.trim();
     } else {
-      tabLabel = tabLink.textContent.trim();
+      label = tabLink.textContent.trim();
     }
-    // Tab content: Use the entire content of the tab pane
-    const tabPane = tabPanes[i];
-    // Defensive: Use the first grid-layout child if present, else the pane itself
-    let tabPaneContent = tabPane.querySelector('.grid-layout') || tabPane;
-    // Add row: [Tab Label, Tab Content]
-    rows.push([tabLabel, tabPaneContent]);
-  }
+    // Find matching pane
+    let contentPane = null;
+    tabPanes.forEach((pane) => {
+      if (pane.getAttribute('data-w-tab') === tabValue) {
+        contentPane = pane;
+      }
+    });
+    if (contentPane) {
+      // For content: use the first child of the pane (usually a grid div)
+      let content = null;
+      if (contentPane.children.length === 1) {
+        content = contentPane.children[0];
+      } else {
+        // fallback: use the pane itself
+        content = contentPane;
+      }
+      tabs.push({ label, content });
+    }
+  });
 
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // 4. Build rows: each tab is a row [label, content]
+  const rows = tabs.map(tab => [tab.label, tab.content]);
 
-  // Replace original element with block table
-  element.replaceWith(block);
+  // 5. Compose table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    ...rows
+  ], document);
+
+  // 6. Replace original element
+  element.replaceWith(table);
 }

@@ -1,39 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
-  const headerRow = ['Cards (cards17)'];
-
-  // Defensive: find the grid container (cards)
-  const centered = element.querySelector('.centered');
-  if (!centered) return;
-  const grid = centered.querySelector('.grid-layout');
+  // Find the grid container with the cards
+  const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Each child div of grid-layout is a card
-  const cardDivs = Array.from(grid.children);
+  // Get all direct children of the grid (each is a card image wrapper)
+  const cardWrappers = Array.from(grid.children);
 
-  // For each card, extract the image element and any text content from alt attribute
-  const rows = cardDivs.map(cardDiv => {
-    // Defensive: find the image inside the card
-    const imgContainer = cardDiv.querySelector('.utility-aspect-2x3');
-    let img = null;
-    let textContent = '';
-    if (imgContainer) {
-      img = imgContainer.querySelector('img');
-      if (img && img.alt) {
-        textContent = img.alt;
-      }
+  // Build rows: header first
+  const rows = [
+    ['Cards (cards17)'],
+  ];
+
+  // For each card, extract the image (first cell) and ensure the second cell contains text content
+  cardWrappers.forEach((wrapper) => {
+    // Find the image inside the nested divs
+    const img = wrapper.querySelector('img');
+    // Defensive: Only add row if image is found
+    if (img) {
+      // Try to find any text content inside or near the wrapper
+      // Look for a sibling or parent with text nodes
+      let textContent = '';
+      // Check for text in parent or next sibling
+      // (In this HTML, there is no text, but this makes the code flexible)
+      // Try to find text in the closest .w-layout-grid parent (should be none, but for flexibility)
+      // Or use alt text as fallback
+      textContent = img.getAttribute('alt') || '';
+      rows.push([
+        img,
+        textContent,
+      ]);
     }
-    if (!img) return null;
-    // If no alt text, use a non-breaking space
-    if (!textContent) textContent = '\u00A0';
-    return [img, textContent];
-  }).filter(row => row && row[0]);
+  });
 
-  // Compose the table cells
-  const cells = [headerRow, ...rows];
+  // Create the table block
+  const table = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Always output the block
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Replace the original element
+  element.replaceWith(table);
 }

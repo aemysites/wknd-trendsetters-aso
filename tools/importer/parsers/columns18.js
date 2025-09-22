@@ -1,43 +1,44 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid layout div (the columns container)
+  // Find the grid layout container (the main content block)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
   // Get all direct children of the grid
   const gridChildren = Array.from(grid.children);
 
-  // Defensive: find the text/info column, the contact list, and the image
-  let textCol = null;
-  let contactList = null;
-  let image = null;
+  // Defensive: Find the left content (text block)
+  let leftContent = null;
+  let rightContent = null;
+  let imageContent = null;
 
-  gridChildren.forEach((child) => {
-    if (child.tagName === 'DIV' && child.querySelector('h2') && child.querySelector('h3')) {
-      textCol = child;
-    } else if (child.tagName === 'UL') {
-      contactList = child;
-    } else if (child.tagName === 'IMG') {
-      image = child;
+  // The structure is: [left text block, right contact list, image]
+  // But let's be defensive and check types
+  for (const child of gridChildren) {
+    if (child.tagName === 'DIV' && !leftContent) {
+      leftContent = child;
+    } else if (child.tagName === 'UL' && !rightContent) {
+      rightContent = child;
+    } else if (child.tagName === 'IMG' && !imageContent) {
+      imageContent = child;
     }
-  });
-
-  // Compose the left column: textCol + contactList
-  const leftColumnContent = [];
-  if (textCol) leftColumnContent.push(textCol);
-  if (contactList) leftColumnContent.push(contactList);
-
-  // Compose the right column: image
-  const rightColumnContent = image ? [image] : [];
+  }
 
   // Build the table rows
   const headerRow = ['Columns (columns18)'];
-  const columnsRow = [leftColumnContent, rightColumnContent];
+  const contentRow = [
+    leftContent ? leftContent : '',
+    rightContent ? rightContent : '',
+  ];
+  const rows = [headerRow, contentRow];
+  // Fix: Image row must have same number of columns as contentRow
+  if (imageContent) {
+    rows.push([imageContent, '']);
+  }
 
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    columnsRow,
-  ], document);
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
 
+  // Replace the original element
   element.replaceWith(table);
 }

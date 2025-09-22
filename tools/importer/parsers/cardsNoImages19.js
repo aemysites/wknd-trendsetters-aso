@@ -1,32 +1,33 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header as required by block spec
+  // Table header row as required
   const headerRow = ['Cards (cardsNoImages19)'];
   const rows = [headerRow];
 
-  // Get all immediate child divs (each is a card)
+  // Defensive: Get all immediate children (each card)
   const cardDivs = element.querySelectorAll(':scope > div');
 
   cardDivs.forEach((cardDiv) => {
-    // Remove the icon (if present)
-    const iconDiv = cardDiv.querySelector('.icon');
-    if (iconDiv) {
-      iconDiv.remove();
-    }
-    // Find the text paragraph (should be the main content)
-    const textParagraph = cardDiv.querySelector('p');
-    let content;
-    if (textParagraph) {
-      // Use the <p> as the card content (reference, do not clone)
-      content = textParagraph;
-    } else {
-      // Fallback: use the cardDiv's textContent
-      content = document.createElement('div');
-      content.textContent = cardDiv.textContent.trim();
-    }
-    rows.push([content]);
+    // Only want the text content for this block (no images/icons)
+    // Find the paragraph (description)
+    const para = cardDiv.querySelector('p');
+    // Find a heading if present (none in this HTML, but could be in future)
+    let heading = null;
+    heading = cardDiv.querySelector('h1, h2, h3, h4, h5, h6');
+
+    // Compose cell content
+    const cellContent = [];
+    if (heading) cellContent.push(heading);
+    if (para) cellContent.push(para);
+
+    // Defensive: If no heading, try to extract a title from the paragraph
+    // If cellContent is empty, skip this card
+    if (cellContent.length === 0) return;
+
+    rows.push([cellContent]);
   });
 
+  // Create table and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

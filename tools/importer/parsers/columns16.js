@@ -1,57 +1,38 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to collect children as array
-  const getChildren = (el, selector) => Array.from(el.querySelectorAll(selector));
-
-  // 1. Header row
-  const headerRow = ['Columns (columns16)'];
-
-  // 2. Find the main grid (headline/eyebrow left, description/author/button right)
+  // Find the main container
   const container = element.querySelector('.container');
-  const mainGrid = container.querySelector('.grid-layout.tablet-1-column');
-  const leftCol = mainGrid.children[0];
-  const rightCol = mainGrid.children[1];
+  if (!container) return;
 
-  // Left column: Eyebrow + Headline
-  const leftColContent = [];
-  const eyebrow = leftCol.querySelector('.eyebrow');
-  if (eyebrow) leftColContent.push(eyebrow);
-  const headline = leftCol.querySelector('h1');
-  if (headline) leftColContent.push(headline);
+  // Find the first grid: contains heading/eyebrow and summary/author/button
+  const grids = container.querySelectorAll('.w-layout-grid.grid-layout');
+  if (!grids.length) return;
+  const topGrid = grids[0];
+  const topCols = Array.from(topGrid.children);
+  if (topCols.length < 2) return;
+  const leftCol = topCols[0];
+  const rightCol = topCols[1];
 
-  // Right column: Description, Author, Button
-  const rightColContent = [];
-  const desc = rightCol.querySelector('.rich-text');
-  if (desc) rightColContent.push(desc);
-  const authorBlock = rightCol.querySelector('.flex-horizontal.y-center.flex-gap-xs');
-  if (authorBlock) rightColContent.push(authorBlock);
-  const btn = rightCol.querySelector('a.button');
-  if (btn) rightColContent.push(btn);
-
-  // 3. Find the image grid (bottom half)
-  const imageGrid = element.querySelector('.grid-layout.mobile-portrait-1-column');
-  const images = [];
+  // Find the second grid: contains two images
+  const imageGrid = element.querySelector('.w-layout-grid.grid-layout.mobile-portrait-1-column');
+  let imgCols = [];
   if (imageGrid) {
-    getChildren(imageGrid, '.utility-aspect-1x1').forEach(div => {
-      const img = div.querySelector('img');
-      if (img) images.push(img);
-    });
+    imgCols = Array.from(imageGrid.children);
   }
 
-  // 4. Compose table rows
-  // First content row: left (headline/eyebrow), right (desc/author/button)
-  const firstContentRow = [leftColContent, rightColContent];
-  // Second content row: images side by side
-  const secondContentRow = images;
+  // Compose columns for the block
+  const headerRow = ['Columns (columns16)'];
+  const rows = [headerRow];
 
-  // 5. Build table
-  const cells = [
-    headerRow,
-    firstContentRow,
-    secondContentRow,
-  ];
+  // Second row: heading/eyebrow and summary/author/button
+  rows.push([leftCol, rightCol]);
 
-  // 6. Replace element
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Third row: two images (if present)
+  if (imgCols.length === 2) {
+    rows.push([imgCols[0], imgCols[1]]);
+  }
+
+  // Create and replace with a new table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

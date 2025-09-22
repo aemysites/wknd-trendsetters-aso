@@ -1,43 +1,45 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout containing the hero content
-  const grid = element.querySelector('.grid-layout');
-  let title = null;
-  let subheading = null;
-  let cta = null;
+  // 1. Header row: block name
+  const headerRow = ['Hero (hero35)'];
 
+  // 2. Background image row (none in this HTML)
+  const backgroundImageRow = [''];
+
+  // 3. Content row: heading, subheading, CTA
+  // Find the grid layout
+  const grid = element.querySelector('.w-layout-grid');
+  let contentCell = [];
   if (grid) {
-    // Left column: heading and subheading
-    const left = grid.children[0];
-    if (left) {
-      title = left.querySelector('h2');
-      subheading = left.querySelector('p');
+    // The first grid child: text content (heading, subheading)
+    const gridChildren = grid.querySelectorAll(':scope > *');
+    if (gridChildren.length > 0) {
+      const textCol = gridChildren[0];
+      // Heading (h2)
+      const heading = textCol.querySelector('h2');
+      if (heading) contentCell.push(heading);
+      // Subheading (p)
+      const subheading = textCol.querySelector('p');
+      if (subheading) contentCell.push(subheading);
     }
-    // Right column: CTA button (if present)
-    const right = grid.children[1];
-    if (right && right.tagName === 'A') {
-      cta = right;
+    // The second grid child: CTA button (a)
+    if (gridChildren.length > 1) {
+      const cta = gridChildren[1];
+      if (cta && cta.tagName === 'A') contentCell.push(cta);
     }
   }
+  // Defensive fallback: if nothing found, put empty string
+  if (contentCell.length === 0) contentCell = [''];
 
-  // Table header: must match block name exactly
-  const headerRow = ['Hero (hero35)'];
-  // Second row: background image (none in this HTML)
-  const imageRow = [''];
+  const contentRow = [contentCell];
 
-  // Third row: content (title, subheading, CTA)
-  const content = [];
-  if (title) content.push(title);
-  if (subheading) content.push(subheading);
-  if (cta) content.push(cta);
-  const contentRow = [content];
-
-  // Compose table
+  // Build table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    imageRow,
-    contentRow
+    backgroundImageRow,
+    contentRow,
   ], document);
 
+  // Replace the original element
   element.replaceWith(table);
 }

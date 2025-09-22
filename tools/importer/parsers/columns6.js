@@ -1,22 +1,25 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all direct children (columns)
-  const columns = Array.from(element.querySelectorAll(':scope > div'));
+  // Get all direct child divs (columns)
+  const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Each column should contain an image, reference the image element directly
-  const images = columns.map(col => {
-    const img = col.querySelector('img');
-    return img || '';
+  // Each column is an image inside its own div
+  const cellsRow = columnDivs.map(div => {
+    // Find the image inside the div
+    const img = div.querySelector('img');
+    // Reference the image element directly if it exists
+    return img ? img : '';
   });
 
-  // Compose the table: header row, then one row with the images
-  const headerRow = ['Columns (columns6)'];
-  const contentRow = images;
-  const tableData = [headerRow, contentRow];
+  // Table rows: header, then one row with all images as columns
+  const rows = [
+    ['Columns (columns6)'],
+    cellsRow
+  ];
 
-  // Create the columns block table
-  const table = WebImporter.DOMUtils.createTable(tableData, document);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace the original grid element with the table
-  element.replaceWith(table);
+  // Replace the original element
+  element.replaceWith(block);
 }
