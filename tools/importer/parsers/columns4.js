@@ -1,31 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container that holds the columns
-  const grid = element.querySelector('.w-layout-grid');
-  if (!grid) return;
+  // Find the grid container
+  const grid = element.querySelector('.grid-layout');
+  // Defensive: fallback to container children if grid not found
+  const columns = grid ? Array.from(grid.children) : Array.from(element.querySelector('.container')?.children ?? []);
 
-  // Get all immediate children of the grid (these are the columns)
-  const columns = Array.from(grid.children);
+  // If columns are empty, fallback to all children of element
+  const effectiveColumns = columns.length > 0 ? columns : Array.from(element.children);
 
-  // Defensive: Only proceed if we have at least one column
-  if (columns.length === 0) return;
-
-  // Header row for columns4 block
+  // Header row must match target block name exactly
   const headerRow = ['Columns (columns4)'];
 
-  // Second row: each cell is a column's content
-  // Use the entire column div as the cell content for resilience
-  const columnsRow = columns.map((col) => col);
+  // Each column: gather all child nodes (preserving semantic structure)
+  const columnsRow = effectiveColumns.map((col) => {
+    // If column is empty, return empty string
+    if (!col || !col.childNodes || col.childNodes.length === 0) {
+      return '';
+    }
+    // If only one child and it's an element or text, use it directly
+    if (col.childNodes.length === 1) {
+      const node = col.childNodes[0];
+      if (
+        (node.nodeType === Node.ELEMENT_NODE) ||
+        (node.nodeType === Node.TEXT_NODE && node.textContent.trim())
+      ) {
+        return node;
+      }
+      return '';
+    }
+    // Otherwise, collect all non-empty nodes
+    return Array.from(col.childNodes).filter(
+      (node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) return true;
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) return true;
+        return false;
+      }
+    );
+  });
 
-  // Compose the table data
-  const tableData = [
-    headerRow,
-    columnsRow,
-  ];
+  // Compose table data
+  const tableData = [headerRow, columnsRow];
 
-  // Create the block table
+  // Create the table block
   const block = WebImporter.DOMUtils.createTable(tableData, document);
 
-  // Replace the original element with the block
+  // Replace original element
   element.replaceWith(block);
 }

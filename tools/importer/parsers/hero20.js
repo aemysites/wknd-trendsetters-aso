@@ -1,49 +1,48 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Table header row
+  // 1. Header row
   const headerRow = ['Hero (hero20)'];
 
-  // 2. Background image row (row 2)
-  // The background is a collage of images from the first grid-layout.desktop-3-column
-  // We'll collect all <img> elements inside that grid and put them in a fragment
-  let backgroundImages = [];
-  const gridLayouts = element.querySelectorAll('.grid-layout.desktop-3-column');
-  if (gridLayouts.length > 0) {
-    const imgs = gridLayouts[0].querySelectorAll('img');
-    backgroundImages = Array.from(imgs);
+  // 2. Background image(s) row
+  // Find the grid with images
+  const grid = element.querySelector('.grid-layout.desktop-3-column.utility-min-height-100dvh');
+  let images = [];
+  if (grid) {
+    images = Array.from(grid.querySelectorAll('img'));
   }
+
   // Defensive: if no images found, leave cell empty
-  const backgroundRow = [backgroundImages.length ? backgroundImages : ''];
+  const backgroundCell = images.length > 0 ? images : [''];
 
-  // 3. Content row (row 3)
-  // Title, subheading, CTA buttons are inside .ix-hero-scale-3x-to-1x-content > .container
-  let contentCell = '';
+  // 3. Content row (title, subheading, CTA)
+  // Find the content container
   const contentContainer = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
+  let contentCell = [''];
   if (contentContainer) {
-    // We'll collect the heading, subheading, and button group
-    const parts = [];
-    // Heading (h1)
+    // We'll collect: h1, p, and all links (CTAs)
+    const content = [];
     const h1 = contentContainer.querySelector('h1');
-    if (h1) parts.push(h1);
-    // Subheading (p.subheading)
-    const subheading = contentContainer.querySelector('p.subheading');
-    if (subheading) parts.push(subheading);
-    // CTA buttons (div.button-group)
-    const buttonGroup = contentContainer.querySelector('.button-group');
-    if (buttonGroup) parts.push(buttonGroup);
-    if (parts.length) {
-      contentCell = parts;
+    if (h1) content.push(h1);
+    const p = contentContainer.querySelector('p');
+    if (p) content.push(p);
+    // Get all CTA links
+    const ctas = Array.from(contentContainer.querySelectorAll('a'));
+    if (ctas.length > 0) {
+      // Wrap CTAs in a div for layout
+      const ctaDiv = document.createElement('div');
+      ctaDiv.append(...ctas);
+      content.push(ctaDiv);
     }
+    contentCell = content.length > 0 ? content : [''];
   }
-  const contentRow = [contentCell];
 
-  // Assemble the table
-  const table = WebImporter.DOMUtils.createTable([
+  // Build the table
+  const rows = [
     headerRow,
-    backgroundRow,
-    contentRow,
-  ], document);
+    [backgroundCell],
+    [contentCell],
+  ];
 
-  // Replace the original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

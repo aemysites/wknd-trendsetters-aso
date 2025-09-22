@@ -1,25 +1,24 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (the main columns wrapper)
+  // Find the grid container with 3 columns
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct children of the grid (each is a column)
+  // Get all direct children of the grid (these are the columns)
   const columns = Array.from(grid.children);
 
-  // Defensive: skip if no columns found
-  if (columns.length === 0) return;
+  // Build the header row exactly as required
+  const headerRow = ['Columns (columns30)'];
 
-  // Table structure: header row, then columns row
-  // Use the required block name as header
-  const tableCells = [
-    ['Columns (columns30)'],
-    columns.map((col) => col), // reference original elements
-  ];
+  // Build the columns row: each cell is the referenced column element
+  const columnsRow = columns.map((col) => col);
 
-  // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(tableCells, document);
+  // Create the table using WebImporter.DOMUtils.createTable
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Replace the original element with the block table
-  element.replaceWith(blockTable);
+  // Replace the original element with the new table
+  element.replaceWith(table);
 }

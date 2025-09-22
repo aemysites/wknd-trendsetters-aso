@@ -1,43 +1,61 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout containing the hero content
-  const grid = element.querySelector('.grid-layout');
-  let title = null;
-  let subheading = null;
-  let cta = null;
+  // Table structure: 1 col x 3 rows
+  // Row 1: Header
+  // Row 2: Background image (none in this source)
+  // Row 3: Heading, subheading, CTA
 
+  // Header row as required
+  const headerRow = ['Hero (hero35)'];
+
+  // Row 2: Background image (none in this source)
+  const bgImageRow = [''];
+
+  // Row 3: Content (heading, subheading, CTA)
+  // Find the grid container
+  const grid = element.querySelector('.w-layout-grid');
+  let contentCell = [];
   if (grid) {
-    // Left column: heading and subheading
-    const left = grid.children[0];
-    if (left) {
-      title = left.querySelector('h2');
-      subheading = left.querySelector('p');
+    // Get all direct children of the grid
+    const gridChildren = Array.from(grid.children);
+    // The first child: heading + subheading
+    const headingBlock = gridChildren.find(child => child.querySelector('h1, h2, h3, h4, h5, h6'));
+    // The second child: CTA (button link)
+    const ctaBlock = gridChildren.find(child => child.tagName === 'A' || child.querySelector('a'));
+
+    // Compose content cell
+    contentCell = [];
+    if (headingBlock) {
+      // Use heading and subheading as-is
+      Array.from(headingBlock.childNodes).forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          contentCell.push(node);
+        }
+      });
     }
-    // Right column: CTA button (if present)
-    const right = grid.children[1];
-    if (right && right.tagName === 'A') {
-      cta = right;
+    if (ctaBlock) {
+      // Add a line break if there is heading content
+      if (contentCell.length > 0) {
+        contentCell.push(document.createElement('br'));
+      }
+      contentCell.push(ctaBlock);
     }
+    if (contentCell.length === 0) {
+      contentCell = [''];
+    }
+  } else {
+    contentCell = [''];
   }
 
-  // Table header: must match block name exactly
-  const headerRow = ['Hero (hero35)'];
-  // Second row: background image (none in this HTML)
-  const imageRow = [''];
+  const contentRow = [contentCell];
 
-  // Third row: content (title, subheading, CTA)
-  const content = [];
-  if (title) content.push(title);
-  if (subheading) content.push(subheading);
-  if (cta) content.push(cta);
-  const contentRow = [content];
-
-  // Compose table
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    imageRow,
-    contentRow
+    bgImageRow,
+    contentRow,
   ], document);
 
+  // Replace original element
   element.replaceWith(table);
 }

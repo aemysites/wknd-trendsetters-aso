@@ -1,45 +1,33 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Table header row
+  if (!element) return;
+
+  // 1. Header row
   const headerRow = ['Hero (hero3)'];
 
-  // 2. Background image row
-  // Find the background image (img tag inside the first grid cell)
-  let bgImg = null;
-  const gridDivs = element.querySelectorAll(':scope > div > div');
-  if (gridDivs.length > 0) {
-    // The first grid div contains the background image
-    bgImg = gridDivs[0].querySelector('img');
-  }
+  // 2. Background image row (optional)
+  let imgEl = element.querySelector('img.cover-image');
+  if (!imgEl) imgEl = element.querySelector('img');
+  const bgImageRow = [imgEl ? imgEl : ''];
 
-  // 3. Content row: heading, subheading, CTAs
-  // The second grid cell contains the card with content
-  let contentCell = [];
-  if (gridDivs.length > 1) {
-    // Find the card inside the second grid cell
-    const card = gridDivs[1].querySelector('.card');
-    if (card) {
-      // Extract heading, subheading, and button group
-      const heading = card.querySelector('h1');
-      const subheading = card.querySelector('p');
-      const buttonGroup = card.querySelector('.button-group');
-      // Add them in order if present
-      if (heading) contentCell.push(heading);
-      if (subheading) contentCell.push(subheading);
-      if (buttonGroup) contentCell.push(buttonGroup);
+  // 3. Content row: Title, Subheading, CTA
+  let cardEl = element.querySelector('.card');
+  let contentArr = [];
+  if (cardEl) {
+    const h1 = cardEl.querySelector('h1');
+    if (h1) contentArr.push(h1);
+    const subheading = cardEl.querySelector('p');
+    if (subheading) contentArr.push(subheading);
+    const buttonGroup = cardEl.querySelector('.button-group');
+    if (buttonGroup) {
+      const links = Array.from(buttonGroup.querySelectorAll('a'));
+      if (links.length) contentArr.push(...links);
     }
   }
+  const contentRow = [contentArr.length ? contentArr : ''];
 
-  // Build the table rows
-  const rows = [
-    headerRow,
-    [bgImg ? bgImg : ''],
-    [contentCell.length ? contentCell : ''],
-  ];
+  const cells = [headerRow, bgImageRow, contentRow];
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-
-  // Replace the original element
-  element.replaceWith(table);
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

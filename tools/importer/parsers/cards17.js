@@ -1,39 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row
-  const headerRow = ['Cards (cards17)'];
-
-  // Defensive: find the grid container (cards)
-  const centered = element.querySelector('.centered');
-  if (!centered) return;
-  const grid = centered.querySelector('.grid-layout');
+  // Find the grid containing the cards
+  const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Each child div of grid-layout is a card
+  // Get all immediate grid children (each is a card wrapper)
   const cardDivs = Array.from(grid.children);
 
-  // For each card, extract the image element and any text content from alt attribute
-  const rows = cardDivs.map(cardDiv => {
-    // Defensive: find the image inside the card
-    const imgContainer = cardDiv.querySelector('.utility-aspect-2x3');
-    let img = null;
-    let textContent = '';
-    if (imgContainer) {
-      img = imgContainer.querySelector('img');
-      if (img && img.alt) {
-        textContent = img.alt;
+  // Table header
+  const headerRow = ['Cards (cards17)'];
+  const rows = [headerRow];
+
+  // For each card, extract image (first cell), and text content (second cell)
+  cardDivs.forEach(cardDiv => {
+    const img = cardDiv.querySelector('img');
+    const imageCell = img ? img : '';
+    let textCell = '';
+    // Try to get all text from the cardDiv (including alt text, figcaption, etc.)
+    // Use less specific selector to include all possible text
+    // Collect all text nodes under cardDiv except inside <img>
+    const walker = document.createTreeWalker(cardDiv, NodeFilter.SHOW_TEXT, {
+      acceptNode: (node) => {
+        // Ignore whitespace-only nodes
+        if (!node.textContent.trim()) return NodeFilter.FILTER_SKIP;
+        // Ignore text inside <img>
+        if (node.parentNode && node.parentNode.tagName === 'IMG') return NodeFilter.FILTER_SKIP;
+        return NodeFilter.FILTER_ACCEPT;
       }
+    });
+    let textParts = [];
+    let currentNode;
+    while ((currentNode = walker.nextNode())) {
+      textParts.push(currentNode.textContent.trim());
     }
-    if (!img) return null;
-    // If no alt text, use a non-breaking space
-    if (!textContent) textContent = '\u00A0';
-    return [img, textContent];
-  }).filter(row => row && row[0]);
+    // If nothing found, fallback to alt text
+    if (textParts.length === 0 && img && img.alt) {
+      textParts.push(img.alt);
+    }
+    textCell = textParts.join(' ');
+    rows.push([imageCell, textCell]);
+  });
 
-  // Compose the table cells
-  const cells = [headerRow, ...rows];
+  // Create the table block
+  const block = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Always output the block
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Replace the original element
   element.replaceWith(block);
 }
