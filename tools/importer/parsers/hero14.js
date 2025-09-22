@@ -1,57 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children by selector
-  const getImmediateChild = (parent, selector) => {
-    return Array.from(parent.children).find((el) => el.matches(selector));
-  };
+  // Helper: get direct children by tag name
+  function getDirectChildByTag(parent, tag) {
+    return Array.from(parent.children).find(el => el.tagName === tag.toUpperCase());
+  }
 
   // 1. Header row
   const headerRow = ['Hero (hero14)'];
 
   // 2. Background image row
+  let imageEl = null;
   // Find the grid-layout div
-  const gridDiv = element.querySelector('.w-layout-grid');
-  let bgImg = null;
-  if (gridDiv) {
-    // The background image is in the first child div > div > img
-    const firstGridChild = gridDiv.children[0];
-    if (firstGridChild) {
-      const parallaxDiv = getImmediateChild(firstGridChild, 'div');
-      if (parallaxDiv) {
-        bgImg = parallaxDiv.querySelector('img');
-      }
+  const grid = element.querySelector('.w-layout-grid');
+  if (grid) {
+    // Find the first child div (should contain the image)
+    const gridDivs = grid.querySelectorAll(':scope > div');
+    if (gridDivs.length > 0) {
+      // Look for an img inside the first div
+      imageEl = gridDivs[0].querySelector('img');
     }
   }
-  const backgroundRow = [bgImg ? bgImg : ''];
+  const imageRow = [imageEl ? imageEl : ''];
 
-  // 3. Content row (title, subheading, CTA)
-  // The content is in the second grid child
-  let contentCell = '';
-  if (gridDiv && gridDiv.children.length > 1) {
-    const contentDiv = gridDiv.children[1];
-    // The heading and button group are inside contentDiv
-    // We'll include the heading and any button group (even if empty)
-    const contentParts = [];
-    // Heading
-    const headingWrap = contentDiv.querySelector('.utility-margin-bottom-6rem');
-    if (headingWrap) {
-      // h1
-      const h1 = headingWrap.querySelector('h1');
-      if (h1) contentParts.push(h1);
-      // Button group (CTA)
-      const buttonGroup = headingWrap.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.children.length > 0) {
-        contentParts.push(buttonGroup);
-      }
-    }
-    if (contentParts.length > 0) {
-      contentCell = contentParts;
+  // 3. Content row (title, subheading, cta)
+  let contentCell = [];
+  // The second grid div contains the content
+  if (grid && grid.querySelectorAll(':scope > div').length > 1) {
+    const contentDiv = grid.querySelectorAll(':scope > div')[1];
+    // Look for heading(s)
+    const h1 = getDirectChildByTag(contentDiv.querySelector('.utility-margin-bottom-6rem') || contentDiv, 'h1');
+    if (h1) contentCell.push(h1);
+    // Optionally, look for subheading, paragraph, or CTA (not present in this example)
+    // Look for button group (could contain CTA)
+    const buttonGroup = contentDiv.querySelector('.button-group');
+    if (buttonGroup && buttonGroup.children.length > 0) {
+      contentCell.push(buttonGroup);
     }
   }
-  const contentRow = [contentCell];
+  const contentRow = [contentCell.length > 0 ? contentCell : ''];
 
-  // Assemble table
-  const tableCells = [headerRow, backgroundRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(tableCells, document);
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    imageRow,
+    contentRow,
+  ], document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

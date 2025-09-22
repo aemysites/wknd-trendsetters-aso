@@ -1,43 +1,72 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get direct children by selector
-  function getDirectChildren(parent, selector) {
-    return Array.from(parent.querySelectorAll(':scope > ' + selector));
+  // Helper to get direct children by selector
+  function getDirectChildrenBySelector(parent, selector) {
+    return Array.from(parent.children).filter(el => el.matches(selector));
   }
 
-  // Find the main container and grids
+  // Find the main container with the two main grids
   const container = element.querySelector('.container');
   if (!container) return;
-  const mainGrid = container.querySelector('.grid-layout.tablet-1-column');
-  const lowerGrid = container.querySelector('.grid-layout.mobile-portrait-1-column');
 
-  // --- First row: main content columns ---
-  let leftCol = null, rightCol = null;
-  if (mainGrid) {
-    const cols = getDirectChildren(mainGrid, 'div');
-    leftCol = cols[0] || '';
-    rightCol = cols[1] || '';
+  // The first grid: headline, intro, author, button
+  const grids = container.querySelectorAll(':scope > .w-layout-grid');
+  if (grids.length < 1) return;
+  const topGrid = grids[0];
+
+  // Left column: eyebrow + h1
+  const leftCol = topGrid.children[0];
+  // Right column: intro, author, button
+  const rightCol = topGrid.children[1];
+
+  // Compose left cell content
+  const leftCellContent = [];
+  // Eyebrow
+  const eyebrow = leftCol.querySelector('.eyebrow');
+  if (eyebrow) leftCellContent.push(eyebrow);
+  // Headline
+  const h1 = leftCol.querySelector('h1');
+  if (h1) leftCellContent.push(h1);
+
+  // Compose right cell content
+  const rightCellContent = [];
+  // Paragraph
+  const intro = rightCol.querySelector('.rich-text');
+  if (intro) rightCellContent.push(intro);
+  // Author block (avatar, name, meta)
+  const authorGrid = rightCol.querySelector('.w-layout-grid');
+  if (authorGrid) {
+    // Only include the author info (first child)
+    const authorInfo = authorGrid.children[0];
+    if (authorInfo) rightCellContent.push(authorInfo);
+    // Button (second child)
+    const button = authorGrid.querySelector('a.button');
+    if (button) rightCellContent.push(button);
   }
 
-  // --- Second row: lower images columns ---
-  let imgCol1 = '', imgCol2 = '';
-  if (lowerGrid) {
-    const imgDivs = getDirectChildren(lowerGrid, 'div');
-    imgCol1 = imgDivs[0] || '';
-    imgCol2 = imgDivs[1] || '';
+  // Second grid: two images
+  const bottomGrid = grids[1];
+  let img1 = null, img2 = null;
+  if (bottomGrid) {
+    const imgDivs = bottomGrid.querySelectorAll('.utility-aspect-1x1');
+    if (imgDivs[0]) img1 = imgDivs[0].querySelector('img');
+    if (imgDivs[1]) img2 = imgDivs[1].querySelector('img');
   }
 
-  // Compose table rows
+  // Build table rows
   const headerRow = ['Columns (columns16)'];
-  const row1 = [leftCol, rightCol];
-  const row2 = [imgCol1, imgCol2];
+  const contentRow1 = [leftCellContent, rightCellContent];
+  const contentRow2 = [];
+  if (img1) contentRow2.push(img1);
+  if (img2) contentRow2.push(img2);
 
-  // Only include rows that have at least one non-empty cell (besides header)
-  const rows = [headerRow];
-  if (row1.some(cell => cell && cell !== '')) rows.push(row1);
-  if (row2.some(cell => cell && cell !== '')) rows.push(row2);
+  // Only add second row if both images are present
+  const rows = [headerRow, contentRow1];
+  if (contentRow2.length === 2) rows.push(contentRow2);
 
-  // Build the table
+  // Create the block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element
   element.replaceWith(table);
 }

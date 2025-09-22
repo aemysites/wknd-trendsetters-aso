@@ -1,31 +1,35 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get all immediate accordion items
-  const accordionItems = Array.from(element.querySelectorAll(':scope > .accordion'));
+  // Helper to get all direct accordion items
+  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
 
-  // Table header row
+  // Table header as required
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  accordionItems.forEach((item) => {
-    // Title cell: find the toggle, then the text
-    const toggle = item.querySelector('.w-dropdown-toggle');
+  accordions.forEach((accordion) => {
+    // Title cell: find the w-dropdown-toggle, then the .paragraph-lg inside
+    const toggle = accordion.querySelector('.w-dropdown-toggle');
     let titleEl = null;
     if (toggle) {
-      // The actual title is inside .paragraph-lg, but fallback to toggle if needed
       titleEl = toggle.querySelector('.paragraph-lg') || toggle;
     }
 
-    // Content cell: find the dropdown list, then the rich text
-    const contentNav = item.querySelector('.accordion-content');
+    // Content cell: find the nav.accordion-content, then the .rich-text inside
     let contentEl = null;
-    if (contentNav) {
-      // The actual content is inside .rich-text or direct child
-      const richText = contentNav.querySelector('.rich-text') || contentNav;
-      contentEl = richText;
+    const nav = accordion.querySelector('nav.accordion-content');
+    if (nav) {
+      // Try to find the rich text content
+      const rich = nav.querySelector('.rich-text');
+      if (rich) {
+        contentEl = rich;
+      } else {
+        // fallback: use the nav's content
+        contentEl = nav;
+      }
     }
 
-    // Defensive: fallback to empty div if missing
+    // Defensive: fallback to empty divs if not found
     if (!titleEl) titleEl = document.createElement('div');
     if (!contentEl) contentEl = document.createElement('div');
 

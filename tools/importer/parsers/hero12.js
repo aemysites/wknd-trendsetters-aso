@@ -1,59 +1,57 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always use the correct header row
+  // Row 1: Block name
   const headerRow = ['Hero (hero12)'];
 
-  // Row 2: Background image (optional)
+  // Row 2: Background image (first child div)
   let bgImgCell = '';
-  const mainDivs = element.querySelectorAll(':scope > div');
-  if (mainDivs.length > 0) {
-    const bgImg = mainDivs[0].querySelector('img');
+  const bgImgDiv = element.querySelector(':scope > div');
+  if (bgImgDiv) {
+    const bgImg = bgImgDiv.querySelector('img');
     if (bgImg) bgImgCell = bgImg;
   }
 
-  // Row 3: Title, subheading, CTA (all content from right column)
-  let contentCell = null;
-  if (mainDivs.length > 1) {
-    const card = mainDivs[1].querySelector('.card');
-    if (card) {
-      const cardBody = card.querySelector('.card-body');
-      if (cardBody) {
-        const grid = cardBody.querySelector('.grid-layout');
-        if (grid && grid.children.length === 2) {
-          const rightCol = grid.children[1];
-          // Collect all content blocks from rightCol
-          const contentParts = [];
-          // Headline
-          const h2 = rightCol.querySelector('h2');
-          if (h2) contentParts.push(h2);
-          // Subheadings/paragraphs and all text content
-          const flexVertical = rightCol.querySelector('.flex-vertical');
-          if (flexVertical) {
-            flexVertical.querySelectorAll('p').forEach(p => {
-              contentParts.push(p);
-            });
-          }
-          // CTA button
-          const buttonGroup = rightCol.querySelector('.button-group');
-          if (buttonGroup) {
-            const button = buttonGroup.querySelector('a');
-            if (button) contentParts.push(button);
-          }
-          // Ensure all text content is included
-          if (contentParts.length) {
-            contentCell = contentParts;
-          }
+  // Row 3: Content (headline, subheading, CTA, etc.)
+  let contentCell = '';
+  const cardBody = element.querySelector('.card-body');
+  if (cardBody) {
+    const grid = cardBody.querySelector('.grid-layout');
+    if (grid) {
+      const gridChildren = Array.from(grid.children);
+      let cellContent = [];
+      // First child: image (concert crowd)
+      const innerImg = gridChildren.find(child => child.tagName === 'IMG');
+      if (innerImg) cellContent.push(innerImg);
+      // Second child: text content
+      const textDiv = gridChildren.find(child => child.tagName !== 'IMG');
+      if (textDiv) {
+        // Headline
+        const h2 = textDiv.querySelector('h2');
+        if (h2) cellContent.push(h2);
+        // Subpoints (icon+text rows)
+        const flexVertical = textDiv.querySelector('.flex-vertical');
+        if (flexVertical) {
+          const rows = Array.from(flexVertical.children).filter(
+            el => el.classList.contains('flex-horizontal') || el.classList.contains('divider')
+          );
+          rows.forEach(row => cellContent.push(row));
         }
+        // CTA button
+        const buttonGroup = textDiv.querySelector('.button-group');
+        if (buttonGroup) cellContent.push(buttonGroup);
       }
+      contentCell = cellContent;
     }
   }
 
-  // Compose table rows (always 3 rows, but omit the third if no content)
-  const rows = [headerRow, [bgImgCell]];
-  if (contentCell) {
-    rows.push([contentCell]);
-  }
+  // Compose table rows
+  const rows = [
+    headerRow,
+    [bgImgCell],
+    [contentCell],
+  ];
 
+  // Create and replace block
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

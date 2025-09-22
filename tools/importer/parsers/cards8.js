@@ -1,40 +1,36 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
+  // Header row as specified in the instructions, must have two columns
   const headerRow = ['Cards (cards8)', ''];
 
-  // Each card row: [image, text content]
-  // Extract all text content inside each card div, including alt and any descendant text nodes
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
-  const rows = cardDivs.map((div) => {
-    const img = div.querySelector('img');
+  // Get all direct children (each is a card wrapper with an image inside)
+  const cardDivs = element.querySelectorAll(':scope > div');
+
+  // Build rows: each row is [image, alt text as text cell]
+  const rows = Array.from(cardDivs).map(cardDiv => {
+    // Find the first image inside the card div
+    const img = cardDiv.querySelector('img');
     if (!img) return null;
-    // Gather all text content inside the card div (excluding script/style)
-    let textContent = '';
-    // Collect text from all descendants except img
-    Array.from(div.querySelectorAll('*:not(img)')).forEach((node) => {
-      textContent += node.textContent.trim() + ' ';
-    });
-    // Also include direct text nodes
-    Array.from(div.childNodes).forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        textContent += node.textContent.trim() + ' ';
-      }
-    });
-    textContent = textContent.trim();
-    // If no other text, fall back to alt attribute
-    if (!textContent && img) {
-      textContent = img.getAttribute('alt') || '';
+    // Clone the image so we don't move it from the DOM
+    const imgClone = img.cloneNode(true);
+    // Remove empty width/height attributes for clean output
+    if (imgClone.hasAttribute('width') && imgClone.getAttribute('width') === '') {
+      imgClone.removeAttribute('width');
     }
-    return [img, textContent];
+    if (imgClone.hasAttribute('height') && imgClone.getAttribute('height') === '') {
+      imgClone.removeAttribute('height');
+    }
+    // Use the image alt text as the text cell (plain text)
+    const text = img.getAttribute('alt') || '\u00A0';
+    return [imgClone, text];
   }).filter(Boolean);
 
   // Compose the table data
   const tableData = [headerRow, ...rows];
 
   // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
+  const table = WebImporter.DOMUtils.createTable(tableData, document);
 
   // Replace the original element
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

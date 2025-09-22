@@ -1,31 +1,24 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
+  // Table header row as specified
   const headerRow = ['Cards (cardsNoImages19)'];
   const rows = [headerRow];
 
-  // Defensive: Get all immediate child divs (each is a card)
+  // Defensive: get all direct children (each card)
   const cardDivs = element.querySelectorAll(':scope > div');
 
   cardDivs.forEach((cardDiv) => {
-    // Each cardDiv contains: icon div, and a <p> with the description
-    // We want only the text content for this block (no images/icons)
-    // Find the <p> element (description)
+    // Each cardDiv contains icon and text, but we only want text content for this block
+    // Find the first <p> inside this cardDiv (description)
     const desc = cardDiv.querySelector('p');
-    let cardContent;
+    // Optionally, you could look for heading, but in this HTML there is none
+    // Compose the cell content: just the <p> element
     if (desc) {
-      // Create a new paragraph element to avoid carrying over unwanted classes
-      const p = document.createElement('p');
-      p.textContent = desc.textContent;
-      cardContent = p;
-    } else {
-      // Fallback: use textContent of cardDiv
-      cardContent = document.createTextNode(cardDiv.textContent.trim());
+      rows.push([desc]);
     }
-    rows.push([cardContent]);
   });
 
-  // Create the table block
+  // Create the block table
   const block = WebImporter.DOMUtils.createTable(rows, document);
   // Replace the original element
   element.replaceWith(block);

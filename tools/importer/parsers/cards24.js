@@ -1,46 +1,74 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to build the text cell for each card
-  function buildTextCell(cardLink) {
-    const textCell = document.createElement('div');
-    // Tag/date row (optional)
-    const tagRow = cardLink.querySelector('.flex-horizontal');
+  // Helper to extract card info from anchor element
+  function extractCardInfo(cardEl) {
+    // Find the image (first child div with img)
+    const imgDiv = cardEl.querySelector(':scope > div');
+    const img = imgDiv ? imgDiv.querySelector('img') : null;
+
+    // Find the tag/date row (second child div)
+    const tagRow = cardEl.querySelectorAll(':scope > div')[1];
+    let tag = '', date = '';
     if (tagRow) {
-      textCell.appendChild(tagRow);
+      const tagEl = tagRow.querySelector('.tag');
+      if (tagEl) tag = tagEl.textContent;
+      const dateEl = tagRow.querySelector('.paragraph-sm');
+      if (dateEl) date = dateEl.textContent;
     }
-    // Heading (mandatory)
-    const heading = cardLink.querySelector('h3, .h4-heading');
-    if (heading) {
-      textCell.appendChild(heading);
+    // Find the title (h3)
+    const titleEl = cardEl.querySelector('h3');
+
+    // Compose text content cell
+    const textContent = document.createElement('div');
+    textContent.style.display = 'flex';
+    textContent.style.flexDirection = 'column';
+    textContent.style.gap = '0.25em';
+
+    // Add tag/date row if present
+    if (tag || date) {
+      const metaDiv = document.createElement('div');
+      if (tag) {
+        const tagSpan = document.createElement('span');
+        tagSpan.textContent = tag;
+        tagSpan.style.fontWeight = 'bold';
+        metaDiv.appendChild(tagSpan);
+      }
+      if (date) {
+        if (tag) metaDiv.appendChild(document.createTextNode(' '));
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = date;
+        dateSpan.style.opacity = '0.7';
+        metaDiv.appendChild(dateSpan);
+      }
+      textContent.appendChild(metaDiv);
     }
-    return textCell;
+    // Add title (as heading)
+    if (titleEl) {
+      textContent.appendChild(titleEl.cloneNode(true));
+    }
+    // There is no description in the source html, so nothing else to add
+    // Add CTA link (the card itself)
+    const link = document.createElement('a');
+    link.href = cardEl.href;
+    link.textContent = 'Read more';
+    textContent.appendChild(link);
+    // First cell: image, second cell: text content
+    return [img ? img.cloneNode(true) : '', textContent];
   }
 
-  // Get all card links (each card is an <a>)
-  const cards = Array.from(element.querySelectorAll(':scope > a'));
-  const rows = [
-    ['Cards (cards24)'],
-  ];
+  // Get all card anchor elements
+  const cardEls = Array.from(element.querySelectorAll(':scope > a'));
 
-  cards.forEach((cardLink) => {
-    // Image cell (mandatory)
-    const imageWrapper = cardLink.querySelector('div.utility-aspect-2x3');
-    let imageCell = null;
-    if (imageWrapper) {
-      imageCell = imageWrapper;
-    } else {
-      // fallback: just use the first img
-      const img = cardLink.querySelector('img');
-      if (img) imageCell = img;
-    }
-    // Text cell (mandatory)
-    const textCell = buildTextCell(cardLink);
-    rows.push([
-      imageCell,
-      textCell,
-    ]);
+  // Build table rows
+  const headerRow = ['Cards (cards24)'];
+  const rows = [headerRow];
+  cardEls.forEach(cardEl => {
+    rows.push(extractCardInfo(cardEl));
   });
 
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace original element
+  element.replaceWith(block);
 }

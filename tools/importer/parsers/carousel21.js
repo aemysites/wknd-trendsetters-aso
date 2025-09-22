@@ -1,31 +1,44 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
+  // Table header row
   const headerRow = ['Carousel (carousel21)'];
 
-  // Find the card body containing the image and heading
-  const cardBody = element.querySelector('.card-body');
-  let imgEl = null;
-  let textCell = '';
+  // Defensive: Find the main card container
+  const card = element.querySelector('.card');
+  if (!card) return;
 
-  if (cardBody) {
-    imgEl = cardBody.querySelector('img');
-    const heading = cardBody.querySelector('.h4-heading');
-    if (heading) {
-      textCell = heading;
-    }
+  // Find card body
+  const cardBody = card.querySelector('.card-body');
+  if (!cardBody) return;
+
+  // Get image (mandatory, first cell)
+  const img = cardBody.querySelector('img');
+  // Defensive: Only include if present
+  const imageCell = img ? img : '';
+
+  // Get heading (optional)
+  const heading = cardBody.querySelector('.h4-heading');
+  // Defensive: Only include if present
+  let textCellContent = [];
+  if (heading) {
+    // Convert to heading element (h2)
+    const h2 = document.createElement('h2');
+    h2.textContent = heading.textContent;
+    textCellContent.push(h2);
   }
 
-  // Only add a slide row if there is an image
-  const rows = [headerRow];
-  if (imgEl) {
-    rows.push([
-      imgEl,
-      textCell ? [textCell] : ''
-    ]);
-  }
+  // If there is other text, add it (none in this example)
+  // In this HTML, there is no description or CTA, so only heading
 
-  // Create the table block
+  // If no text, cell should be empty string
+  const textCell = textCellContent.length ? textCellContent : '';
+
+  // Build table rows
+  const rows = [headerRow, [imageCell, textCell]];
+
+  // Create block table
   const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace original element
   element.replaceWith(block);
 }

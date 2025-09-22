@@ -3,56 +3,38 @@ export default function parse(element, { document }) {
   // Helper to extract cards from a grid
   function extractCardsFromGrid(grid) {
     const cards = [];
-    // Each direct child <a> is a card
-    const cardLinks = Array.from(grid.children).filter(
-      (child) => child.tagName === 'A'
-    );
+    // Each card is an <a> inside the grid
+    const cardLinks = grid.querySelectorAll(':scope > a');
     cardLinks.forEach((card) => {
-      // Find image (MANDATORY)
-      let img = card.querySelector('img');
-      if (!img) return; // Skip cards without image
-      // Find heading (h3)
-      let heading = card.querySelector('h3');
-      // Find description (div.paragraph-sm)
-      let desc = card.querySelector('.paragraph-sm');
-      // Defensive: fallback to first div if no .paragraph-sm
-      if (!desc) {
-        // Find all divs after h3 (if present), or all divs
-        const divs = Array.from(card.querySelectorAll('div'));
-        // Exclude image wrapper divs
-        const filteredDivs = divs.filter(d => !d.querySelector('img') && (!heading || d !== heading.parentElement));
-        if (filteredDivs.length > 0) {
-          desc = filteredDivs[0];
+      // Try to find an image (in a div with .utility-aspect-3x2)
+      let imageDiv = card.querySelector('.utility-aspect-3x2');
+      let img = imageDiv ? imageDiv.querySelector('img') : null;
+      // If no image, try to find any img inside the card
+      if (!img) img = card.querySelector('img');
+      // Only include cards with an image (image is mandatory)
+      if (!img) return;
+      // Compose text cell: include all text content except image
+      // Get all elements except .utility-aspect-3x2 (image container)
+      const textCell = document.createElement('div');
+      Array.from(card.children).forEach((child) => {
+        if (!child.classList.contains('utility-aspect-3x2')) {
+          textCell.appendChild(child.cloneNode(true));
         }
+      });
+      // If textCell is empty, fallback to text content
+      if (!textCell.textContent.trim()) {
+        textCell.textContent = card.textContent.trim();
       }
-      // Compose text cell
-      const textContent = [];
-      if (heading) textContent.push(heading);
-      if (desc) textContent.push(desc);
-      // Try to include all text nodes that are not in heading or desc
-      // (for flexibility)
-      const textNodes = Array.from(card.childNodes).filter(
-        node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-      );
-      textNodes.forEach(node => {
-        textContent.push(document.createTextNode(node.textContent.trim()));
-      });
-      // Also include any additional <div> with text not already included
-      Array.from(card.querySelectorAll('div')).forEach(div => {
-        if (div !== desc && div !== img.parentElement && div.textContent.trim() && !textContent.includes(div)) {
-          textContent.push(div);
-        }
-      });
-      cards.push([img, textContent]);
+      cards.push([img, textCell]);
     });
     return cards;
   }
 
-  // Find all tab panes (each tab is a set of cards)
+  // Find all tab panes (each tab pane contains a grid)
   const tabPanes = element.querySelectorAll(':scope > div');
   const allCards = [];
   tabPanes.forEach((tabPane) => {
-    // Find the grid inside this tab
+    // Find the grid inside the tab pane
     const grid = tabPane.querySelector('.w-layout-grid');
     if (grid) {
       const cards = extractCardsFromGrid(grid);
@@ -60,17 +42,12 @@ export default function parse(element, { document }) {
     }
   });
 
-  // Build table rows
+  // Compose table rows
   const headerRow = ['Cards (cards28)'];
-  const tableRows = [headerRow];
-  allCards.forEach(([img, textContent]) => {
-    tableRows.push([
-      img,
-      Array.isArray(textContent) ? textContent : [textContent],
-    ]);
-  });
+  const tableRows = [headerRow, ...allCards];
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableRows, document);
-  element.replaceWith(block);
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
+  // Replace the original element
+  element.replaceWith(table);
 }

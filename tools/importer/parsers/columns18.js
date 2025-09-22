@@ -1,47 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: get the grid layout container
+  // Find the main grid layout div (the columns container)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all immediate children of the grid
-  const gridChildren = Array.from(grid.querySelectorAll(':scope > *'));
+  // Get all direct children of the grid
+  const gridChildren = Array.from(grid.children);
 
-  // Find the left column (text)
-  let leftCol = null;
-  let rightCol = null;
-  let img = null;
+  // Find the text block (first div)
+  const textBlock = gridChildren.find((el) => el.tagName === 'DIV');
+  // Find the ul (contact methods)
+  const contactList = gridChildren.find((el) => el.tagName === 'UL');
+  // Find the image (img)
+  const image = gridChildren.find((el) => el.tagName === 'IMG');
 
-  // Find the text column (first div), contact list (ul), and image
-  for (const child of gridChildren) {
-    if (child.tagName === 'DIV' && !leftCol) {
-      leftCol = child;
-    } else if (child.tagName === 'UL' && !rightCol) {
-      rightCol = child;
-    } else if (child.tagName === 'IMG' && !img) {
-      img = child;
-    }
-  }
+  // Defensive: If any of the main pieces are missing, don't proceed
+  if (!textBlock || !contactList || !image) return;
 
-  // Defensive: ensure we have required columns
-  if (!leftCol || !rightCol || !img) return;
-
-  // Compose the first row (header)
+  // Build the table rows
   const headerRow = ['Columns (columns18)'];
-
-  // Compose the second row: left column (text), right column (contacts)
-  const secondRow = [leftCol, rightCol];
-
-  // Compose the third row: image only in the left column (no unnecessary empty cell)
-  const thirdRow = [img];
+  // First content row: two columns (text block, contact methods)
+  const firstContentRow = [textBlock, contactList];
+  // Second content row: must have same number of columns as the second row (2 columns)
+  // Place image in first column, but DO NOT add a second column at all (omit it entirely)
+  const secondContentRow = [image];
 
   // Build the table
-  const cells = [
+  const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    secondRow,
-    thirdRow,
-  ];
+    firstContentRow,
+    secondContentRow,
+  ], document);
 
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Ensure the last row has only one cell (no unnecessary empty columns)
+  const lastRow = table.rows[2];
+  while (lastRow && lastRow.cells.length > 1) {
+    lastRow.deleteCell(lastRow.cells.length - 1);
+  }
+
+  // Replace the original element with the table
+  element.replaceWith(table);
 }

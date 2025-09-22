@@ -1,39 +1,73 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
+  // Helper: get direct children by tag/class
+  const getDirectChild = (parent, selector) => {
+    return Array.from(parent.children).find((el) => el.matches(selector));
+  };
+
   // 1. Header row
   const headerRow = ['Hero (hero3)'];
 
-  // 2. Background image row (find the first <img> descendant)
-  let backgroundImg = null;
-  const img = element.querySelector('img');
-  if (img) {
-    backgroundImg = img;
-  }
-  const backgroundRow = [backgroundImg ? backgroundImg : ''];
-
-  // 3. Content row: heading, subheading, CTA(s)
-  // Find the card with the text content
-  let contentCell = '';
-  const card = element.querySelector('.card');
-  if (card) {
-    // We'll extract heading, subheading, and button group
-    const contentParts = [];
-    const h1 = card.querySelector('h1');
-    if (h1) contentParts.push(h1);
-    const subheading = card.querySelector('.subheading');
-    if (subheading) contentParts.push(subheading);
-    const buttonGroup = card.querySelector('.button-group');
-    if (buttonGroup) {
-      // Only include the links (CTAs), not the container
-      const ctas = Array.from(buttonGroup.querySelectorAll('a'));
-      if (ctas.length > 0) contentParts.push(...ctas);
+  // 2. Background image row
+  // Find the main image inside the first grid cell
+  let bgImg = null;
+  const gridDivs = element.querySelectorAll(':scope > div > div');
+  // Defensive: fallback to any img in the block
+  for (const div of gridDivs) {
+    const img = div.querySelector('img');
+    if (img) {
+      bgImg = img;
+      break;
     }
-    contentCell = contentParts.length ? contentParts : '';
   }
-  const contentRow = [contentCell];
+  if (!bgImg) {
+    bgImg = element.querySelector('img');
+  }
+  const bgImgRow = [bgImg ? bgImg : ''];
 
-  // 4. Build the table
-  const rows = [headerRow, backgroundRow, contentRow];
+  // 3. Content row: Title, Subheading, CTA
+  // Find the card div (contains h1, p, and button group)
+  let cardDiv = null;
+  for (const div of element.querySelectorAll('div')) {
+    if (
+      div.classList.contains('card') &&
+      div.querySelector('h1')
+    ) {
+      cardDiv = div;
+      break;
+    }
+  }
+
+  // Defensive: fallback to any h1-containing div
+  if (!cardDiv) {
+    cardDiv = Array.from(element.querySelectorAll('div')).find((d) => d.querySelector('h1'));
+  }
+
+  // Compose content cell
+  const contentCell = [];
+  if (cardDiv) {
+    // Heading
+    const h1 = cardDiv.querySelector('h1');
+    if (h1) contentCell.push(h1);
+    // Subheading (p)
+    const sub = cardDiv.querySelector('p');
+    if (sub) contentCell.push(sub);
+    // CTA(s)
+    const btnGroup = cardDiv.querySelector('.button-group');
+    if (btnGroup) {
+      // Clone to avoid moving original nodes if needed
+      contentCell.push(btnGroup);
+    }
+  }
+  const contentRow = [contentCell.length ? contentCell : ''];
+
+  // Compose table
+  const rows = [
+    headerRow,
+    bgImgRow,
+    contentRow,
+  ];
+
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

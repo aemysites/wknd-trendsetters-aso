@@ -1,55 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get all images in the hero background
-  function getBackgroundImages() {
-    // Find the grid that contains the images
-    const grid = element.querySelector('.desktop-3-column');
+  // Helper to get all images from the hero background grid
+  function getHeroImages(el) {
+    // Find the grid containing images
+    const grid = el.querySelector('.ix-hero-scale-3x-to-1x .grid-layout');
     if (!grid) return [];
-    // Get all immediate child divs with images
-    const imageDivs = Array.from(grid.querySelectorAll(':scope > div'));
-    const images = imageDivs
-      .map(div => div.querySelector('img'))
-      .filter(img => img);
-    return images;
+    // Get all img elements directly under grid
+    return Array.from(grid.querySelectorAll('img'));
   }
 
-  // Helper to get the hero content (title, subheading, CTAs)
-  function getHeroContent() {
-    // Find the hero content container
-    const contentContainer = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
-    if (!contentContainer) return null;
-    // Get heading, subheading, and buttons
-    const heading = contentContainer.querySelector('h1');
-    const subheading = contentContainer.querySelector('p');
-    const buttonGroup = contentContainer.querySelector('.button-group');
-    // Gather all CTAs (links)
-    let ctas = [];
-    if (buttonGroup) {
-      ctas = Array.from(buttonGroup.querySelectorAll('a'));
-    }
-    // Compose content cell
-    const cellContent = [];
-    if (heading) cellContent.push(heading);
-    if (subheading) cellContent.push(subheading);
-    if (ctas.length) cellContent.push(...ctas);
-    return cellContent.length ? cellContent : '';
+  // Helper to get the hero content (title, subheading, CTA)
+  function getHeroContent(el) {
+    // Find the content container
+    const content = el.querySelector('.ix-hero-scale-3x-to-1x-content .container');
+    if (!content) return [];
+    // Get heading, subheading, and button group
+    const heading = content.querySelector('h1');
+    const subheading = content.querySelector('p');
+    const buttonGroup = content.querySelector('.button-group');
+    // Compose content array
+    const contentArr = [];
+    if (heading) contentArr.push(heading);
+    if (subheading) contentArr.push(subheading);
+    if (buttonGroup) contentArr.push(buttonGroup);
+    return contentArr;
   }
 
-  // Compose table rows
+  // Table rows
   const headerRow = ['Hero (hero20)'];
 
-  // Row 2: background images (all images in the collage)
-  const backgroundImages = getBackgroundImages();
-  const imagesRow = [backgroundImages.length ? backgroundImages : ''];
+  // Row 2: background images (all images in the hero grid)
+  const images = getHeroImages(element);
+  // Place all images in one cell as an array
+  const imageRow = [images.length ? images : ''];
 
-  // Row 3: hero content (heading, subheading, CTAs)
-  const heroContent = getHeroContent();
-  const contentRow = [heroContent ? heroContent : ''];
+  // Row 3: hero content (heading, subheading, CTA)
+  const heroContent = getHeroContent(element);
+  const contentRow = [heroContent.length ? heroContent : ''];
 
-  // Build the table
-  const cells = [headerRow, imagesRow, contentRow];
+  // Compose table
+  const cells = [
+    headerRow,
+    imageRow,
+    contentRow
+  ];
+
+  // Create table block
   const block = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Replace the original element with the block
+  // Replace original element
   element.replaceWith(block);
 }
