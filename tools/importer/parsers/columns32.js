@@ -1,28 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid-layout container (the columns root)
+  // Find the grid-layout container (the columns wrapper)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the immediate children of the grid: [img, content div]
+  // Get immediate children of the grid (should be 2: image, content)
   const gridChildren = Array.from(grid.children);
   if (gridChildren.length < 2) return;
 
-  // First column: the image (reference the existing image element)
-  const imgCol = gridChildren[0];
-  // Second column: the content block (reference the existing content div)
+  // First column: image
+  const imageCol = gridChildren[0];
+  // Second column: content (text, tags, heading, author info)
   const contentCol = gridChildren[1];
 
-  // Build the table rows
+  // Table header row
   const headerRow = ['Columns (columns32)'];
-  const columnsRow = [imgCol, contentCol];
+  // Table content row: two columns
+  const contentRow = [imageCol, contentCol];
 
-  // Create the table block
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    columnsRow,
+    contentRow,
   ], document);
 
-  // Replace the original element with the new table
   element.replaceWith(table);
 }

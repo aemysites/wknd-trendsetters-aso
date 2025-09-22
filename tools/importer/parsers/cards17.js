@@ -1,27 +1,39 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Table header row as required
+  // Table header row
   const headerRow = ['Cards (cards17)'];
 
-  // Defensive: find the grid container
-  const grid = element.querySelector('.w-layout-grid');
+  // Defensive: find the grid container (cards)
+  const centered = element.querySelector('.centered');
+  if (!centered) return;
+  const grid = centered.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all direct child divs of the grid (each is a card)
-  const cardDivs = Array.from(grid.querySelectorAll(':scope > div'));
+  // Each child div of grid-layout is a card
+  const cardDivs = Array.from(grid.children);
 
-  // For each card, grab the image and ensure two columns (image, text)
+  // For each card, extract the image element and any text content from alt attribute
   const rows = cardDivs.map(cardDiv => {
-    const img = cardDiv.querySelector('img');
+    // Defensive: find the image inside the card
+    const imgContainer = cardDiv.querySelector('.utility-aspect-2x3');
+    let img = null;
+    let textContent = '';
+    if (imgContainer) {
+      img = imgContainer.querySelector('img');
+      if (img && img.alt) {
+        textContent = img.alt;
+      }
+    }
     if (!img) return null;
-    // The second cell must be present and must contain a non-empty string (even if just a space)
-    return [img, ' '];
-  }).filter(Boolean);
+    // If no alt text, use a non-breaking space
+    if (!textContent) textContent = '\u00A0';
+    return [img, textContent];
+  }).filter(row => row && row[0]);
 
-  // Compose the table: header row, then image+space text rows
-  const tableCells = [headerRow, ...rows];
-  const table = WebImporter.DOMUtils.createTable(tableCells, document);
+  // Compose the table cells
+  const cells = [headerRow, ...rows];
 
-  // Replace the original element with the table
-  element.replaceWith(table);
+  // Always output the block
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

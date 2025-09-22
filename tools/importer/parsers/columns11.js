@@ -1,42 +1,28 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid container (the one with two children: left content, right image)
-  const grid = element.querySelector('.w-layout-grid.grid-layout.container');
+  // Find the main grid container (the one with two columns: content and image)
+  const grid = element.querySelector('.grid-layout.grid-gap-xxl.utility-min-height-100dvh');
   if (!grid) return;
 
-  // The left column: content
-  const leftCol = grid.children[0];
-  // The right column: image
-  // The image is outside the inner grid, as the second child of the outer grid
-  const rightCol = grid.nextElementSibling;
+  // The left column: content (heading, paragraph, buttons)
+  const leftCol = grid.querySelector('.container');
+  // The right column: image (first <img> child of grid)
+  const rightCol = grid.querySelector('img');
 
-  // Defensive: ensure we have both columns
   if (!leftCol || !rightCol) return;
 
-  // Prepare left column content: heading, paragraph, buttons
-  const heading = leftCol.querySelector('h2');
-  const paragraph = leftCol.querySelector('.rich-text, .w-richtext');
-  const buttonGroup = leftCol.querySelector('.button-group');
-
-  // Compose left cell content
-  const leftCellContent = [];
-  if (heading) leftCellContent.push(heading);
-  if (paragraph) leftCellContent.push(paragraph);
-  if (buttonGroup) leftCellContent.push(buttonGroup);
-
-  // Compose right cell content (the image element)
-  const rightCellContent = rightCol;
-
-  // Build the table rows
+  // Use the block name as the header row
   const headerRow = ['Columns (columns11)'];
-  const contentRow = [leftCellContent, rightCellContent];
 
-  // Create the block table
+  // Reference the actual DOM nodes for the table cells
+  const row = [leftCol, rightCol];
+
+  // Build the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow,
+    row
   ], document);
 
-  // Replace the original element with the new table
+  // Replace the original element with the table
   element.replaceWith(table);
 }

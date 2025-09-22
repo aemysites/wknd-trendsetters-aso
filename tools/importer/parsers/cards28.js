@@ -1,76 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract cards from a grid
-  function extractCardsFromGrid(grid) {
-    const cards = [];
-    // Each direct child <a> is a card
-    const cardLinks = Array.from(grid.children).filter(
-      (child) => child.tagName === 'A'
-    );
-    cardLinks.forEach((card) => {
-      // Find image (MANDATORY)
-      let img = card.querySelector('img');
-      if (!img) return; // Skip cards without image
-      // Find heading (h3)
-      let heading = card.querySelector('h3');
-      // Find description (div.paragraph-sm)
-      let desc = card.querySelector('.paragraph-sm');
-      // Defensive: fallback to first div if no .paragraph-sm
-      if (!desc) {
-        // Find all divs after h3 (if present), or all divs
-        const divs = Array.from(card.querySelectorAll('div'));
-        // Exclude image wrapper divs
-        const filteredDivs = divs.filter(d => !d.querySelector('img') && (!heading || d !== heading.parentElement));
-        if (filteredDivs.length > 0) {
-          desc = filteredDivs[0];
-        }
-      }
-      // Compose text cell
-      const textContent = [];
-      if (heading) textContent.push(heading);
-      if (desc) textContent.push(desc);
-      // Try to include all text nodes that are not in heading or desc
-      // (for flexibility)
-      const textNodes = Array.from(card.childNodes).filter(
-        node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-      );
-      textNodes.forEach(node => {
-        textContent.push(document.createTextNode(node.textContent.trim()));
-      });
-      // Also include any additional <div> with text not already included
-      Array.from(card.querySelectorAll('div')).forEach(div => {
-        if (div !== desc && div !== img.parentElement && div.textContent.trim() && !textContent.includes(div)) {
-          textContent.push(div);
-        }
-      });
-      cards.push([img, textContent]);
-    });
-    return cards;
-  }
-
-  // Find all tab panes (each tab is a set of cards)
-  const tabPanes = element.querySelectorAll(':scope > div');
-  const allCards = [];
-  tabPanes.forEach((tabPane) => {
-    // Find the grid inside this tab
-    const grid = tabPane.querySelector('.w-layout-grid');
-    if (grid) {
-      const cards = extractCardsFromGrid(grid);
-      allCards.push(...cards);
-    }
-  });
-
-  // Build table rows
+  // Table header row
   const headerRow = ['Cards (cards28)'];
-  const tableRows = [headerRow];
-  allCards.forEach(([img, textContent]) => {
-    tableRows.push([
-      img,
-      Array.isArray(textContent) ? textContent : [textContent],
-    ]);
+  const rows = [headerRow];
+
+  // Find all tab panes (each tab contains a grid of cards)
+  const tabPanes = element.querySelectorAll(':scope > div');
+
+  tabPanes.forEach((tabPane) => {
+    // Find the grid inside each tab pane
+    const grid = tabPane.querySelector('.w-layout-grid');
+    if (!grid) return;
+    // Get all cards (each card is an <a> inside the grid)
+    const cards = grid.querySelectorAll(':scope > a');
+    cards.forEach((card) => {
+      // Find image (mandatory)
+      let image = card.querySelector('img');
+      if (!image) return; // Skip cards without images
+      // Text content: gather all heading and paragraph elements
+      const textCell = [];
+      // Get all h3 and .paragraph-sm inside card
+      const headings = card.querySelectorAll('h3');
+      headings.forEach(h => textCell.push(h));
+      const paragraphs = card.querySelectorAll('.paragraph-sm');
+      paragraphs.forEach(p => textCell.push(p));
+      // Fallback: if no .paragraph-sm, get all direct text nodes and divs without images
+      if (textCell.length === 0) {
+        // Get all divs that do not contain images
+        const divs = Array.from(card.querySelectorAll('div')).filter(div => !div.querySelector('img'));
+        divs.forEach(div => textCell.push(div));
+        // Also get direct text nodes
+        Array.from(card.childNodes).forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+            textCell.push(node.textContent.trim());
+          }
+        });
+      }
+      // Compose row: [image, text]
+      rows.push([
+        image,
+        textCell.length ? textCell : ''
+      ]);
+    });
   });
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableRows, document);
-  element.replaceWith(block);
+  // Create and replace
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

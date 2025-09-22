@@ -1,48 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract card info from a card container
+  // Helper to extract card content (image, title, description)
   function extractCardContent(cardDiv) {
-    // Find the image (mandatory)
+    // Find the first image in the card
     const img = cardDiv.querySelector('img');
-    // Find the text content (title and description)
-    let title = null;
-    let desc = null;
-    // Look for a container with text
-    const textContainer = cardDiv.querySelector('.utility-padding-all-2rem') || cardDiv.querySelector('.utility-position-relative') || cardDiv;
-    if (textContainer) {
-      title = textContainer.querySelector('h3');
-      desc = textContainer.querySelector('p');
+    // Find the first heading (h3, h2, etc.)
+    let heading = cardDiv.querySelector('h1, h2, h3, h4, h5, h6');
+    // Find the first paragraph
+    let desc = cardDiv.querySelector('p');
+
+    // Defensive: if heading or desc are not direct children, try deeper
+    if (!heading) {
+      heading = cardDiv.querySelector('[class*=heading], [class*=title]');
     }
-    // Compose text cell
-    const textCell = [];
-    if (title) textCell.push(title);
-    if (desc) textCell.push(desc);
-    return [img, textCell];
+    if (!desc) {
+      // Sometimes description may be in a div
+      desc = cardDiv.querySelector('div:not(:has(img)):not(:has(h1,h2,h3,h4,h5,h6))');
+    }
+
+    // Compose text cell: heading (if any), then description (if any)
+    const textContent = [];
+    if (heading) textContent.push(heading);
+    if (desc) textContent.push(desc);
+    return [img, textContent];
   }
 
-  // Get all immediate child divs (each is a card or image)
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+  // Get all immediate children (cards or images)
+  const cards = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Compose rows for cards: only include cards with both image and text
+  // Compose rows: only those with images are valid cards
   const rows = [];
-  for (const div of cardDivs) {
-    // Only include cards with both image and text (not plain images)
-    const img = div.querySelector('img');
-    const hasText = div.querySelector('h3') || div.querySelector('p');
-    if (img && hasText) {
-      rows.push(extractCardContent(div));
+  for (const cardDiv of cards) {
+    const img = cardDiv.querySelector('img');
+    if (!img) continue; // skip if no image
+    // If card has heading or description, treat as a full card
+    const hasText = cardDiv.querySelector('h1, h2, h3, h4, h5, h6, p');
+    if (hasText) {
+      const [imageEl, textEls] = extractCardContent(cardDiv);
+      rows.push([imageEl, textEls]);
     }
   }
 
-  // Build table cells
-  const cells = [
-    ['Cards (cards25)'], // header row
+  // Build table data
+  const table = [
+    ['Cards (cards25)'],
     ...rows
   ];
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace original element with block
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(table, document);
   element.replaceWith(block);
 }

@@ -1,43 +1,57 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get direct children by selector
-  function getDirectChildren(parent, selector) {
-    return Array.from(parent.querySelectorAll(':scope > ' + selector));
-  }
+  // Helper to collect children as array
+  const getChildren = (el, selector) => Array.from(el.querySelectorAll(selector));
 
-  // Find the main container and grids
-  const container = element.querySelector('.container');
-  if (!container) return;
-  const mainGrid = container.querySelector('.grid-layout.tablet-1-column');
-  const lowerGrid = container.querySelector('.grid-layout.mobile-portrait-1-column');
-
-  // --- First row: main content columns ---
-  let leftCol = null, rightCol = null;
-  if (mainGrid) {
-    const cols = getDirectChildren(mainGrid, 'div');
-    leftCol = cols[0] || '';
-    rightCol = cols[1] || '';
-  }
-
-  // --- Second row: lower images columns ---
-  let imgCol1 = '', imgCol2 = '';
-  if (lowerGrid) {
-    const imgDivs = getDirectChildren(lowerGrid, 'div');
-    imgCol1 = imgDivs[0] || '';
-    imgCol2 = imgDivs[1] || '';
-  }
-
-  // Compose table rows
+  // 1. Header row
   const headerRow = ['Columns (columns16)'];
-  const row1 = [leftCol, rightCol];
-  const row2 = [imgCol1, imgCol2];
 
-  // Only include rows that have at least one non-empty cell (besides header)
-  const rows = [headerRow];
-  if (row1.some(cell => cell && cell !== '')) rows.push(row1);
-  if (row2.some(cell => cell && cell !== '')) rows.push(row2);
+  // 2. Find the main grid (headline/eyebrow left, description/author/button right)
+  const container = element.querySelector('.container');
+  const mainGrid = container.querySelector('.grid-layout.tablet-1-column');
+  const leftCol = mainGrid.children[0];
+  const rightCol = mainGrid.children[1];
 
-  // Build the table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Left column: Eyebrow + Headline
+  const leftColContent = [];
+  const eyebrow = leftCol.querySelector('.eyebrow');
+  if (eyebrow) leftColContent.push(eyebrow);
+  const headline = leftCol.querySelector('h1');
+  if (headline) leftColContent.push(headline);
+
+  // Right column: Description, Author, Button
+  const rightColContent = [];
+  const desc = rightCol.querySelector('.rich-text');
+  if (desc) rightColContent.push(desc);
+  const authorBlock = rightCol.querySelector('.flex-horizontal.y-center.flex-gap-xs');
+  if (authorBlock) rightColContent.push(authorBlock);
+  const btn = rightCol.querySelector('a.button');
+  if (btn) rightColContent.push(btn);
+
+  // 3. Find the image grid (bottom half)
+  const imageGrid = element.querySelector('.grid-layout.mobile-portrait-1-column');
+  const images = [];
+  if (imageGrid) {
+    getChildren(imageGrid, '.utility-aspect-1x1').forEach(div => {
+      const img = div.querySelector('img');
+      if (img) images.push(img);
+    });
+  }
+
+  // 4. Compose table rows
+  // First content row: left (headline/eyebrow), right (desc/author/button)
+  const firstContentRow = [leftColContent, rightColContent];
+  // Second content row: images side by side
+  const secondContentRow = images;
+
+  // 5. Build table
+  const cells = [
+    headerRow,
+    firstContentRow,
+    secondContentRow,
+  ];
+
+  // 6. Replace element
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

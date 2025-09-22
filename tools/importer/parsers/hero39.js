@@ -1,52 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Table header row
+  // Defensive: Find the main grid container
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  if (!grid) return;
+
+  // Find the two main grid children: left (image) and right (content)
+  const gridChildren = grid.querySelectorAll(':scope > div');
+  if (gridChildren.length < 2) return;
+
+  // --- Row 1: Block Name ---
   const headerRow = ['Hero (hero39)'];
 
-  // 2. Background image row (single cell)
-  // Find the image inside the first grid cell
-  let backgroundImg = null;
-  const gridDivs = element.querySelectorAll(':scope > div > div');
-  if (gridDivs.length > 0) {
-    // The first grid cell contains the background image
-    backgroundImg = gridDivs[0].querySelector('img');
-  }
+  // --- Row 2: Background Image ---
+  // The image is inside the first grid child
+  const imageContainer = gridChildren[0];
+  const img = imageContainer.querySelector('img');
+  const imageRow = [img ? img : ''];
 
-  // 3. Content row (single cell)
-  // Find the heading, subheading/paragraph, and CTA button
-  let contentCell = [];
-  if (gridDivs.length > 1) {
-    // The second grid cell contains the text and CTA
-    const contentGrid = gridDivs[1].querySelector('.w-layout-grid');
-    if (contentGrid) {
-      // Heading (h1)
-      const heading = contentGrid.querySelector('h1');
-      if (heading) contentCell.push(heading);
-      // Paragraph and button group
-      const flexVertical = contentGrid.querySelector('.flex-vertical');
-      if (flexVertical) {
-        // Paragraph (subheading)
-        const paragraph = flexVertical.querySelector('p');
-        if (paragraph) contentCell.push(paragraph);
-        // CTA (button)
-        const buttonGroup = flexVertical.querySelector('.button-group');
-        if (buttonGroup) {
-          // Only include the button(s) (usually <a>)
-          const cta = buttonGroup.querySelector('a');
-          if (cta) contentCell.push(cta);
-        }
-      }
-    }
-  }
+  // --- Row 3: Content (Heading, Paragraph, CTA) ---
+  // The content is inside the second grid child
+  const contentContainer = gridChildren[1];
+  // Defensive: Find the inner grid (sometimes used for layout)
+  let innerGrid = contentContainer.querySelector('.w-layout-grid');
+  if (!innerGrid) innerGrid = contentContainer;
 
-  // Compose the table rows
-  const rows = [
+  // Heading
+  const heading = innerGrid.querySelector('h1');
+  // Paragraph
+  const paragraph = innerGrid.querySelector('p');
+  // CTA (button or link)
+  let cta = innerGrid.querySelector('.button-group a, .button-group button');
+
+  // Compose content cell
+  const contentCell = [];
+  if (heading) contentCell.push(heading);
+  if (paragraph) contentCell.push(paragraph);
+  if (cta) contentCell.push(cta);
+  const contentRow = [contentCell];
+
+  // Compose table
+  const cells = [
     headerRow,
-    [backgroundImg ? backgroundImg : ''],
-    [contentCell.length ? contentCell : ''],
+    imageRow,
+    contentRow,
   ];
 
-  // Create the table and replace the original element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }
