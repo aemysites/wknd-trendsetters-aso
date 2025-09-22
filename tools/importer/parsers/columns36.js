@@ -1,52 +1,53 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get immediate child divs
-  function getDirectDivs(parent) {
-    return Array.from(parent.children).filter((el) => el.tagName === 'DIV');
-  }
-
-  // Find the main grid (two columns)
-  const container = element.querySelector('.container');
-  if (!container) return;
-  const grid = container.querySelector('.w-layout-grid.grid-layout');
+  // Defensive: Only parse if the expected grid layout exists
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the two main columns
-  const gridChildren = getDirectDivs(grid);
-  if (gridChildren.length < 2) return;
-  const leftCol = gridChildren[0];
-  const rightCol = gridChildren[1];
+  // Find the two main columns: left (text/buttons), right (images)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // LEFT COLUMN: Heading, subheading, buttons
-  // We'll collect all children of leftCol
-  const leftColContent = [];
-  Array.from(leftCol.children).forEach((child) => {
-    leftColContent.push(child);
-  });
+  // Left column: heading, subheading, buttons
+  const leftCol = columns[0];
+  // Right column: grid of images
+  const rightCol = columns[1];
 
-  // RIGHT COLUMN: grid of images
-  // Find the nested grid with images
-  let images = [];
-  const nestedGrid = rightCol.querySelector('.w-layout-grid');
-  if (nestedGrid) {
-    images = Array.from(nestedGrid.querySelectorAll('img'));
+  // Extract left column content
+  // Heading
+  const heading = leftCol.querySelector('h1');
+  // Subheading
+  const subheading = leftCol.querySelector('p');
+  // Button group
+  const buttonGroup = leftCol.querySelector('.button-group');
+  // Compose left column cell
+  const leftCell = [];
+  if (heading) leftCell.push(heading);
+  if (subheading) leftCell.push(subheading);
+  if (buttonGroup) leftCell.push(buttonGroup);
+
+  // Extract right column images
+  // The images are inside a nested grid inside rightCol
+  const imagesGrid = rightCol.querySelector('.grid-layout');
+  let imageElements = [];
+  if (imagesGrid) {
+    imageElements = Array.from(imagesGrid.querySelectorAll('img'));
   }
-  // Defensive: if no nested grid, also check for images directly
-  if (images.length === 0) {
-    images = Array.from(rightCol.querySelectorAll('img'));
-  }
 
-  // Compose the columns row
-  const columnsRow = [
-    leftColContent,
-    images
-  ];
+  // Compose right column cell
+  // Place all images in a single cell, as per visual reference
+  const rightCell = imageElements;
 
-  // Build the table
+  // Build the table rows
   const headerRow = ['Columns (columns36)'];
-  const tableCells = [headerRow, columnsRow];
-  const table = WebImporter.DOMUtils.createTable(tableCells, document);
+  const contentRow = [leftCell, rightCell];
+
+  // Create the block table
+  const blockTable = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
 
   // Replace the original element
-  element.replaceWith(table);
+  element.replaceWith(blockTable);
 }

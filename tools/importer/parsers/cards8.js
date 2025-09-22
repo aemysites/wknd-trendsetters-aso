@@ -1,32 +1,44 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row: must have exactly one column (block name)
-  const headerRow = ['Cards (cards8)'];
+  // Get all direct card divs (each contains an image)
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Get all direct child divs (each is a card container with an image)
-  const cardDivs = element.querySelectorAll(':scope > div');
+  // Table header as per block requirements (2 columns, second cell empty)
+  const headerRow = ['Cards (cards8)', ''];
+  const rows = [headerRow];
 
-  // Each card: [image, text content (alt text in a <p> element)]
-  const rows = Array.from(cardDivs).map((cardDiv) => {
+  // For each card div, extract the image (first child img)
+  cardDivs.forEach((cardDiv) => {
     const img = cardDiv.querySelector('img');
+    if (!img) return; // skip if no image
+
+    // Reference the existing image element (do not clone or create new)
+    const imageCell = img;
+    // Second cell: use all text content from the card div except the image
     let textCell = '';
-    if (img) {
-      // Use alt text in a <p> element for the text cell
-      const alt = img.getAttribute('alt') || '';
-      const p = document.createElement('p');
-      p.textContent = alt;
-      textCell = p;
-      return [img, textCell];
+    // Collect all text nodes and elements except the image
+    const textNodes = Array.from(cardDiv.childNodes).filter(node => node !== img && (node.nodeType === 3 || node.nodeType === 1));
+    if (textNodes.length > 0) {
+      // Create a container div and append all text nodes/elements
+      const container = document.createElement('div');
+      textNodes.forEach(node => container.appendChild(node.cloneNode(true)));
+      textCell = container;
+    } else if (img.alt && img.alt.trim()) {
+      // Fallback: use alt text as heading
+      const heading = document.createElement('h3');
+      heading.textContent = img.alt;
+      textCell = heading;
+    } else {
+      // Always provide a non-empty cell
+      textCell = document.createElement('span');
+      textCell.textContent = '';
     }
-    return null;
-  }).filter(Boolean);
+    rows.push([imageCell, textCell]);
+  });
 
-  // Compose the table data
-  const tableData = [headerRow, ...rows];
-
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
+  // Create the table block
+  const table = WebImporter.DOMUtils.createTable(rows, document);
 
   // Replace the original element
-  element.replaceWith(block);
+  element.replaceWith(table);
 }

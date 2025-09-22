@@ -1,33 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all immediate child dividers (each is a Q&A row)
-  const dividers = Array.from(element.querySelectorAll(':scope > .divider'));
+  // Get all direct child divs (each FAQ row)
+  const rows = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Defensive: If no dividers, fallback to all immediate children
-  const rows = dividers.length ? dividers : Array.from(element.children);
+  // Only divs that contain a grid (the actual FAQ rows)
+  const faqRows = rows.filter(div => div.querySelector('.w-layout-grid'));
 
-  // Each divider contains a grid-layout with two children: heading and paragraph
-  const contentRows = rows.map(divider => {
-    const grid = divider.querySelector('.w-layout-grid');
-    if (!grid) return ['']; // Defensive: empty cell if missing
-    const cells = Array.from(grid.children);
-    // Expect: [heading, paragraph]
-    if (cells.length >= 2) {
-      return [cells[0], cells[1]];
-    }
-    // Defensive: if less than 2, fill with empty string
-    return [cells[0] || '', ''];
+  // Build table rows
+  const tableRows = [];
+
+  // Header row (block name)
+  tableRows.push(['Columns (columns23)']);
+
+  // Each FAQ row becomes a table row with two columns: question and answer
+  faqRows.forEach(faq => {
+    // Find the grid inside this divider
+    const grid = faq.querySelector('.w-layout-grid');
+    if (!grid) return;
+    // Get the two direct children: heading and answer
+    const gridChildren = Array.from(grid.children);
+    // Defensive: expect at least two children
+    const question = gridChildren[0] || document.createElement('div');
+    const answer = gridChildren[1] || document.createElement('div');
+    tableRows.push([question, answer]);
   });
 
-  // Table header row (block name)
-  const headerRow = ['Columns (columns23)'];
-
-  // Compose final table data
-  const tableData = [headerRow, ...contentRows];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable(tableData, document);
-
-  // Replace original element with block table
+  // Create table block
+  const block = WebImporter.DOMUtils.createTable(tableRows, document);
   element.replaceWith(block);
 }

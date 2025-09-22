@@ -1,28 +1,43 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid container (the one with two columns: content and image)
-  const grid = element.querySelector('.grid-layout.grid-gap-xxl.utility-min-height-100dvh');
+  // Defensive: find the main grid container (the direct child of the section)
+  const grid = element.querySelector(':scope > div');
   if (!grid) return;
 
-  // The left column: content (heading, paragraph, buttons)
-  const leftCol = grid.querySelector('.container');
-  // The right column: image (first <img> child of grid)
-  const rightCol = grid.querySelector('img');
+  // Get all direct children of the grid (should be two: content and image)
+  const gridChildren = Array.from(grid.children);
 
-  if (!leftCol || !rightCol) return;
+  // Find the content column (should be a div with heading, paragraph, buttons)
+  let contentCol = null;
+  let imageCol = null;
 
-  // Use the block name as the header row
+  // The content column is a grid itself, image is an <img>
+  gridChildren.forEach(child => {
+    if (child.tagName === 'DIV') {
+      contentCol = child;
+    } else if (child.tagName === 'IMG') {
+      imageCol = child;
+    }
+  });
+
+  // Defensive fallback: if not found, try to find them
+  if (!contentCol) {
+    contentCol = grid.querySelector('div');
+  }
+  if (!imageCol) {
+    imageCol = grid.querySelector('img');
+  }
+
+  // Build the table rows
   const headerRow = ['Columns (columns11)'];
+  const columnsRow = [contentCol, imageCol].filter(Boolean);
 
-  // Reference the actual DOM nodes for the table cells
-  const row = [leftCol, rightCol];
-
-  // Build the table
+  // Create the block table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    row
+    columnsRow
   ], document);
 
-  // Replace the original element with the table
+  // Replace the original element
   element.replaceWith(table);
 }

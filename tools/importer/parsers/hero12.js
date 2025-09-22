@@ -1,50 +1,92 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // --- Row 1: Block Name ---
-  const headerRow = ['Hero (hero12)'];
+  // Get direct children DIVs of the section
+  const sectionDivs = element.querySelectorAll(':scope > div');
 
-  // --- Row 2: Background Image (optional) ---
-  let bgImg = '';
-  const topDivs = element.querySelectorAll(':scope > div');
-  if (topDivs.length > 0) {
-    const img = topDivs[0].querySelector('img.cover-image.utility-position-absolute');
-    if (img) bgImg = img;
+  // Find background image (first child div with img)
+  let backgroundImg = null;
+  if (sectionDivs.length > 0) {
+    const bgImgDiv = sectionDivs[0];
+    backgroundImg = bgImgDiv.querySelector('img');
   }
-  const bgImgRow = [bgImg];
 
-  // --- Row 3: Content (title, subheading, cta) ---
-  let contentCell = null;
-  if (topDivs.length > 1) {
-    const cardBody = topDivs[1].querySelector('.card-body');
-    if (cardBody) {
-      const grid = cardBody.querySelector('.grid-layout');
-      if (grid) {
-        const gridChildren = Array.from(grid.children);
-        let cellDiv = document.createElement('div');
-        let hasContent = false;
-        gridChildren.forEach(child => {
-          // Only process the text block (not the image)
-          if (child.tagName !== 'IMG') {
-            Array.from(child.childNodes).forEach(node => {
-              if (
-                (node.nodeType === Node.ELEMENT_NODE && (node.tagName.match(/^H[1-6]$/) || node.tagName === 'P' || node.tagName === 'DIV' || node.tagName === 'A')) ||
-                (node.nodeType === Node.TEXT_NODE && node.textContent.trim())
-              ) {
-                cellDiv.appendChild(node.cloneNode(true));
-                hasContent = true;
-              }
-            });
+  // Find content area (second child div)
+  let contentArea = null;
+  if (sectionDivs.length > 1) {
+    contentArea = sectionDivs[1];
+  }
+
+  // In content area, find the card body
+  let cardBody = null;
+  if (contentArea) {
+    cardBody = contentArea.querySelector('.card-body');
+  }
+
+  // In card body, find the grid-layout (contains left image and right text/button)
+  let gridLayout = null;
+  if (cardBody) {
+    gridLayout = cardBody.querySelector('.grid-layout');
+  }
+
+  // Defensive: Find left-side image (concert crowd)
+  let leftImg = null;
+  if (gridLayout) {
+    leftImg = gridLayout.querySelector('img');
+  }
+
+  // Find right-side text content (h2, paragraphs, button)
+  let rightContent = null;
+  if (gridLayout) {
+    // The right content is the div after the left image
+    const gridChildren = Array.from(gridLayout.children);
+    rightContent = gridChildren.find(
+      (el) => el !== leftImg && el.tagName === 'DIV'
+    );
+  }
+
+  // Compose the content cell for row 3
+  let contentCellElements = [];
+  if (rightContent) {
+    // Heading
+    const heading = rightContent.querySelector('h2');
+    if (heading) contentCellElements.push(heading.cloneNode(true));
+
+    // Subpoints (icon + paragraph)
+    const verticalFlex = rightContent.querySelector('.flex-vertical');
+    if (verticalFlex) {
+      // Each flex-horizontal is a row with icon and paragraph
+      const subRows = verticalFlex.querySelectorAll('.flex-horizontal');
+      subRows.forEach((row) => {
+        // Instead of just cloning, extract all text content in each row
+        const texts = [];
+        row.childNodes.forEach((node) => {
+          if (node.nodeType === 1 && node.tagName === 'P') {
+            texts.push(node.textContent.trim());
           }
         });
-        if (hasContent) contentCell = cellDiv;
-      }
+        if (texts.length) {
+          contentCellElements.push(texts.join(' '));
+        }
+      });
+    }
+
+    // Button
+    const buttonGroup = rightContent.querySelector('.button-group');
+    if (buttonGroup) {
+      // Find the link/button inside
+      const btn = buttonGroup.querySelector('a');
+      if (btn) contentCellElements.push(btn.cloneNode(true));
     }
   }
-  // Only include the third row if there is content
-  const cells = [headerRow, bgImgRow];
-  if (contentCell) {
-    cells.push([contentCell]);
+
+  // Always create a 3-row table: header, background, content (third row only if content)
+  const headerRow = ['Hero (hero12)'];
+  const backgroundRow = [backgroundImg ? backgroundImg.cloneNode(true) : ''];
+  const cells = [headerRow, backgroundRow];
+  if (contentCellElements.length) {
+    cells.push([contentCellElements]);
   }
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(table);
+
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

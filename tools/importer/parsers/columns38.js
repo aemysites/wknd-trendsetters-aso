@@ -1,28 +1,26 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only proceed if element exists and is a grid block
-  if (!element || !element.classList.contains('w-layout-grid')) return;
+  // Get all direct child divs (columns)
+  const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Header row as specified
+  // Block header row
   const headerRow = ['Columns (columns38)'];
 
-  // Get all direct child divs (each column cell)
-  const columnDivs = Array.from(element.querySelectorAll(':scope > div'));
-
-  // For each column, extract the main content (image element)
-  const columns = columnDivs.map((colDiv) => {
-    // Find the first image inside this column
-    const img = colDiv.querySelector('img');
-    // Defensive: Only include if image exists
-    return img ? img : '';
+  // Content row: each column is a cell containing the referenced image element
+  const contentRow = columns.map(col => {
+    const img = col.querySelector('img');
+    // Reference the image element directly if present
+    if (img) return img;
+    // Fallback: if no image, reference the column itself
+    return col;
   });
 
-  // Compose table rows
-  const rows = [headerRow, columns];
+  // Build table data
+  const tableData = [headerRow, contentRow];
 
-  // Create the block table
-  const blockTable = WebImporter.DOMUtils.createTable(rows, document);
+  // Create the columns block table
+  const block = WebImporter.DOMUtils.createTable(tableData, document);
 
-  // Replace the original element with the new block table
-  element.replaceWith(blockTable);
+  // Replace the original element with the block
+  element.replaceWith(block);
 }

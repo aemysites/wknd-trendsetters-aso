@@ -1,41 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to get all immediate accordion items
-  const accordionItems = Array.from(element.querySelectorAll(':scope > .accordion'));
+  // Collect all direct accordion blocks
+  const accordionBlocks = Array.from(element.querySelectorAll(':scope > .accordion.w-dropdown'));
 
-  // Table header row
+  // Table header row with required block name
   const headerRow = ['Accordion (accordion34)'];
   const rows = [headerRow];
 
-  accordionItems.forEach((item) => {
-    // Title cell: Find the .w-dropdown-toggle and get the .paragraph-lg inside it
-    const toggle = item.querySelector('.w-dropdown-toggle');
-    let titleEl = toggle ? toggle.querySelector('.paragraph-lg') : null;
-    // Defensive fallback: if not found, use the toggle itself
-    if (!titleEl && toggle) titleEl = toggle;
+  accordionBlocks.forEach((accordion) => {
+    // Title: Find the .w-dropdown-toggle > .paragraph-lg (or fallback to .w-dropdown-toggle)
+    let titleCell = '';
+    const toggle = accordion.querySelector('.w-dropdown-toggle');
+    if (toggle) {
+      const label = toggle.querySelector('.paragraph-lg');
+      titleCell = label || toggle;
+    }
 
-    // Content cell: Find the .accordion-content (nav) and get its rich text
-    const contentNav = item.querySelector('.accordion-content');
-    let contentEl = null;
-    if (contentNav) {
-      // Get the first .rich-text inside contentNav
-      contentEl = contentNav.querySelector('.rich-text');
-      // Defensive fallback: use the inner wrapper if rich-text not found
-      if (!contentEl) {
-        const inner = contentNav.querySelector('div');
-        if (inner) contentEl = inner;
-        else contentEl = contentNav;
+    // Content: Find .w-dropdown-list > .utility-padding-all-1rem > .rich-text (or fallback)
+    let contentCell = '';
+    const dropdownList = accordion.querySelector('.w-dropdown-list');
+    if (dropdownList) {
+      // Prefer .utility-padding-all-1rem > .rich-text, but fallback to .utility-padding-all-1rem, then dropdownList
+      const paddingDiv = dropdownList.querySelector('.utility-padding-all-1rem');
+      if (paddingDiv) {
+        const richText = paddingDiv.querySelector('.rich-text');
+        contentCell = richText || paddingDiv;
+      } else {
+        contentCell = dropdownList;
       }
     }
 
-    // Add row: always 2 columns (title, content)
     rows.push([
-      titleEl || '',
-      contentEl || '',
+      titleCell || '',
+      contentCell || '',
     ]);
   });
 
   // Create the table block
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(block);
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

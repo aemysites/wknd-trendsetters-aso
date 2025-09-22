@@ -1,23 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout (columns container)
-  const grid = element.querySelector('.w-layout-grid');
+  // Find the grid layout container inside the block
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
 
-  // The grid's immediate children are the columns
-  const columns = Array.from(grid.children);
+  // Get all direct children of the grid (should be [h2, div])
+  const children = Array.from(grid.children);
 
-  // Build the header row (must be a single cell array)
+  // Left column: h2
+  const leftCol = children[0];
+  // Right column: div (contains p and a.button)
+  const rightCol = children[1];
+
+  // Build the table rows
   const headerRow = ['Columns (columns7)'];
+  const secondRow = [leftCol, rightCol];
 
-  // Build the content row: each column's content as a cell (not wrapped in an array)
-  const contentRow = columns.map(col => col);
+  // Compose the table
+  const cells = [headerRow, secondRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
 
-  // Create the table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    contentRow,
-  ], document);
+  // Ensure header row has exactly one column and NO colspan attribute
+  const headerTr = table.querySelector('tr');
+  if (headerTr && headerTr.children.length === 1) {
+    headerTr.children[0].removeAttribute('colspan');
+  }
 
   // Replace the original element
   element.replaceWith(table);
