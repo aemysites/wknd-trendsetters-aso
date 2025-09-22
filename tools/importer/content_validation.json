@@ -190,21 +190,21 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "Trends Fresh fits, bold moves See how style meets the street. From tennis courts to city nights, discover what\u2019s trending now. Sport Game, set, match style Serve up looks on and off the court. Sporty vibes, effortless cool. "
+                  "text": "Trends Fresh fits, bold moves See how style meets the street. From tennis courts to city nights, discover what\u2019s trending now. Sport Game, set, match style Serve up looks on and off the court. Sporty vibes, effortless cool"
                 },
                 {
                   "change_type": "deletion",
-                  "text": "Beach Sunkissed & styled out Catch waves and compliments. Beach days, bright fits, endless fun. "
+                  "text": ". Beach Sunkissed & styled out Catch waves and compliments. Beach days, bright fits, endless fun. Party after dark Nightlife looks that turn heads. Shine bright, dance all night. Weekend escapes Pack light, dress right. Adventure-ready outfits for every getaway. Chill city strolls Urban walks, casual talks. Laid-back layers for every step. Coffee run cool Espresso yourself. Comfy, cute, and always on trend. Creative collabs Meet the makers behind the brands. Fresh drops, unique stories. Style Q&A Your fashion questions, answered. Tips, tricks, and inspo from the pros"
                 },
                 {
                   "change_type": "equal",
-                  "text": "Party after dark Nightlife looks that turn heads. Shine bright, dance all night. Weekend escapes Pack light, dress right. Adventure-ready outfits for every getaway. Chill city strolls Urban walks, casual talks. Laid-back layers for every step. Coffee run cool Espresso yourself. Comfy, cute, and always on trend. Creative collabs Meet the makers behind the brands. Fresh drops, unique stories. Style Q&A Your fashion questions, answered. Tips, tricks, and inspo from the pros."
+                  "text": "."
                 }
               ],
-              "dissimilarity_score": 0.07
+              "dissimilarity_score": 0.43
             }
           ],
-          "similarity_score": 0.9299999999999999
+          "similarity_score": 0.5700000000000001
         }
       ]
     },
@@ -605,77 +605,13 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. "
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn more "
-                },
-                {
-                  "change_type": "equal",
-                  "text": "Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh"
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "."
-                },
-                {
-                  "change_type": "insertion",
-                  "text": ". Learn more"
+                  "text": "Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh."
                 }
               ],
-              "dissimilarity_score": 0.25
+              "dissimilarity_score": 0.0
             }
           ],
-          "similarity_score": 0.75
+          "similarity_score": 0.0
         },
         {
           "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
@@ -689,33 +625,21 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "June 12 \u2022 Sporty Tennis whites, all day Alex serves up summer style on the court\u2014think crisp polos, bold sneakers, and a winning attitude. "
+                  "text": "June 12 \u2022 Sporty Tennis whites, all day Alex serves up summer style on the court\u2014think crisp polos, bold sneakers, and a winning attitude"
                 },
                 {
                   "change_type": "deletion",
-                  "text": "June 10 \u2022 Beach Sunkissed & effortless Taylor rocks breezy linen and bucket hats for"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn"
+                  "text": ". June 10 \u2022 Beach Sunkissed & effortless Taylor rocks breezy linen and bucket hats for a chill day by the waves. Sun, sand, and standout looks. June 8 \u2022 Nightlife Glow up after dark Jordan lights up the night in neon accents and statement jackets. Party energy, all night long. June 5 \u2022 Street City strolls, cool kicks Morgan keeps it casual with oversized tees and chunky sneakers\u2014urban adventures never looked so good. June 2 \u2022 Festival Festival fits, major hits Riley mixes bold prints and layered jewelry for a look that\u2019s ready to dance from day to night. May 30 \u2022 Skate Rolling in style Casey shreds in graphic tees and relaxed cargos\u2014skatepark style with a twist of attitude. May 28 \u2022 Chill Laid-back, always on trend Jamie lounges in soft knits and retro shades\u2014proof that comfort and cool go hand in hand. May 25 \u2022 Active Move, groove, repeat Drew hits the track in color-blocked sets and fresh trainers\u2014sporty looks for every pace"
                 },
                 {
                   "change_type": "equal",
-                  "text": " "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "a chill day by the waves. Sun, sand, and standout looks. June 8 \u2022 Nightlife Glow up after dark Jordan lights up the night in neon accents and statement jackets. Party energy, all night long. June 5 \u2022 Street City strolls, cool kicks Morgan keeps it casual with oversized tees and chunky sneakers\u2014urban adventures never looked so good. June 2 \u2022 Festival Festival fits, major hits Riley mixes bold prints and layered jewelry for a look that\u2019s ready to dance from day to night. May 30 \u2022 Skate Rolling in style Casey shreds in graphic tees and relaxed cargos\u2014skatepark style with a twist of attitude. May 28 \u2022 Chill Laid-back, always on trend Jamie lounges in soft knits and retro shades\u2014proof that comfort and cool go hand in hand. May 25 \u2022 Active Move, groove, repeat Drew hits the track in color-blocked sets and fresh trainers\u2014sporty looks for every pace."
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "more"
+                  "text": "."
                 }
               ],
-              "dissimilarity_score": 0.6
+              "dissimilarity_score": 0.56
             }
           ],
-          "similarity_score": 0.4
+          "similarity_score": 0.43999999999999995
         },
         {
           "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
@@ -729,33 +653,21 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "Street Style Tennis whites, city nights Alex serves up sporty chic with a twist\u2014effortless layers, bold sneakers, and a racket in hand. Game, set, match your vibe. "
+                  "text": "Street Style Tennis whites, city nights Alex serves up sporty chic with a twist\u2014effortless layers, bold sneakers, and a racket in hand. Game, set, match your vibe"
                 },
                 {
                   "change_type": "deletion",
-                  "text": "Beach Day Sunkissed and carefree Taylor rocks breezy linen and neon shades, catching waves and good times. Sand between toes, style on point. Night Out Glow up after dark Jordan lights up the party in metallics and mesh. Dance floor ready, confidence on full display. Casual Cool Denim days, endless ways Morgan keeps it classic with vintage jeans and a graphic tee. Effortless, timeless, always in. Sporty Vibes Run, jump, repeat"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "Learn"
+                  "text": ". Beach Day Sunkissed and carefree Taylor rocks breezy linen and neon shades, catching waves and good times. Sand between toes, style on point. Night Out Glow up after dark Jordan lights up the party in metallics and mesh. Dance floor ready, confidence on full display. Casual Cool Denim days, endless ways Morgan keeps it classic with vintage jeans and a graphic tee. Effortless, timeless, always in. Sporty Vibes Run, jump, repeat Casey mixes track pants with a cropped hoodie\u2014athletic energy meets street swagger. Ready for anything. Festival Fun Color, music, movement Riley\u2019s look pops with tie-dye and chunky boots. Dancing from day to night, style never stops. Coffee Break Chill, sip, snap Jamie pairs oversized knits with statement sunnies. Cozy corners, cool conversations, always camera-ready. Weekend Escape Adventure in every step Skylar explores in cargo shorts and bucket hats. Urban hikes, spontaneous plans, fresh fits all day"
                 },
                 {
                   "change_type": "equal",
-                  "text": " "
-                },
-                {
-                  "change_type": "deletion",
-                  "text": "Casey mixes track pants with a cropped hoodie\u2014athletic energy meets street swagger. Ready for anything. Festival Fun Color, music, movement Riley\u2019s look pops with tie-dye and chunky boots. Dancing from day to night, style never stops. Coffee Break Chill, sip, snap Jamie pairs oversized knits with statement sunnies. Cozy corners, cool conversations, always camera-ready. Weekend Escape Adventure in every step Skylar explores in cargo shorts and bucket hats. Urban hikes, spontaneous plans, fresh fits all day."
-                },
-                {
-                  "change_type": "insertion",
-                  "text": "more"
+                  "text": "."
                 }
               ],
-              "dissimilarity_score": 0.59
+              "dissimilarity_score": 0.56
             }
           ],
-          "similarity_score": 0.41000000000000003
+          "similarity_score": 0.43999999999999995
         }
       ]
     },
@@ -812,11 +724,11 @@
               "element_id": "html__body__section_4",
               "differences": [
                 {
-                  "change_type": "equal",
+                  "change_type": "deletion",
                   "text": "Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
                 }
               ],
-              "dissimilarity_score": 0.0
+              "dissimilarity_score": 1.0
             }
           ],
           "similarity_score": 0.0
@@ -999,16 +911,12 @@
                 {
                   "change_type": "equal",
                   "text": "Let\u2019s connect Questions? Slide into our inbox Didn\u2019t find your answer? Reach out and we\u2019ll get back with the latest scoop. Email us hello@fashionblog.com Call us +1 (555) 123-9876 Visit us 101 Trend Ave, SF, CA"
-                },
-                {
-                  "change_type": "insertion",
-                  "text": " null"
                 }
               ],
-              "dissimilarity_score": 0.02
+              "dissimilarity_score": 0.0
             }
           ],
-          "similarity_score": 0.98
+          "similarity_score": 0.0
         }
       ]
     },
@@ -1414,13 +1322,45 @@
               "differences": [
                 {
                   "change_type": "equal",
-                  "text": "Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read"
+                  "text": "Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Read "
+                },
+                {
+                  "change_type": "equal",
+                  "text": "Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Read "
+                },
+                {
+                  "change_type": "equal",
+                  "text": "Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. "
+                },
+                {
+                  "change_type": "deletion",
+                  "text": "Read "
+                },
+                {
+                  "change_type": "equal",
+                  "text": "Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember"
+                },
+                {
+                  "change_type": "deletion",
+                  "text": ". Read"
+                },
+                {
+                  "change_type": "insertion",
+                  "text": "."
                 }
               ],
-              "dissimilarity_score": -0.0
+              "dissimilarity_score": 0.04
             }
           ],
-          "similarity_score": 0.0
+          "similarity_score": 0.96
         }
       ]
     },
@@ -1809,7 +1749,39 @@
         },
         {
           "change_type": "equal",
-          "text": "Trends made for your lifestyle Fresh drops for every mood\u2014tennis whites, beach brights, party fits. Your next look starts here. Game on! Sporty vibes meet street style. Sneakers, sets, and all the cool you need. Chill never looked this good. Easy layers, bold extras\u2014fun, effortless, always you. Ready to shine? Statement looks and playful details for nights you\u2019ll never forget. Remix your style. Layer, clash, repeat\u2014make every outfit your own. Hot new labels. Discover the brands everyone\u2019s buzzing about\u2014before they go big. Real people, real style. See how trendsetters own the scene, one outfit at a time. Season\u2019s essentials. Stay ahead with our top picks\u2014what\u2019s trending right now. Browse Join Hot right now Style that never sleeps Get inspired by real looks, real stories, and the freshest trends in youth fashion. See how today\u2019s style stars own every moment. Browse Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. Read Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. Read Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. Read Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. Read Trends Sporty Nightlife Fresh fits, bold moves Game on, style up Party looks, all night Style Qs, real quick answers Fresh tips for your everyday look. Sneakers for night\u2014yes or no? "
+          "text": "Trends made for your lifestyle Fresh drops for every mood\u2014tennis whites, beach brights, party fits. Your next look starts here. Game on! Sporty vibes meet street style. Sneakers, sets, and all the cool you need. Chill never looked this good. Easy layers, bold extras\u2014fun, effortless, always you. Ready to shine? Statement looks and playful details for nights you\u2019ll never forget. Remix your style. Layer, clash, repeat\u2014make every outfit your own. Hot new labels. Discover the brands everyone\u2019s buzzing about\u2014before they go big. Real people, real style. See how trendsetters own the scene, one outfit at a time. Season\u2019s essentials. Stay ahead with our top picks\u2014what\u2019s trending right now. Browse Join Hot right now Style that never sleeps Get inspired by real looks, real stories, and the freshest trends in youth fashion. See how today\u2019s style stars own every moment. Browse Chill 3 min read Courtside cool, city strolls Alex mixes tennis classics with street flair\u2014serving up a look that\u2019s game, set, match for any scene. "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Read "
+        },
+        {
+          "change_type": "equal",
+          "text": "Sunny 4 min read Wave-ready, wow-worthy Taylor keeps it breezy in bold colors and shades\u2014proof that beach days are made for standout style. "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Read "
+        },
+        {
+          "change_type": "equal",
+          "text": "Night 2 min read Glow up after hours Jordan turns up the party in neon layers and kicks\u2014because the best nights start with a killer fit. "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Read "
+        },
+        {
+          "change_type": "equal",
+          "text": "Active 5 min read Play hard, dress harder Morgan fuses sporty edge with fresh brands\u2014making every match a style moment to remember. "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Read "
+        },
+        {
+          "change_type": "equal",
+          "text": "Trends Sporty Nightlife Fresh fits, bold moves Game on, style up Party looks, all night Style Qs, real quick answers Fresh tips for your everyday look. Sneakers for night\u2014yes or no? "
         },
         {
           "change_type": "insertion",
@@ -1844,7 +1816,7 @@
           "text": "Join the style revolution Get trend alerts, style inspo, and exclusive tips. Fresh looks, fun vibes\u2014straight to your inbox. Don\u2019t miss out! Sign up Connect"
         }
       ],
-      "similarity_score": 0.9424486484403526
+      "similarity_score": 0.9304684481539172
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
@@ -1871,14 +1843,14 @@
         },
         {
           "change_type": "deletion",
-          "text": ". Beach Sunkissed & styled out Catch waves and compliments. Beach days, bright fits, endless fun"
+          "text": ". Beach Sunkissed & styled out Catch waves and compliments. Beach days, bright fits, endless fun. Party after dark Nightlife looks that turn heads. Shine bright, dance all night. Weekend escapes Pack light, dress right. Adventure-ready outfits for every getaway. Chill city strolls Urban walks, casual talks. Laid-back layers for every step. Coffee run cool Espresso yourself. Comfy, cute, and always on trend. Creative collabs Meet the makers behind the brands. Fresh drops, unique stories. Style Q&A Your fashion questions, answered. Tips, tricks, and inspo from the pros"
         },
         {
           "change_type": "equal",
-          "text": ". Party after dark Nightlife looks that turn heads. Shine bright, dance all night. Weekend escapes Pack light, dress right. Adventure-ready outfits for every getaway. Chill city strolls Urban walks, casual talks. Laid-back layers for every step. Coffee run cool Espresso yourself. Comfy, cute, and always on trend. Creative collabs Meet the makers behind the brands. Fresh drops, unique stories. Style Q&A Your fashion questions, answered. Tips, tricks, and inspo from the pros. Fresh looks, bold moves Step into the scene\u2014outfits that pop, moments that move. From courtside cool to beachside vibes, get inspired by real style in action. Scroll, swoon, and steal the look. See more Fresh looks, bold moves, all you Read more"
+          "text": ". Fresh looks, bold moves Step into the scene\u2014outfits that pop, moments that move. From courtside cool to beachside vibes, get inspired by real style in action. Scroll, swoon, and steal the look. See more Fresh looks, bold moves, all you Read more"
         }
       ],
-      "similarity_score": 0.9622535548269376
+      "similarity_score": 0.8619347208532359
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
@@ -1889,42 +1861,170 @@
         },
         {
           "change_type": "equal",
-          "text": "Taylor Brooks Casual Vibes Sporty Looks Party Ready Trends made for living bold From tennis courts to city streets, we\u2019re spotting the freshest looks on the coolest crowds. Dive into the latest styles that make every day feel like a runway. Whether you\u2019re beach-bound or headed out for a night of fun, these outfits are all about comfort, confidence, and a splash of attitude. We\u2019re here for the bold and the playful. Get inspired by real stories and real people rocking new brands in their element. Your next favorite look is just a scroll away\u2014let\u2019s make every moment a style moment. Fresh fits, bold stories All Trends Casual Sporty Tennis whites, city nights Alex serves up style on the court "
+          "text": "Taylor Brooks Casual Vibes Sporty Looks Party Ready Trends made for living bold From tennis courts to city streets, we\u2019re spotting the freshest looks on the coolest crowds. Dive into the latest styles that make every day feel like a runway. Whether you\u2019re beach-bound or headed out for a night of fun, these outfits are all about comfort, confidence, and a splash of attitude. We\u2019re here for the bold and the playful. Get inspired by real stories and real people rocking new brands in their element. Your next favorite look is just a scroll away\u2014let\u2019s make every moment a style moment. Fresh fits, bold stories All Trends Casual Sporty Tennis whites, city nights "
         },
         {
-          "change_type": "deletion",
-          "text": "Beach days, bold ways Taylor rocks neon at sunset Party looks that pop Morgan lights up the dance floor Street style, all smiles Jordan keeps it cool downtown Chill vibes, fresh kicks Riley\u2019s sneaker game is strong "
-        },
-        {
-          "change_type": "equal",
-          "text": "Layer up, stand out Casey mixes prints for fall "
-        },
-        {
-          "change_type": "deletion",
-          "text": "Denim dreams Skylar\u2019s go-to for every day Sporty chic, always unique Peyton\u2019s look is all about comfort Retro remix Drew brings back the classics Color splash Quinn\u2019s outfit is pure fun "
+          "change_type": "insertion",
+          "text": "Beach days, bold ways Party looks that pop Street style, all smiles Chill vibes, fresh kicks "
         },
         {
           "change_type": "equal",
-          "text": "Night out, lights on Harper\u2019s sequins steal the show "
+          "text": "Alex serves up style on the court "
         },
         {
           "change_type": "deletion",
-          "text": "Easy layers, big energy Jamie\u2019s look is effortless cool Fresh brands, fearless moves Avery\u2019s style is all action Weekend wanderer Reese explores in style Bold basics Dakota keeps it simple, sharp "
+          "text": "Beach days, bold ways "
         },
         {
           "change_type": "equal",
-          "text": "Poolside cool Emerson\u2019s shades are on point"
+          "text": "Taylor rocks neon at sunset"
         },
         {
           "change_type": "deletion",
-          "text": " Game, set, match Finley\u2019s tennis look wins Glow up after dark Sage\u2019s party fit shines bright Fresh faces, fresh fits Rowan\u2019s look is all smiles Everyday icons Blake\u2019s style is always trending"
+          "text": " Party looks that pop"
         },
         {
           "change_type": "equal",
-          "text": " Style in every snapshot Fresh looks, bold moves, real moments. Tennis court cool Game, set, match\u2014serve up sporty style with every swing. Effortless, energetic, and always on trend. Beach day vibes Sun, sand, and statement shades. Catch the latest swimwear and carefree energy in every shot. Night out energy Lights, music, and unforgettable outfits. Party looks that turn heads and keep the fun going all night. Style that speaks volumes \u201cI love how every trend here feels fresh, fun, and totally wearable. From tennis courts to late-night parties, these looks always keep me inspired and ready to try something new.\u201d Taylor Brooks Fashion Enthusiast Trends that turn heads Fresh looks, bold moves, good vibes. Join in"
+          "text": " Morgan lights up the dance floor "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Street style, all smiles "
+        },
+        {
+          "change_type": "equal",
+          "text": "Jordan keeps it cool downtown "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Chill vibes, fresh kicks "
+        },
+        {
+          "change_type": "equal",
+          "text": "Riley\u2019s sneaker game is strong Layer up, stand out "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Denim dreams Sporty chic, always unique Retro remix Color splash "
+        },
+        {
+          "change_type": "equal",
+          "text": "Casey mixes prints for fall "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Denim dreams "
+        },
+        {
+          "change_type": "equal",
+          "text": "Skylar\u2019s go-to for every day "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Sporty chic, always unique "
+        },
+        {
+          "change_type": "equal",
+          "text": "Peyton\u2019s look is all about comfort"
+        },
+        {
+          "change_type": "deletion",
+          "text": " Retro remix"
+        },
+        {
+          "change_type": "equal",
+          "text": " Drew brings back the classics "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Color splash "
+        },
+        {
+          "change_type": "equal",
+          "text": "Quinn\u2019s outfit is pure fun Night out, lights on "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Easy layers, big energy Fresh brands, fearless moves Weekend wanderer Bold basics "
+        },
+        {
+          "change_type": "equal",
+          "text": "Harper\u2019s sequins steal the show "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Easy layers, big energy "
+        },
+        {
+          "change_type": "equal",
+          "text": "Jamie\u2019s look is effortless cool "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Fresh brands, fearless moves "
+        },
+        {
+          "change_type": "equal",
+          "text": "Avery\u2019s style is all action"
+        },
+        {
+          "change_type": "deletion",
+          "text": " Weekend wanderer"
+        },
+        {
+          "change_type": "equal",
+          "text": " Reese explores in style "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Bold basics "
+        },
+        {
+          "change_type": "equal",
+          "text": "Dakota keeps it simple, sharp Poolside cool "
+        },
+        {
+          "change_type": "insertion",
+          "text": "Game, set, match Glow up after dark Fresh faces, fresh fits Everyday icons "
+        },
+        {
+          "change_type": "equal",
+          "text": "Emerson\u2019s shades are on point "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Game, set, match "
+        },
+        {
+          "change_type": "equal",
+          "text": "Finley\u2019s tennis look wins "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Glow up after dark "
+        },
+        {
+          "change_type": "equal",
+          "text": "Sage\u2019s party fit shines bright "
+        },
+        {
+          "change_type": "deletion",
+          "text": "Fresh faces, fresh fits "
+        },
+        {
+          "change_type": "equal",
+          "text": "Rowan\u2019s look is all smiles"
+        },
+        {
+          "change_type": "deletion",
+          "text": " Everyday icons"
+        },
+        {
+          "change_type": "equal",
+          "text": " Blake\u2019s style is always trending Style in every snapshot Fresh looks, bold moves, real moments. Tennis court cool Game, set, match\u2014serve up sporty style with every swing. Effortless, energetic, and always on trend. Beach day vibes Sun, sand, and statement shades. Catch the latest swimwear and carefree energy in every shot. Night out energy Lights, music, and unforgettable outfits. Party looks that turn heads and keep the fun going all night. Style that speaks volumes \u201cI love how every trend here feels fresh, fun, and totally wearable. From tennis courts to late-night parties, these looks always keep me inspired and ready to try something new.\u201d Taylor Brooks Fashion Enthusiast Trends that turn heads Fresh looks, bold moves, good vibes. Join in"
         }
       ],
-      "similarity_score": 0.8847152304593008
+      "similarity_score": 0.9912154326134428
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
@@ -1947,60 +2047,28 @@
         },
         {
           "change_type": "equal",
-          "text": " trends Fresh finds & style inspo Trends for every vibe June 12 \u2022 Sporty Tennis whites, all day Alex serves up summer style on the court\u2014think crisp polos, bold sneakers, and a winning attitude. "
+          "text": " trends Fresh finds & style inspo Trends for every vibe June 12 \u2022 Sporty Tennis whites, all day Alex serves up summer style on the court\u2014think crisp polos, bold sneakers, and a winning attitude"
         },
         {
           "change_type": "deletion",
-          "text": "June 10 \u2022 Beach Sunkissed & effortless Taylor rocks breezy linen and bucket hats for a chill day by the waves. Sun, sand, and standout looks. June 8 \u2022 Nightlife Glow up after dark Jordan lights up the night in neon accents and statement jackets. Party energy, all night long. June 5 \u2022 Street City strolls, cool kicks Morgan keeps it casual with oversized tees and chunky sneakers\u2014urban adventures never looked so good. June 2 \u2022 Festival Festival fits, major hits Riley mixes bold prints and layered jewelry for a look that\u2019s ready to dance from day to night. May 30 \u2022 Skate Rolling in style Casey shreds in graphic tees"
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn"
+          "text": ". June 10 \u2022 Beach Sunkissed & effortless Taylor rocks breezy linen and bucket hats for a chill day by the waves. Sun, sand, and standout looks. June 8 \u2022 Nightlife Glow up after dark Jordan lights up the night in neon accents and statement jackets. Party energy, all night long. June 5 \u2022 Street City strolls, cool kicks Morgan keeps it casual with oversized tees and chunky sneakers\u2014urban adventures never looked so good. June 2 \u2022 Festival Festival fits, major hits Riley mixes bold prints and layered jewelry for a look that\u2019s ready to dance from day to night. May 30 \u2022 Skate Rolling in style Casey shreds in graphic tees and relaxed cargos\u2014skatepark style with a twist of attitude. May 28 \u2022 Chill Laid-back, always on trend Jamie lounges in soft knits and retro shades\u2014proof that comfort and cool go hand in hand. May 25 \u2022 Active Move, groove, repeat Drew hits the track in color-blocked sets and fresh trainers\u2014sporty looks for every pace"
         },
         {
           "change_type": "equal",
-          "text": " "
-        },
-        {
-          "change_type": "deletion",
-          "text": "and"
-        },
-        {
-          "change_type": "insertion",
-          "text": "more"
-        },
-        {
-          "change_type": "equal",
-          "text": " "
-        },
-        {
-          "change_type": "deletion",
-          "text": "relaxed cargos\u2014skatepark style with a twist of attitude. May 28 \u2022 Chill Laid-back, always on trend Jamie lounges in soft knits and retro shades\u2014proof that comfort and cool go hand in hand. May 25 \u2022 Active Move, groove, repeat Drew hits the track in color-blocked sets and fresh trainers\u2014sporty looks for every pace. "
-        },
-        {
-          "change_type": "equal",
-          "text": "Fresh looks, bold moments Scroll through the latest street style, party vibes, and sporty chic. Get inspired by real people, real trends. Tennis court cool Ace your style game with crisp whites, retro sneakers, and a pop of neon. Serve up looks on and off the court. Beach day energy Sunkissed skin, breezy fits, and playful prints. Catch the wave of summer\u2019s hottest trends. Night out sparkle Glitter, bold colors, and statement pieces. Turn heads and own the dance floor all night long. by Taylor Brooks Trends that turn heads Stay ahead of the style game. Discover fresh looks, bold brands, and the stories behind the coolest outfits for every adventure\u2014beach days, tennis matches, and unforgettable nights out. Love what you see? Join our crew for exclusive updates, style inspo, and the latest buzz in young fashion. Subscribe"
+          "text": ". Fresh looks, bold moments Scroll through the latest street style, party vibes, and sporty chic. Get inspired by real people, real trends. Tennis court cool Ace your style game with crisp whites, retro sneakers, and a pop of neon. Serve up looks on and off the court. Beach day energy Sunkissed skin, breezy fits, and playful prints. Catch the wave of summer\u2019s hottest trends. Night out sparkle Glitter, bold colors, and statement pieces. Turn heads and own the dance floor all night long. by Taylor Brooks Trends that turn heads Stay ahead of the style game. Discover fresh looks, bold brands, and the stories behind the coolest outfits for every adventure\u2014beach days, tennis matches, and unforgettable nights out. Love what you see? Join our crew for exclusive updates, style inspo, and the latest buzz in young fashion. Subscribe"
         }
       ],
-      "similarity_score": 0.8878394210807183
+      "similarity_score": 0.889407424261976
     },
     {
       "url": "https://www.wknd-trendsetters.site/faq",
       "differences": [
         {
           "change_type": "equal",
-          "text": "Got questions? We\u2019ve got answers. Fashion FAQs, answered fast Curious about trends, tips, or our vibe? Find all the style scoop and community know-how right here. How do I spot the latest trends? We keep it fresh! Check our weekly trend roundups and street style snaps for what\u2019s hot right now. Can I share my own outfit pics? Absolutely! Tag us on socials or use our upload form to get featured in our next style story. Where do you find your style inspo? From city streets to beach parties, we\u2019re always on the lookout for bold looks and cool creators. How can I join your community? Sign up for our newsletter or jump into the comments\u2014everyone\u2019s welcome to join the fun! Let\u2019s connect Questions? Slide into our inbox Didn\u2019t find your answer? Reach out and we\u2019ll get back with the latest scoop. Email us hello@fashionblog.com Call us +1 (555) 123-9876 Visit us 101 Trend Ave, SF, CA "
-        },
-        {
-          "change_type": "insertion",
-          "text": "null "
-        },
-        {
-          "change_type": "equal",
-          "text": "Got a question? We\u2019ve got style. Curious about trends, tips, or how to rock your look? Check out our FAQs for all the answers on casual, sporty, and party-ready fashion. We break down the latest styles, share outfit inspo, and help you stay fresh for every occasion\u2014tennis courts, beach days, or late-night adventures. Dive in and discover how to make every day a runway. Join now"
+          "text": "Got questions? We\u2019ve got answers. Fashion FAQs, answered fast Curious about trends, tips, or our vibe? Find all the style scoop and community know-how right here. How do I spot the latest trends? We keep it fresh! Check our weekly trend roundups and street style snaps for what\u2019s hot right now. Can I share my own outfit pics? Absolutely! Tag us on socials or use our upload form to get featured in our next style story. Where do you find your style inspo? From city streets to beach parties, we\u2019re always on the lookout for bold looks and cool creators. How can I join your community? Sign up for our newsletter or jump into the comments\u2014everyone\u2019s welcome to join the fun! Let\u2019s connect Questions? Slide into our inbox Didn\u2019t find your answer? Reach out and we\u2019ll get back with the latest scoop. Email us hello@fashionblog.com Call us +1 (555) 123-9876 Visit us 101 Trend Ave, SF, CA Got a question? We\u2019ve got style. Curious about trends, tips, or how to rock your look? Check out our FAQs for all the answers on casual, sporty, and party-ready fashion. We break down the latest styles, share outfit inspo, and help you stay fresh for every occasion\u2014tennis courts, beach days, or late-night adventures. Dive in and discover how to make every day a runway. Join now"
         }
       ],
-      "similarity_score": 0.9984133396598223
+      "similarity_score": 1.0000000000000004
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-insights",
@@ -2093,63 +2161,7 @@
         },
         {
           "change_type": "equal",
-          "text": "Trend alert Fresh fits, bold moves Dive into the latest street style, sporty looks, and party-ready outfits. See how young trendsetters rock new brands from courtside to the dance floor. Taylor Brooks June 7, 2024 \u2022 4 min read Read more Fresh finds & style inspo Trends for every vibe Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. "
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn more "
-        },
-        {
-          "change_type": "equal",
-          "text": "Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh"
+          "text": "Trend alert Fresh fits, bold moves Dive into the latest street style, sporty looks, and party-ready outfits. See how young trendsetters rock new brands from courtside to the dance floor. Taylor Brooks June 7, 2024 \u2022 4 min read Read more Fresh finds & style inspo Trends for every vibe Casual Tennis looks that serve Ace your day with sporty style\u2014see how Jamie rocks bold sneakers and a vintage tee on the court. Beach Sunkissed & effortless Taylor chills seaside in breezy linen and bucket hats\u2014get the scoop on this summer\u2019s must-haves. Nightlife Party after dark Morgan lights up the night in neon and metallics\u2014discover the best fits for your next night out. Street City strolls, cool fits Jordan mixes oversized hoodies with chunky kicks\u2014urban style made easy for every adventure. Sport Move in style Casey\u2019s athleisure edit: track pants, crop tops, and attitude\u2014perfect for on-the-go days. Festival Vibes for days Skylar\u2019s festival picks: fringe, bold prints, and all the energy\u2014see what\u2019s trending this season. Chill Laid-back, always cool Riley keeps it comfy in joggers and slides\u2014find out how to master the art of relaxed style. Retro Throwback energy Avery brings back \u201890s flair with crop tops and baggy jeans\u2014nostalgia never looked so fresh"
         },
         {
           "change_type": "deletion",
@@ -2157,10 +2169,10 @@
         },
         {
           "change_type": "insertion",
-          "text": ". Learn more"
+          "text": ". image of a concert crowd image of game characters for a game development company image of bustling pub event image of mobile game character image of campus life activities image of music fans at concert"
         }
       ],
-      "similarity_score": 0.836810550426829
+      "similarity_score": 0.858814744042766
     },
     {
       "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
@@ -2175,38 +2187,18 @@
         },
         {
           "change_type": "deletion",
-          "text": "Beach Day Sunkissed and carefree Taylor rocks breezy linen and neon shades, catching waves and good times. Sand between toes, style on point. Night Out Glow up after dark Jordan lights up the party in metallics and mesh. Dance floor ready, confidence on full display. Casual Cool Denim days, endless ways Morgan keeps it classic with vintage jeans and a graphic tee. Effortless, timeless, always in. Sporty Vibes Run, jump, repeat Casey mixes track pants with a cropped hoodie\u2014athletic energy meets street swagger. Ready for anything. Festival Fun Color, music, movement Riley\u2019s look pops with tie-dye and chunky boots. Dancing from day to night, style never stops. Coffee Break Chill, sip, snap Jamie pairs oversized knits with statement sunnies. Cozy corners, cool conversations, always camera-ready. Weekend Escape Adventure in every step Skylar explores in"
-        },
-        {
-          "change_type": "insertion",
-          "text": "Learn"
+          "text": "Beach Day Sunkissed and carefree Taylor rocks breezy linen and neon shades, catching waves and good times. Sand between toes, style on point. Night Out Glow up after dark Jordan lights up the party in metallics and mesh. Dance floor ready, confidence on full display. Casual Cool Denim days, endless ways Morgan keeps it classic with vintage jeans and a graphic tee. Effortless, timeless, always in. Sporty Vibes Run, jump, repeat Casey mixes track pants with a cropped hoodie\u2014athletic energy meets street swagger. Ready for anything. Festival Fun Color, music, movement Riley\u2019s look pops with tie-dye and chunky boots. Dancing from day to night, style never stops. Coffee Break Chill, sip, snap Jamie pairs oversized knits with statement sunnies. Cozy corners, cool conversations, always camera-ready. Weekend Escape Adventure in every step Skylar explores in cargo shorts and bucket hats. Urban hikes, spontaneous plans, fresh fits all day. "
         },
         {
           "change_type": "equal",
-          "text": " "
+          "text": "Style in every snapshot From courtside cool to beachside vibes, see how young trendsetters rock fresh looks wherever the day takes them. Get inspired by real moments, real style, and real fun\u2014fashion that moves with you. View more"
         },
         {
           "change_type": "deletion",
-          "text": "cargo"
-        },
-        {
-          "change_type": "insertion",
-          "text": "more"
-        },
-        {
-          "change_type": "equal",
-          "text": " "
-        },
-        {
-          "change_type": "deletion",
-          "text": "shorts and bucket hats. Urban hikes, spontaneous plans, fresh fits all day. "
-        },
-        {
-          "change_type": "equal",
-          "text": "Style in every snapshot From courtside cool to beachside vibes, see how young trendsetters rock fresh looks wherever the day takes them. Get inspired by real moments, real style, and real fun\u2014fashion that moves with you. View more Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
+          "text": " Fresh looks, bold moves Spot the latest streetwear trends. Chill styles for every adventure. Outfits that own the night. Read more"
         }
       ],
-      "similarity_score": 0.7482614499373831
+      "similarity_score": 0.7337614159548655
     }
   ]
 }
