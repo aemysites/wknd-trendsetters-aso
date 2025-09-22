@@ -1,57 +1,35 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get immediate children by selector
-  const getImmediateChild = (parent, selector) => {
-    return Array.from(parent.children).find((el) => el.matches(selector));
-  };
-
-  // 1. Header row
-  const headerRow = ['Hero (hero14)'];
-
-  // 2. Background image row
-  // Find the grid-layout div
+  // Find the grid layout container
   const gridDiv = element.querySelector('.w-layout-grid');
+
+  // Find the background image (img inside .ix-parallax-scale-out-hero)
   let bgImg = null;
   if (gridDiv) {
-    // The background image is in the first child div > div > img
-    const firstGridChild = gridDiv.children[0];
-    if (firstGridChild) {
-      const parallaxDiv = getImmediateChild(firstGridChild, 'div');
-      if (parallaxDiv) {
-        bgImg = parallaxDiv.querySelector('img');
+    const bgDiv = gridDiv.querySelector('.ix-parallax-scale-out-hero');
+    if (bgDiv) {
+      const img = bgDiv.querySelector('img');
+      if (img) {
+        bgImg = img;
       }
     }
   }
-  const backgroundRow = [bgImg ? bgImg : ''];
 
-  // 3. Content row (title, subheading, CTA)
-  // The content is in the second grid child
-  let contentCell = '';
-  if (gridDiv && gridDiv.children.length > 1) {
-    const contentDiv = gridDiv.children[1];
-    // The heading and button group are inside contentDiv
-    // We'll include the heading and any button group (even if empty)
-    const contentParts = [];
-    // Heading
-    const headingWrap = contentDiv.querySelector('.utility-margin-bottom-6rem');
-    if (headingWrap) {
-      // h1
-      const h1 = headingWrap.querySelector('h1');
-      if (h1) contentParts.push(h1);
-      // Button group (CTA)
-      const buttonGroup = headingWrap.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.children.length > 0) {
-        contentParts.push(buttonGroup);
-      }
-    }
-    if (contentParts.length > 0) {
-      contentCell = contentParts;
+  // Find the heading (h1 inside .container)
+  let heading = null;
+  if (gridDiv) {
+    const containerDiv = gridDiv.querySelector('.container');
+    if (containerDiv) {
+      heading = containerDiv.querySelector('h1');
     }
   }
-  const contentRow = [contentCell];
 
-  // Assemble table
-  const tableCells = [headerRow, backgroundRow, contentRow];
-  const table = WebImporter.DOMUtils.createTable(tableCells, document);
+  // Compose the table rows
+  const headerRow = ['Hero (hero14)'];
+  const bgImgRow = [bgImg ? bgImg : ''];
+  const contentRow = [heading ? heading : ''];
+
+  const cells = [headerRow, bgImgRow, contentRow];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

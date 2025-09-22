@@ -1,81 +1,80 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract image from a card anchor
-  function getCardImage(cardAnchor) {
-    return cardAnchor.querySelector('img');
+  // Helper to extract image from a card anchor/div
+  function extractImage(card) {
+    // Look for the first img inside the card
+    return card.querySelector('img');
   }
-  // Helper to extract text content from a card anchor
-  function getCardText(cardAnchor) {
-    const textParts = [];
+
+  // Helper to extract text content from a card anchor/div
+  function extractText(card) {
+    // We'll collect tag (if present), heading, and paragraph
+    const textContent = document.createElement('div');
     // Tag (optional)
-    const tagGroup = cardAnchor.querySelector('.tag-group');
+    const tagGroup = card.querySelector('.tag-group');
     if (tagGroup) {
-      textParts.push(tagGroup);
+      textContent.appendChild(tagGroup.cloneNode(true));
     }
     // Heading (h3 or h4)
-    const heading = cardAnchor.querySelector('h3, h4');
+    const heading = card.querySelector('h3, h4');
     if (heading) {
-      textParts.push(heading);
+      textContent.appendChild(heading.cloneNode(true));
     }
-    // Description (p)
-    const desc = cardAnchor.querySelector('p');
-    if (desc) {
-      textParts.push(desc);
+    // Paragraph (optional)
+    const paragraph = card.querySelector('p');
+    if (paragraph) {
+      textContent.appendChild(paragraph.cloneNode(true));
     }
-    return textParts;
+    return textContent;
   }
-  // --- Main parsing ---
-  const headerRow = ['Cards (cards2)'];
-  const rows = [headerRow];
 
-  // Get the grid-layout container
+  // Find the grid container
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get all top-level children of grid
+  const rows = [];
+  // Header row
+  const headerRow = ['Cards (cards2)'];
+  rows.push(headerRow);
+
+  // Collect all cards (anchors with content) that have an image/icon (MANDATORY for this block)
+  // The grid contains: [featureCard, imageCardsGroup, textCardsGroup]
   const gridChildren = Array.from(grid.children);
 
-  // First card: large feature card (left side)
-  const firstCardAnchor = gridChildren.find((el) => el.tagName === 'A');
-  if (firstCardAnchor) {
-    const img = getCardImage(firstCardAnchor);
-    const textContent = getCardText(firstCardAnchor);
-    rows.push([
-      img,
-      textContent,
-    ]);
+  // 1. Feature card (large, left)
+  const featureCard = gridChildren[0];
+  if (featureCard && featureCard.matches('a')) {
+    const img = extractImage(featureCard);
+    if (img) {
+      const text = extractText(featureCard);
+      rows.push([
+        img.cloneNode(true),
+        text
+      ]);
+    }
   }
 
-  // Second column: vertical stack of cards with images (right side, top)
-  const verticalCardsContainer = gridChildren.find((el) => el.classList.contains('flex-horizontal'));
-  if (verticalCardsContainer) {
-    const cardAnchors = Array.from(verticalCardsContainer.querySelectorAll(':scope > a'));
-    cardAnchors.forEach((cardAnchor) => {
-      const img = getCardImage(cardAnchor);
-      const textContent = getCardText(cardAnchor);
-      rows.push([
-        img,
-        textContent,
-      ]);
+  // 2. Two image cards (right, top)
+  const imageCardsGroup = gridChildren[1];
+  if (imageCardsGroup) {
+    const anchors = Array.from(imageCardsGroup.querySelectorAll(':scope > a'));
+    anchors.forEach(card => {
+      const img = extractImage(card);
+      if (img) {
+        const text = extractText(card);
+        rows.push([
+          img.cloneNode(true),
+          text
+        ]);
+      }
     });
   }
 
-  // Third column: vertical stack of cards with only text (right side, bottom)
-  const textCardsContainer = gridChildren.find((el) => el.classList.contains('flex-horizontal') && el !== verticalCardsContainer);
-  if (textCardsContainer) {
-    // Each card is an anchor, separated by dividers
-    const cardAnchors = Array.from(textCardsContainer.querySelectorAll(':scope > a'));
-    cardAnchors.forEach((cardAnchor) => {
-      // No image for these cards
-      const textContent = getCardText(cardAnchor);
-      rows.push([
-        '',
-        textContent,
-      ]);
-    });
-  }
+  // 3. Text-only cards (right, bottom) - SKIP these, since image/icon is mandatory for this block
+  // (Do not add rows for cards without an image/icon)
 
-  // Create and replace block table
-  const block = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(block);
+  // Create the table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element
+  element.replaceWith(table);
 }

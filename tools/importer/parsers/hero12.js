@@ -1,59 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always use the correct header row
+  // --- Row 1: Block Name ---
   const headerRow = ['Hero (hero12)'];
 
-  // Row 2: Background image (optional)
-  let bgImgCell = '';
-  const mainDivs = element.querySelectorAll(':scope > div');
-  if (mainDivs.length > 0) {
-    const bgImg = mainDivs[0].querySelector('img');
-    if (bgImg) bgImgCell = bgImg;
+  // --- Row 2: Background Image (optional) ---
+  let bgImg = '';
+  const topDivs = element.querySelectorAll(':scope > div');
+  if (topDivs.length > 0) {
+    const img = topDivs[0].querySelector('img.cover-image.utility-position-absolute');
+    if (img) bgImg = img;
   }
+  const bgImgRow = [bgImg];
 
-  // Row 3: Title, subheading, CTA (all content from right column)
+  // --- Row 3: Content (title, subheading, cta) ---
   let contentCell = null;
-  if (mainDivs.length > 1) {
-    const card = mainDivs[1].querySelector('.card');
-    if (card) {
-      const cardBody = card.querySelector('.card-body');
-      if (cardBody) {
-        const grid = cardBody.querySelector('.grid-layout');
-        if (grid && grid.children.length === 2) {
-          const rightCol = grid.children[1];
-          // Collect all content blocks from rightCol
-          const contentParts = [];
-          // Headline
-          const h2 = rightCol.querySelector('h2');
-          if (h2) contentParts.push(h2);
-          // Subheadings/paragraphs and all text content
-          const flexVertical = rightCol.querySelector('.flex-vertical');
-          if (flexVertical) {
-            flexVertical.querySelectorAll('p').forEach(p => {
-              contentParts.push(p);
+  if (topDivs.length > 1) {
+    const cardBody = topDivs[1].querySelector('.card-body');
+    if (cardBody) {
+      const grid = cardBody.querySelector('.grid-layout');
+      if (grid) {
+        const gridChildren = Array.from(grid.children);
+        let cellDiv = document.createElement('div');
+        let hasContent = false;
+        gridChildren.forEach(child => {
+          // Only process the text block (not the image)
+          if (child.tagName !== 'IMG') {
+            Array.from(child.childNodes).forEach(node => {
+              if (
+                (node.nodeType === Node.ELEMENT_NODE && (node.tagName.match(/^H[1-6]$/) || node.tagName === 'P' || node.tagName === 'DIV' || node.tagName === 'A')) ||
+                (node.nodeType === Node.TEXT_NODE && node.textContent.trim())
+              ) {
+                cellDiv.appendChild(node.cloneNode(true));
+                hasContent = true;
+              }
             });
           }
-          // CTA button
-          const buttonGroup = rightCol.querySelector('.button-group');
-          if (buttonGroup) {
-            const button = buttonGroup.querySelector('a');
-            if (button) contentParts.push(button);
-          }
-          // Ensure all text content is included
-          if (contentParts.length) {
-            contentCell = contentParts;
-          }
-        }
+        });
+        if (hasContent) contentCell = cellDiv;
       }
     }
   }
-
-  // Compose table rows (always 3 rows, but omit the third if no content)
-  const rows = [headerRow, [bgImgCell]];
+  // Only include the third row if there is content
+  const cells = [headerRow, bgImgRow];
   if (contentCell) {
-    rows.push([contentCell]);
+    cells.push([contentCell]);
   }
-
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

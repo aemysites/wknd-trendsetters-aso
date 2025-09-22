@@ -3,23 +3,20 @@ export default function parse(element, { document }) {
   // Get all direct children (columns)
   const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Each column is a wrapper div with an image inside
-  const columnCells = columns.map(col => {
-    // Reference the image element inside this column
+  // Each column should contain an image, reference the image element directly
+  const images = columns.map(col => {
     const img = col.querySelector('img');
-    // Only reference the image if it exists
-    return img ? img : document.createTextNode('');
+    return img || '';
   });
 
-  // The header row must be a single cell with the block name
+  // Compose the table: header row, then one row with the images
   const headerRow = ['Columns (columns6)'];
+  const contentRow = images;
+  const tableData = [headerRow, contentRow];
 
-  // The second row contains as many columns as there are images (or empty if missing)
-  const tableRows = [headerRow, columnCells];
+  // Create the columns block table
+  const table = WebImporter.DOMUtils.createTable(tableData, document);
 
-  // Create the table block
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
-
-  // Replace the original element with the new table
+  // Replace the original grid element with the table
   element.replaceWith(table);
 }

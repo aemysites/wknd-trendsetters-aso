@@ -1,47 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get direct children by tag name
-  function getDirectChild(parent, tag) {
-    return Array.from(parent.children).find((el) => el.tagName.toLowerCase() === tag);
-  }
+  // Find the grid layout containing the hero content
+  const grid = element.querySelector('.grid-layout');
+  let title = null;
+  let subheading = null;
+  let cta = null;
 
-  // 1. Header row
-  const headerRow = ['Hero (hero35)'];
-
-  // 2. Background image row (none in this source)
-  const bgImageRow = [''];
-
-  // 3. Content row: Title, Subheading, CTA
-  // Find the main grid
-  const grid = element.querySelector('.w-layout-grid');
-  let contentCell = [];
   if (grid) {
-    // The first grid child contains headings and subheading
-    const gridChildren = Array.from(grid.children);
-    const textDiv = gridChildren[0];
-    const ctaEl = gridChildren.find((el) => el.tagName.toLowerCase() === 'a');
-
-    // Title (h2)
-    const h2 = textDiv && getDirectChild(textDiv, 'h2');
-    if (h2) contentCell.push(h2);
-    // Subheading (p)
-    const subheading = textDiv && getDirectChild(textDiv, 'p');
-    if (subheading) contentCell.push(subheading);
-    // CTA button (a)
-    if (ctaEl) contentCell.push(ctaEl);
-  }
-  // Defensive: if nothing found, fallback to all text content
-  if (contentCell.length === 0) {
-    contentCell = [element.textContent.trim()];
+    // Left column: heading and subheading
+    const left = grid.children[0];
+    if (left) {
+      title = left.querySelector('h2');
+      subheading = left.querySelector('p');
+    }
+    // Right column: CTA button (if present)
+    const right = grid.children[1];
+    if (right && right.tagName === 'A') {
+      cta = right;
+    }
   }
 
-  const contentRow = [contentCell];
+  // Table header: must match block name exactly
+  const headerRow = ['Hero (hero35)'];
+  // Second row: background image (none in this HTML)
+  const imageRow = [''];
 
-  // Assemble table
+  // Third row: content (title, subheading, CTA)
+  const content = [];
+  if (title) content.push(title);
+  if (subheading) content.push(subheading);
+  if (cta) content.push(cta);
+  const contentRow = [content];
+
+  // Compose table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    bgImageRow,
-    contentRow,
+    imageRow,
+    contentRow
   ], document);
 
   element.replaceWith(table);
